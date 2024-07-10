@@ -1,0 +1,156 @@
+---
+title: "Haul Size Effect"
+author: "Brett Stacy"
+date: "2024-06-19"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(data.table)
+```
+
+## What is the impact of scaling by haul size?
+
+Haul size ranges a lot for EBS Pcod. We sample ~20 fish on every haul but only the samples from the larger hauls have a significant impact on the population proportions at length if we use haul size as an importance scaler. 
+
+
+
+
+
+load pcod data
+
+illustrate range of haul sizes. plot probability haul sizes by groups (reasonable size classes). 
+
+Show that if we scale by haul size, how many samples have a miniscule impact on the length distribution
+
+i.e., for hauls size max with 1% or less impact on length distribution, what is the percent samples in these hauls?
+
+
+
+Load in pcod data
+
+```{r}
+DT = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
+```
+
+
+### Full data set
+
+Plot histogram of haul size in numbers of fish
+
+```{r}
+
+haulDT = DT[!duplicated(HAUL_JOIN), -c("LENGTH", "SUM_FREQUENCY")][order(YAGMH_SNUM)] # condense to only unique hauls, get rid of sub-haul level data, order the DT by number of fish in hauls.
+
+hist(haulDT$YAGMH_SNUM)
+
+summary(haulDT$YAGMH_SNUM)
+
+```
+
+
+
+Sort the hauls by size, then find the haul that represents 1% of the total catch threshold
+
+"the smallest 1% of hauls contain X% of length data" 
+
+```{r}
+
+# plot(haulDT$YAGMH_SNUM[1:100000])
+
+
+haulDT[,YAGMH_SNUM_CUMULATIVE := cumsum(YAGMH_SNUM)] # make a new vector of cumulative sum of catches in hauls
+
+
+good.ind = which.min(abs(haulDT$YAGMH_SNUM_CUMULATIVE - .01*haulDT[.N, YAGMH_SNUM_CUMULATIVE])) # find which ordered haul represents the 1% threshold.
+good.ind
+
+
+# side quest: how many hauls have more samples than number of fish in the haul?
+sum(haulDT$YAGMH_SNUM < haulDT$YAGMH_SFREQ)/haulDT[,.N] # less than .1%
+
+haulDT[1:good.ind, sum(YAGMH_SFREQ)]/haulDT[, sum(YAGMH_SFREQ)] # find how many samples are in the 1% hauls
+
+
+```
+
+Conclusion: 
+
+-   The smallest 1% of hauls contain 7% of the length samples
+-   The smallest 10% of hauls contain 30% of the length samples
+
+
+
+Do it another way. This should be equivalent. Calculate the percentage of SNUM to the sum of SNUM, then scale it by the highest SNUM percentage (last in ordered DT)
+
+```{r}
+
+haulDT[,YAGMH_SNUM_PERCENT := YAGMH_SNUM/sum(YAGMH_SNUM)]
+haulDT[,YAGMH_SNUM_PERCENT_SCALED := YAGMH_SNUM_PERCENT/max(YAGMH_SNUM_PERCENT)]
+
+
+good.ind = which.min(abs(haulDT$YAGMH_SNUM_PERCENT_SCALED - .01))
+good.ind
+
+haulDT[1:good.ind, sum(YAGMH_SFREQ)]/haulDT[, sum(YAGMH_SFREQ)] # find how many samples are in the 1% hauls
+
+
+```
+
+Uh-oh. This gives a different answer. And I don't know which one (if any) are correct. 
+
+
+
+
+### One year of data
+
+
+Now for one year, say 2022, find out how many times more influence 20 samples from a big haul have compared to 20 samples from a small haul. Perhaps use the 25% biggest haul and the 75% biggest haul. Is this the right way to do this? Just calculate the proportion of influence of each haul first maybe. then order them, or order them prior doesn't matter, then check the proportion of influence of the 25% largest haul and compare it to the 75% largest haul. Compare them by dividing their proportions. 
+
+
+#### Same analysis as above:
+```{r}
+
+haulDT2022 = haulDT[YEAR==2022]
+
+
+
+good.ind = which.min(abs(haulDT2022$YAGMH_SNUM_CUMULATIVE - .01*haulDT2022[.N, YAGMH_SNUM_CUMULATIVE])) # find which ordered haul represents the 1% threshold.
+
+haulDT2022[1:good.ind, sum(YAGMH_SFREQ)]/haulDT2022[, sum(YAGMH_SFREQ)]
+
+
+```
+
+6%
+24%
+
+
+
+#### Calculate proportions
+
+```{r}
+
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+

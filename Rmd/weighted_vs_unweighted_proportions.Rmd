@@ -1,0 +1,433 @@
+---
+title: "Weighted vs Unweighted"
+author: "Brett Stacy"
+date: "2024-06-28"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+
+# Compare weighted vs unweighted proportions at length EBS Pcod
+
+Let's take a look at how weighting (expanding) changes the unweighted (nominal) proportions at length.
+
+
+## Load in necessary data
+
+This data was saved from my version of the EBS Pcod expansion.
+
+```{r}
+
+y2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
+y7 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y7_ebs_pcod_Brett.RDS")
+
+library(tidyverse)
+library(data.table)
+
+
+```
+
+
+
+
+## Calculate the nominal proportions at length
+
+```{r}
+
+y3<- y2[,c("YEAR","GEAR","AREA2","MONTH","CRUISE",
+             "HAUL_JOIN", "LENGTH", "SUM_FREQUENCY", "YAGMH_SNUM", 
+             "YAGMH_SFREQ","YAGM_SFREQ", "YG_SFREQ","Y_SFREQ","YAGM_TNUM","YG_TNUM","Y_TNUM","YAGMH_SNUM",
+             "YAGM_SNUM","YG_SNUM","YG_SNUM","Y_SNUM","WEIGHT1","WEIGHT2","WEIGHT3","WEIGHT4")]     # get rid of some unneeded variables
+  
+  y3$WEIGHTX<-y3$WEIGHT1  
+  
+  y4<-y3[YAGM_SFREQ>30][,list(WEIGHT=sum(WEIGHTX)),by=c("LENGTH","YEAR")]  ## setting minumal sample size to 30 lengths for Year, area, gear, month strata. # sample size here means haul numbers of fish, not observer sample number. this reduced nrow by about 1000. this line also creates a new variable WEIGHT, which is the sum of WEIGHTX across length and year. i.e., the weight of each length for every year. 
+
+  y5<-y4[,list(TWEIGHT=sum(WEIGHT)),by=c("YEAR")] # TWEIGHT is I think the total weight summed across length bins for every year. sum(TWEIGHT) = 1.9. Shouldn't this sum to 1??
+  y5=merge(y4,y5) # merge the individual length weights with their respective year weights.
+  y5$FREQ<-y5$WEIGHT/y5$TWEIGHT # RESULT! This is the preliminary proportions at length. They sum to 1 for every year. the FREQuency, or relative weight, between length bins to the total annual weight. 
+  y6<-y5[,-c("WEIGHT","TWEIGHT")] # saving a version with just FREQ
+  
+  grid<-data.table::data.table(expand.grid(YEAR=unique(y5$YEAR),LENGTH=1:max(y5$LENGTH))) # make a grid for every year, have a length bin by centemeter from 1 to max length
+  y7.nom<-merge(grid,y6,all.x=TRUE,by=c("YEAR","LENGTH")) # merge the grid with y6, which is the expanded frequency of proportions for each length bin observed for each year.
+y7.nom[is.na(FREQ)]$FREQ <-0                                  # RESULT! ## this is the proportion at length for an aggregated-gear fishery. # The NAs are where there were no observations for that length bin in that year so call them zero. This is what must be input into the assessment model.
+  
+
+```
+
+
+## Isolate the expanded proportions at length
+
+```{r}
+year = 2011
+
+y7[YEAR==year, FREQ] %>% sum()
+
+expanded = y7[YEAR==year, ]
+nominal = y7.nom[YEAR==year, ]
+
+
+```
+
+
+## Density Plot 
+
+
+
+Don't use
+```{r}
+df2 <- data.frame(supp=rep(c("VC", "OJ"), each=3),
+                dose=rep(c("D0.5", "D1", "D2"),2),
+                len=c(6.8, 15, 33, 4.2, 10, 29.5))
+
+ggplot(data=df2, aes(x=dose, y=len, fill=supp)) +
+  geom_bar(stat="identity", position=position_dodge())+
+  geom_text(aes(label=len), vjust=1.6, color="white",
+            position = position_dodge(0.9), size=3.5)+
+  scale_fill_brewer(palette="Paired")+
+  theme_minimal()
+
+
+# mine
+df = data.frame(type = rep(c("Nom", "Exp"), each = nrow(expanded)),
+                bin = rep(expanded$LENGTH, 2),
+                freq = c(nominal$FREQ, expanded$FREQ))
+
+ggplot(data=df, aes(x=bin, y=freq, fill=type)) +
+  geom_bar(stat="identity", position=position_dodge())+
+  # geom_text(aes(label=freq), vjust=1.6, color="white",
+  #           position = position_dodge(0.9), size=3.5)+
+  scale_fill_brewer(palette="Paired")+
+  theme_minimal()
+```
+
+
+Use
+```{r}
+ggplot(data=df, aes(x=bin, y=freq, colour=type)) + 
+  geom_line() +
+  geom_area(aes(fill=type, group=type), alpha = 0.5, position = "identity")
+
+```
+
+
+## Explore 2011 difference
+
+In 2011, there is a big hump in the expanded proportions that doesn't exist in the nominal proportions. Can I identify what data is contributing to this hump? It is between 40-55 cm length bins. Perhaps there are massive hauls that collect these length bins in a disproportionate quantity to the primary length bin (60-75).
+
+
+
+
+```{r}
+y2.2011 = y2[YEAR==2011,]
+
+
+# find the obs with really high weight4
+y2.2011$WEIGHT4 %>% plot
+
+y2.2011$WEIGHT4 %>% max -> temp
+
+y2.2011[WEIGHT4==temp, unique(YAGM_SNUM)] 
+
+
+y3 = y2.2011
+y3$WEIGHTX<-y3$WEIGHT1*y3$WEIGHT2*y3$WEIGHT4 
+
+y3[, WEIGHTX] %>% plot
+abline(h = .00003)
+
+y3[WEIGHTX==max(WEIGHTX),]
+```
+
+
+```{r}
+y3[WEIGHTX>.00003,] -> y3.biggest.weightx
+
+
+  
+## Plot the large values distribution compared to the nominal
+  y4<-y3.biggest.weightx[YAGM_SFREQ>30][,list(WEIGHT=sum(WEIGHTX)),by=c("LENGTH","YEAR")]  ## setting minumal sample size to 30 lengths for Year, area, gear, month strata. # sample size here means haul numbers of fish, not observer sample number. this reduced nrow by about 1000. this line also creates a new variable WEIGHT, which is the sum of WEIGHTX across length and year. i.e., the weight of each length for every year. 
+
+  y5<-y4[,list(TWEIGHT=sum(WEIGHT)),by=c("YEAR")] # TWEIGHT is I think the total weight summed across length bins for every year. sum(TWEIGHT) = 1.9. Shouldn't this sum to 1??
+  y5=merge(y4,y5) # merge the individual length weights with their respective year weights.
+  y5$FREQ<-y5$WEIGHT/y5$TWEIGHT # RESULT! This is the preliminary proportions at length. They sum to 1 for every year. the FREQuency, or relative weight, between length bins to the total annual weight. 
+  y6<-y5[,-c("WEIGHT","TWEIGHT")] # saving a version with just FREQ
+  
+  grid<-data.table::data.table(expand.grid(YEAR=unique(y5$YEAR),LENGTH=1:141)) # make a grid for every year, have a length bin by centemeter from 1 to max length
+  y7.exp.2<-merge(grid,y6,all.x=TRUE,by=c("YEAR","LENGTH")) # merge the grid with y6, which is the expanded frequency of proportions for each length bin observed for each year.
+y7.exp.2[is.na(FREQ)]$FREQ <-0                                  # RESULT! ## this is the proportion at length for an aggregated-gear fishery. # The NAs are where there were no observations for that length bin in that year so call them zero. This is what must be input into the assessment model.
+  
+df2 = df
+df2[df2$type=="Exp", "freq"] = y7.exp.2$FREQ
+
+ggplot(data=df2, aes(x=bin, y=freq, colour=type)) + 
+  geom_line() +
+  geom_area(aes(fill=type, group=type), alpha = 0.5, position = "identity")
+```
+
+Conclusion: these look like the culprits. The high WeightX values over .00003 have a high leverage on the proportions at length where all the WeightX values exceed the nominal proportions by a large degree. This occurs at 40-55cm. 
+
+Let's explore these observations
+
+```{r}
+
+
+summary(y3$WEIGHT1)
+summary(y3.biggest.weightx$WEIGHT1) # higher median - 3x
+
+summary(y3$WEIGHT2)
+summary(y3.biggest.weightx$WEIGHT2) # way higher median - 80x
+
+summary(y3$WEIGHT4)
+summary(y3.biggest.weightx$WEIGHT4) # same median
+
+
+
+# so weight2 has the highest leverage by far. 
+
+```
+
+
+
+## check other combinations of weights to see where the highest are. 
+
+```{r}
+
+y3$WEIGHTX.1.2 = y3$WEIGHT1*y3$WEIGHT2
+y3[, WEIGHTX.1.2] %>% plot
+y3$WEIGHTX.1.4 = y3$WEIGHT1*y3$WEIGHT4
+y3[, WEIGHTX.1.4] %>% plot
+y3$WEIGHTX.2.4 = y3$WEIGHT2*y3$WEIGHT4
+y3[, WEIGHTX.2.4] %>% plot
+# highest all in the same place
+
+# lets plot the distribution of all these compared to nominal.
+# make a function:
+
+# Plot the large values distribution compared to the nominal
+ 
+# testing
+y3.subset = y3
+weightx.name = "WEIGHTX"
+comp_2_distributions = function(y3.subset, weightx.name){
+  y4.intermediate<-y3.subset[YAGM_SFREQ>30]
+  y4 = y4.intermediate[,list(WEIGHT=sum(.SD)), .SDcols = weightx.name, by=c("LENGTH","YEAR")]  ## setting minumal sample size to 30 lengths for Year, area, gear, month strata. # sample size here means haul numbers of fish, not observer sample number. this reduced nrow by about 1000. this line also creates a new variable WEIGHT, which is the sum of WEIGHTX across length and year. i.e., the weight of each length for every year. 
+
+  y5<-y4[,list(TWEIGHT=sum(WEIGHT)),by=c("YEAR")] # TWEIGHT is I think the total weight summed across length bins for every year. sum(TWEIGHT) = 1.9. Shouldn't this sum to 1??
+  y5=merge(y4,y5) # merge the individual length weights with their respective year weights.
+  y5$FREQ<-y5$WEIGHT/y5$TWEIGHT # RESULT! This is the preliminary proportions at length. They sum to 1 for every year. the FREQuency, or relative weight, between length bins to the total annual weight. 
+  y6<-y5[,-c("WEIGHT","TWEIGHT")] # saving a version with just FREQ
+  
+  grid<-data.table::data.table(expand.grid(YEAR=unique(y5$YEAR),LENGTH=1:141)) # make a grid for every year, have a length bin by centemeter from 1 to max length
+  y7.exp.2<-merge(grid,y6,all.x=TRUE,by=c("YEAR","LENGTH")) # merge the grid with y6, which is the expanded frequency of proportions for each length bin observed for each year.
+y7.exp.2[is.na(FREQ)]$FREQ <-0                                  # RESULT! ## this is the proportion at length for an aggregated-gear fishery. # The NAs are where there were no observations for that length bin in that year so call them zero. This is what must be input into the assessment model.
+  
+df2 = df
+df2[df2$type=="Exp", "freq"] = y7.exp.2$FREQ
+
+gp = ggplot(data=df2, aes(x=bin, y=freq, colour=type)) + 
+  geom_line() +
+  geom_area(aes(fill=type, group=type), alpha = 0.5, position = "identity")
+
+return(gp)
+}
+
+comp_2_distributions(y3, "WEIGHTX.1.2")
+comp_2_distributions(y3, "WEIGHTX.1.4")
+comp_2_distributions(y3, "WEIGHTX.2.4")
+comp_2_distributions(y3, "WEIGHT2")
+
+comp_2_distributions(y3, "WEIGHTX")
+
+
+  
+
+```
+
+Conclusion: This shows that weight2 is largely responsible for the exaggerated hump around 40-55cm. This means that there were hauls that contributed a lot to the AGM group. This could mean that there were just few hauls in that group. This may be an important part of the data to represent with another hump because it could be capturing cohort detection better than just using the nominal data. Essentially, this area, gear, month group caught more fish in this length range than the average throughout the year. 
+
+
+
+# Inspect high leverage weightx more
+
+```{r}
+y3.biggest.weightx$AREA2 %>% unique
+y3.biggest.weightx$GEAR %>% unique
+y3.biggest.weightx$MONTH %>% unique
+y3.biggest.weightx$LENGTH %>% summary
+
+par(mfrow = c(2,1))
+plot(y3.biggest.weightx$YAGMH_SNUM, type = "l")
+plot(y3.biggest.weightx$YAGM_SNUM, type = "l")
+
+par(mfrow = c(1,1))
+boxplot(y3.biggest.weightx$LENGTH)
+
+
+# what's special about the biggest one? 
+y3.biggest.weightx[WEIGHTX==max(WEIGHTX), .(AREA2, GEAR, MONTH, YAGMH_SNUM, YAGM_SNUM, LENGTH)]
+y3.biggest.weightx[WEIGHT2>.06, .(AREA2, GEAR, MONTH, YAGMH_SNUM, YAGM_SNUM, LENGTH, SUM_FREQUENCY)]
+y3[WEIGHT2>.06, .(AREA2, GEAR, MONTH, YAGMH_SNUM, YAGM_SNUM, LENGTH, SUM_FREQUENCY)]
+
+
+y3[AREA2==520 & GEAR=="TRW" & MONTH==3, .(AREA2, GEAR, MONTH, YAGMH_SNUM, YAGM_SNUM, LENGTH, SUM_FREQUENCY)]
+
+
+
+```
+
+Conclusion: I don't really know what's special about these area, gear, month combinations. 
+
+
+
+# Plot several years with large weightx leverage in the 40-55 range
+
+include relative weight of weights1,2,4? can add as text on the plots.
+
+```{r}
+# function for calculating final proportions by year
+
+
+
+
+comp_2_distributions2 = function(y2, y7.nom, year, weightx.name){
+  y3 = y2[YEAR==year,]
+  y3$WEIGHTX<-y3$WEIGHT1*y3$WEIGHT2*y3$WEIGHT4 
+  y4.intermediate<-y3[YAGM_SFREQ>30]
+  y4 = y4.intermediate[,list(WEIGHT=sum(.SD)), .SDcols = weightx.name, by=c("LENGTH","YEAR")]  ## setting minumal sample size to 30 lengths for Year, area, gear, month strata. # sample size here means haul numbers of fish, not observer sample number. this reduced nrow by about 1000. this line also creates a new variable WEIGHT, which is the sum of WEIGHTX across length and year. i.e., the weight of each length for every year. 
+
+  y5<-y4[,list(TWEIGHT=sum(WEIGHT)),by=c("YEAR")] # TWEIGHT is I think the total weight summed across length bins for every year. sum(TWEIGHT) = 1.9. Shouldn't this sum to 1??
+  y5=merge(y4,y5) # merge the individual length weights with their respective year weights.
+  y5$FREQ<-y5$WEIGHT/y5$TWEIGHT # RESULT! This is the preliminary proportions at length. They sum to 1 for every year. the FREQuency, or relative weight, between length bins to the total annual weight. 
+  y6<-y5[,-c("WEIGHT","TWEIGHT")] # saving a version with just FREQ
+  
+  grid<-data.table::data.table(expand.grid(YEAR=unique(y5$YEAR),LENGTH=1:141)) # make a grid for every year, have a length bin by centemeter from 1 to max length
+  y7.exp.2<-merge(grid,y6,all.x=TRUE,by=c("YEAR","LENGTH")) # merge the grid with y6, which is the expanded frequency of proportions for each length bin observed for each year.
+y7.exp.2[is.na(FREQ)]$FREQ <-0                                  # RESULT! ## this is the proportion at length for an aggregated-gear fishery. # The NAs are where there were no observations for that length bin in that year so call them zero. This is what must be input into the assessment model.
+
+expanded = y7.exp.2[YEAR==year, ]
+nominal = y7.nom[YEAR==year, ]
+
+df2 = data.frame(type = rep(c("Nominal", "Expanded"), each = nrow(grid)),
+                length_bin = rep(expanded$LENGTH, 2),
+                frequency = c(nominal$FREQ, expanded$FREQ))
+
+
+
+gp = ggplot(data=df2, aes(x=length_bin, y=frequency, colour=type)) + 
+  geom_line() +
+  geom_area(aes(fill=type, group=type), alpha = 0.5, position = "identity") +
+  ggtitle(year) +
+  theme(legend.position = "inside") +
+  theme(legend.position.inside = c(0.8, 0.8))
+
+return(gp)
+}
+
+
+
+comp_2_distributions2(y2, y7.nom, 2009, "WEIGHTX")
+
+purrr::map(2008:2011, ~comp_2_distributions2(y2, y7.nom, .x, "WEIGHTX"))
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Problem? 
+
+
+are hauls with more observations getting more weight in weight2? 
+
+
+For weight2 calculation, the number of fish from all hauls are added up, and the numbers from each haul are divided by the total. But the problem is, each length observation category lists the haul total in YAGMH. So the more observations, the greater the contribution to the total sum. 
+
+```{r}
+
+
+y2.2011.hauls = y2.2011 %>%
+  tidytable::distinct(HAUL_JOIN, .keep_all = T) %>%
+  data.table()
+
+y2.2011.hauls
+
+# well, let's calculate the weights by unique hauls and compare it to what is already done.
+
+
+y2[,sum(WEIGHT2), by=YAGM_SNUM] 
+y2.2011[,sum(WEIGHT2), by=YAGM_SNUM] 
+y2.2011.hauls[,sum(WEIGHT2), by=YAGM_SNUM] 
+
+
+
+# something is wrong here
+y2.2011[AREA2==unique(AREA2)[1] & GEAR==unique(GEAR)[1] & MONTH==unique(MONTH)[1], YAGMH_SNUM] %>% sum()
+
+y2.2011[1, YAGM_SNUM]
+
+# I think if I for example added another observation to a haul, it would change the weight2, which is unintentional. It shouldn't change weight2. 
+
+
+
+
+x = c(3,3,3,4,4)
+
+
+y = c(3,4)/7
+y[1]/y[2]
+
+z = x/sum(x)
+
+z[1]/z[4]
+
+
+```
+
+Conclusion: I don't think there is a problem. Based on the pretend data above, the ratios of the proportions between distinct values are the same whether values are repeated or not. I think this means that the YAGMH values being repeated for all distinct length measurements in a haul isn't an issue. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

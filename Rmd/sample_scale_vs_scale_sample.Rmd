@@ -1,0 +1,46 @@
+---
+title: "Sample scale vs scale sample"
+author: "Brett Stacy"
+date: "2024-06-19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+```
+
+
+# Can we scale a boostrap sample?
+
+
+Can we take a boostrap sample of hauls, then scale it and it will equal the boostrapped scale?
+
+
+
+## Bootstrap then scale
+
+
+Bootstrap the hauls, then apply the scaling factors to 
+
+```{r}
+iters = 10
+haul_size = c(100, 100, 200, 300, 200, 100)
+DT = data.table(hauls = letters[1:6], lengths = c(41:46))
+
+
+r_hauls = purrr::map(1:iters, ~ sample(hauls, replace = T)) # resampled hauls
+
+
+
+
+```
+
+
+
+
+## Bootstrap the scale
+
+
+
+
+

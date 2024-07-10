@@ -1,0 +1,205 @@
+---
+title: "Bootstrap 0.1"
+author: "Brett Stacy"
+date: "2024-06-19"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(data.table)
+library(tidytable)
+library(purrr)
+```
+
+# Data
+
+```{r}
+DT = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
+```
+
+# Functions
+
+
+Copied RSS function from Pcod script:
+
+```{r}
+rss2 = function(lengths_og, lengths_sim){
+  # count the frequency of each observed length and assign them to a grid of length bins
+  grid.temp = data.table(LENGTH = 1:141) # above there is the grid min and max = 1:141
+  freqt = merge(grid.temp, lengths_og[,.(freq_og=.N),by=LENGTH], by="LENGTH", all.x = T) # table with length bins and frequency (number of fish) observed in each bin
+  freqt = merge(freqt, lengths_sim[,.(freq_sim=.N),by=LENGTH], by="LENGTH", all.x = T) %>% # add resampled frequency to table %>% replace NAs with zero 
+    replace(is.na(.), 0)
+  
+  
+  freqt %>% mutate(prop_og = freq_og/sum(freq_og), .keep = "unused") %>% # make a proportions at length table including og and sim data.
+    mutate(prop_sim = freq_sim/sum(freq_sim), .keep = "unused") -> propt
+  
+  
+  # RSS 
+  rss = sum(propt$prop_sim * (1 - propt$prop_sim)) / sum((propt$prop_sim - propt$prop_og)^2)
+  
+  return(rss)
+}
+```
+
+
+
+Function for random sampling that can handle n=1 sample. This is important because there are for e.g. ~19 samples of length 1 in 2022.
+```{r}
+# consider not using ... because Ben never seems to
+comp_sample = function(x, ...) x[sample.int(length(x), ...)]
+```
+
+
+# Bootstrap Serial
+
+
+Year = 2022
+Iters = 25
+boot hauls iters
+boot lengths once
+serial
+
+
+```{r}
+iters = 25
+subDT = DT[YEAR==2022]
+
+# check: do any hauls have 1 length sample?
+sum(subDT[,.N,by=HAUL_JOIN]$N==1) # 19 have 1
+
+
+
+
+# boot hauls iters number of times
+samp_func = function(x) sample(unique(x), size = length(unique(x)), replace = T)
+booted.hauls = purrr::map(1:iters, ~samp_func(subDT$HAUL_JOIN))
+
+# NO: we need to take the 1s out of the boostrapped hauls and store them, then put them directly back into the resampled length comps where their hauls were chosen in the haul resample
+# haul.join.ones = subDT[,.N,by=HAUL_JOIN]$HAUL_JOIN[subDT[,.N,by=HAUL_JOIN]$N==1]
+# booted.hauls[[1]][1]  # perhaps call them NAs for now
+
+
+
+# for each set of booted hauls, boot the length comp samples once
+
+samp_func2 = function(x2) {
+  # purrr::map(x2, .f = function(x1) comp_sample(subDT[HAUL_JOIN == x1 , LENGTH], replace = T)) #!!!! NEED TO INCORPORATE SUM_FREQUENCY!!!!
+  data.table::setkey(subDT, HAUL_JOIN) # setkey speeds it up 2x!
+  purrr::map(x2, .f = function(x1) comp_sample(subDT[x1][["LENGTH"]], replace = T)) 
+} 
+tic()
+booted.hauls %>%
+  purrr::map(.f = samp_func2, .progress = T) -> booted.lengths # this gives a list of length() iters, each a list of length() unique hauls, each a numeric vector of length comps
+toc()
+
+
+
+
+# try it again in parallel using furrr
+# first, change samp_func to use both x2 and DT, and change the way LENGTH is accessed because future() needs characters I think. 
+samp_func3 = function(x2, DT) {
+  data.table::setkey(DT, HAUL_JOIN)
+  # purrr::map(.x = x2, .f = function(x1) comp_sample(DT[x1][["LENGTH"]], replace = T)) # without frequency (incorrect)
+  purrr::map(.x = x2, .f = function(x1) comp_sample(DT[x1][["LENGTH"]] %>% rep(DT[x1][["SUM_FREQUENCY"]]), replace = T)) # with frequency (correct)
+} 
+# testing
+# samp_func3(booted.hauls[[1]], DT = subDT)
+tic()
+booted.hauls %>%
+  purrr::map(.f = function(x2, DT) samp_func3(x2 = x2, DT = subDT)) -> booted.lengths
+  # purrr::map(.f = function(x2, DT = subDT) purrr::map(.x = x2, .f = function(x1) comp_sample(DT[x1][["LENGTH"]], replace = T))) -> booted.lengths # without the samp_func3 function for testing.
+toc()
+### key learnings
+# 1. in samp_func3, setting the key sped things up. I think Ben speeds up by subsetting the DT, not sure which is faster
+# 2. I had to include .f = function() in samp_func3 even though samp_func3 is already a function. Not sure why.
+
+
+
+plan(multisession, workers = 14)
+
+tic()
+booted.hauls %>%
+  furrr::future_map(.f = function(x2, DT) samp_func3(x2 = x2, DT = subDT), .options = furrr_options(seed = TRUE)) -> booted.lengths2 # 13 seconds. (3x faster)
+toc()
+```
+
+
+## Take what I learned from above and make it better
+```{r}
+
+```
+
+
+
+
+```{r}
+# it would be great to name the list of hauls with the haul names. all the below map2 trials failed 
+# purrr::map2(booted.hauls, booted.lengths, function(x,y) names(y)=x)
+# purrr::map2(booted.hauls, booted.lengths, ~ .x)
+# purrr::map2(booted.hauls, booted.lengths, ~ listr::list_rename(.y, .x))
+# purrr::map2(booted.hauls, names(booted.lengths), ~ .y=.x)
+# purrr::imap_chr(booted.hauls, booted.lengths, ~ paste0(.x))
+
+for (i in 1:length(booted.lengths)) { # just hit it with a loop hammer
+  names(booted.lengths[[i]]) = booted.hauls[[i]]
+}
+
+# testing
+# x1 = booted.hauls[[1]][1]
+# temp = subDT[HAUL_JOIN == x1 , LENGTH]
+# sample(temp, replace = T)
+# comp.sample(temp, replace = T)
+# temp[sample.int(length(temp), replace = T)]
+
+
+```
+
+
+
+
+## Apply RSS to resampled legnth comps
+
+Note that this is only practicing RSSing. This is NOT the correct method. The correct method expands the proportions to the fishery level, then RSSs that to each of the expanded bootstrapped versions. 
+
+```{r}
+
+rss_length = function(lengths_og, lengths_sim){
+  # count the frequency of each observed length and assign them to a grid of length bins
+  grid.temp = tidytable::tidytable(LENGTH = 1:141) # above there is the grid min and max = 1:141
+  freqt = merge(grid.temp, lengths_og[,.(freq_og=.N),by=LENGTH], by="LENGTH", all.x = T) # table with length bins and frequency (number of fish) observed in each bin
+  freqt = merge(freqt, lengths_sim[,.(freq_sim=.N),by=LENGTH], by="LENGTH", all.x = T) %>% # add resampled frequency to table %>% replace NAs with zero 
+    replace(is.na(.), 0)
+  
+  
+  freqt %>% tidytable::mutate(prop_og = freq_og/sum(freq_og), .keep = "unused") %>% # make a proportions at length table including og and sim data.
+    tidytable::mutate(prop_sim = freq_sim/sum(freq_sim), .keep = "unused") -> propt
+  
+  
+  # RSS 
+  rss = sum(propt$prop_sim * (1 - propt$prop_sim)) / sum((propt$prop_sim - propt$prop_og)^2)
+  
+  return(rss)
+}
+
+# testing
+test.name = names(booted.lengths[[1]])[1]
+lengths_og = tidytable::tidytable(subDT[HAUL_JOIN==test.name, .(LENGTH)])
+lengths_sim = tidytable::tidytable(LENGTH = booted.lengths[[1]][[test.name]])
+rss_length(lengths_og = lengths_og, lengths_sim = lengths_sim)
+
+
+purrr::map()
+
+```
+
+
+
+
+
+
+
+

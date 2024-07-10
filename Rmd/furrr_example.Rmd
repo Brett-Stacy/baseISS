@@ -1,0 +1,89 @@
+---
+title: "furrr example"
+author: "Brett Stacy"
+date: "2024-07-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = T)
+library(data.table)
+library(tidytable)
+library(purrr)
+library(furrr) # also loads package "future" that includes functions for setting up parallel computing
+library(tictoc)
+```
+
+# Data
+
+Change the file directory to where you downloaded "y2_ebs_pcod_Brett.RDS"
+
+```{r}
+DT = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
+```
+
+# Quick furrr example
+
+furrr contains all the purrr functions, but allows for parallelization. The most straightforward parallelization type is "multisession", where multiple virtual R sessions are initiated to carry out code evaluation in parallel. The number of sessions are user-defined and can be set as the number of cores you have (virtual or physical) minus 1 or 2 for overhead. 
+
+DISADVANTAGES:
+
+  1. The user has to specify the number of workers (cores) to use based on the machine they are using. This will inevitably be clunky and the future use of furrr in a package should therefore be an optional switch, where the default is purrr. 
+  
+  2. The speed gain is not necessarily a multiple of the number of workers you specify. There is overhead processing capacity required to transfer large data sets back and forth between the virtual R sessions, and your primary working session. This is relevant for our purposes and something to consider moving forward.
+
+
+## Functions (I will improve the function names for the package, don't worry)
+```{r}
+# consider not using ... because Ben never seems to
+comp_sample = function(x, ...) x[sample.int(length(x), ...)] # Function for random sampling length comps that can handle n=1 samples. This is important because base::sample does weird stuff when n=1 and there are for e.g., ~19 samples of length 1 in 2022.
+
+
+samp_func = function(x) sample(unique(x), size = length(unique(x)), replace = T) # for resampling hauls
+
+
+samp_func3 = function(x2, DT) { # for resampling length comps
+  data.table::setkey(DT, HAUL_JOIN)
+  purrr::map(.x = x2, .f = function(x1) comp_sample(DT[x1][["LENGTH"]] %>% rep(DT[x1][["SUM_FREQUENCY"]]), replace = T)) 
+} 
+
+```
+
+
+## Bootstrapping length comps 
+
+### Without furrr
+
+```{r}
+iters = 25
+subDT = DT[YEAR==2022]
+
+
+# boot hauls iters number of times
+booted.hauls = purrr::map(1:iters, ~samp_func(subDT$HAUL_JOIN))
+
+
+
+# for each set of booted hauls, boot the length comp samples once
+# without furrr
+tictoc::tic()
+booted.hauls %>%
+  purrr::map(.f = function(x2, DT) samp_func3(x2 = x2, DT = subDT)) -> booted.lengths
+tictoc::toc()
+```
+
+
+
+### With furrr
+
+```{r}
+# with furrr
+future::plan(multisession, workers = 14) # CHANGE THIS TO SUIT YOUR MACHINE AND NEEDS
+tictoc::tic()
+booted.hauls %>%
+  furrr::future_map(.f = function(x2, DT) samp_func3(x2 = x2, DT = subDT), .options = furrr_options(seed = TRUE)) -> booted.lengths2 
+tictoc::toc()
+```
+# Conclusion:
+
+furrr speeds things up about 4-5x with 14 "workers". This is nice, but there is a workers/3 overhead time loss due to large data file transfers. 

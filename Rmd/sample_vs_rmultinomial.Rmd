@@ -1,0 +1,109 @@
+---
+title: "sample() vs rmultinomial()"
+author: "Brett Stacy"
+date: "2024-06-18"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(data.table)
+library(tidyverse)
+```
+
+## base::sample() vs base::rmultinomial()
+
+This document compares the functions sample() and rmultinomial() for the purposes of bootstrapping. Both these functions use a random number generator and can produce a bootstrapped sample set from either a uniform or multinomial distribution. However, sample() cannot accept a single number, where rmultinomial() can. This is relevant to observer data where there exist single sample sizes for hauls in a non-trivial number of hauls. However, rmultinomial() cannot sample without replacement, where sample() can. This is relevant to situations where alternative sampling rates are investigated. 
+
+This document uses idealized simulated data.
+
+Goals:
+
+1.  Demonstrate that the following are equivalent:
+    1.  sample()\*probs, sample(prob = probs), rmultinomial(prob = probs)
+
+```{r, eval=T}
+
+
+### SIDE QUEST ####
+# is sampling from a multinomial with probabilities determined by frequency the same as sample()? if so, can we use the multinomial to resample considering weighitng?
+# in other words, can we use the month weights to control which YAGM strata gets resampled more often?
+
+iters = 10000
+temp.lengths = c(44,45,46,46,46,47,47,48,49,50)
+temp.lengthsDT = data.table(length = temp.lengths)
+s.lengths = purrr::map(1:iters, ~sample(temp.lengths, replace = TRUE)) 
+u.lengths = unique(temp.lengths)
+n.lengths = temp.lengthsDT[, .N]
+probs.lengths = tidytable::count(temp.lengthsDT, length)[,n/sum(n)] 
+s.lengths2 = purrr::map(1:iters, ~sample(u.lengths, size = n.lengths, replace = TRUE, prob = probs.lengths)) 
+
+
+## sample(n)
+# I want to count how many times on average each number shows up in the sampled lengths
+# old habits die hard, loop:
+freq.list = list()
+for (j in 1:length(unique(temp.lengths))) {
+  freq.list[[j]] = rep(NA, iters)
+  for (i in 1:iters) {
+    freq.list[[j]][i] = sum(unique(temp.lengths)[j] == s.lengths[[i]])
+  }
+}
+
+# lapply(freq.list, mean)
+
+
+## sample(probs)
+freq.list2 = list()
+for (j in 1:length(unique(temp.lengths))) {
+  freq.list2[[j]] = rep(NA, iters)
+  for (i in 1:iters) {
+    freq.list2[[j]][i] = sum(unique(temp.lengths)[j] == s.lengths2[[i]])
+  }
+}
+
+# lapply(freq.list2, mean)
+
+
+
+temp.freqDT = tidytable::count(temp.lengthsDT, length)[,setnames(.SD, "n", "true_frequency")] %>%
+  mutate(true_prob = true_frequency/sum(true_frequency), sample_frequency = unlist(lapply(freq.list, mean)), sample_prob = unlist(lapply(freq.list2, mean)))
+# tidytable::summarise(temp.lengthsDT, frequency = tidytable::n(), .by = length) # does the same thing as above but above is cleaner
+
+## rmultinom(prob)
+m.lengths = rmultinom(iters, temp.lengthsDT[,.N], prob = temp.freqDT$true_prob) # random multinomial based on the frequency of length l observed
+
+temp.freqDT %>%
+  mutate(rmultinom_prob = rowMeans(m.lengths)) %>%
+  round(digits = 2) -> temp.freqDT
+
+temp.freqDT
+# great success! this shows that sample() is the same as rmultinomial(), one just uses frequency and the other probabilities
+# this means that we can bootstrap the YAGM by weight for a particular year (YAGM/Y), then bootstrap the hauls (if any) in that YAGM, then lengths as usual.
+# If there aren't any hauls in that YAGM, what happens?
+### END SIDE QUEST ####
+
+
+```
+
+This demonstrates that using sample() with the vector of observations equals sample() with the probability of unique observations and using a sampling size equal to the number of observations. These are also equivalent to using rmultinom() in the same manner as the latter sample() method. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
