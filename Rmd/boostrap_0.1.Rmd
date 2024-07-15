@@ -12,6 +12,8 @@ knitr::opts_chunk$set(echo = F)
 library(data.table)
 library(tidytable)
 library(purrr)
+library(tictoc)
+library(furrr)
 ```
 
 # Data
@@ -128,13 +130,8 @@ toc()
 ```
 
 
-## Take what I learned from above and make it better
-```{r}
 
-```
-
-
-
+## rename the booted length list 
 
 ```{r}
 # it would be great to name the list of hauls with the haul names. all the below map2 trials failed 
