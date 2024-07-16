@@ -1,25 +1,20 @@
 #' Resample length frequency data w/replacement.
 #'
-#' @param lfreq_un expanded length frequency data (one row per sample)
+#' @param resampled_hauls resampled hauls input data table. Data table format input same as length_DT but with only resampled hauls and associated data, plus a unique identifier for resampled HAUL_JOIN called hauljoin_unique
 #'
-#' @return dataframe of resampled length-sex pairs by year, species, and haul
+#' @return data table of resampled length frequencies by YEAR, HAUL_JOIN. Data table format output same as length_DT to be ready for expansion.
 #'
 #' @export
 #'
-boot_length <- function(lfreq_un) {
-
-  # combine sex-length to common id - bootstrap based on year, species, haul then split back apart
-  lfreq_un %>%
-    tidytable::mutate(sex_ln = paste0(sex, "-", length)) %>%
-    tidytable::mutate(sex_ln = sample(sex_ln, .N, replace = TRUE), .by= c(year, species_code, hauljoin)) %>%
-    tidytable::separate(sex_ln, c('sex', 'length'), sep = '-', convert = TRUE) -> .lfreq_un
-  # add combined sex resampled data
-  .lfreq_un %>%
-    tidytable::bind_rows(.lfreq_un %>%
-                           tidytable::mutate(sex = 0))
-
+# TESTING
+resampled_hauls = .joined_hauls
+boot_length = function(resampled_hauls) {
+  resampled_hauls %>%
+    data.table() %>%
+    data.table::setkey(hauljoin_unique) -> test
+    # tidytable::mutate(LENGTH = comp_sample(LENGTH, n = .N), .by = c(YEAR, hauljoin_unique)) # NEED TO CHANGE THIS TO INCLUDE SUM_FREQUENCY!!!
+    tidytable::mutate(test, comp_sample2(test), .by = c(YEAR, hauljoin_unique))
 }
-
 
 
 
@@ -33,7 +28,19 @@ samp_func3 = function(x2, DT) {
 
 
 
+boot_length <- function(lfreq_un) {
 
+  # combine sex-length to common id - bootstrap based on year, species, haul then split back apart
+  lfreq_un %>%
+    tidytable::mutate(sex_ln = paste0(sex, "-", length)) %>%
+    tidytable::mutate(sex_ln = sample(sex_ln, .N, replace = TRUE), .by= c(year, species_code, hauljoin)) %>%
+    tidytable::separate(sex_ln, c('sex', 'length'), sep = '-', convert = TRUE) -> .lfreq_un
+  # add combined sex resampled data
+  .lfreq_un %>%
+    tidytable::bind_rows(.lfreq_un %>%
+                           tidytable::mutate(sex = 0))
+
+}
 
 
 
