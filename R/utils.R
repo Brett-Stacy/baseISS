@@ -11,8 +11,9 @@ comp_sample2 = function(DT) {
   DT %>%
     tidytable::uncount(SUM_FREQUENCY) %>%
     tidytable::mutate(LENGTH = comp_sample(LENGTH, n.samples = .N), .by = c(YEAR, hauljoin_unique)) %>%
-    tidytable::count(LENGTH, name = "SUM_FREQUENCY")
-
+    tidytable::summarise(SUM_FREQUENCY = n(unique(LENGTH)), .by = c(YEAR, hauljoin_unique, LENGTH)) %>%
+    tidytable::left_join(DT) %>%
+    tidytable::drop_na() # LEFT OFF HERE 7/16 1:54.
 
 
 }
