@@ -14,14 +14,15 @@ boot_length = function(resampled_hauls) {
     data.table::setkey(hauljoin_unique) -> .temp_DT
 
   .temp_DT %>%
-      tidytable::uncount(SUM_FREQUENCY) %>%
-      tidytable::mutate(LENGTH = comp_sample(LENGTH, n.samples = .N), .by = c(YEAR, hauljoin_unique)) %>%
-      tidytable::summarise(SUM_FREQUENCY = n(unique(LENGTH)), .by = c(YEAR, hauljoin_unique, LENGTH)) -> .resampled_lengths
+    tidytable::uncount(SUM_FREQUENCY) %>%
+    tidytable::mutate(LENGTH = comp_sample(LENGTH, n.samples = .N), .by = c(YEAR, hauljoin_unique)) %>%
+    tidytable::summarise(SUM_FREQUENCY = n(unique(LENGTH)), .by = c(YEAR, hauljoin_unique, LENGTH)) -> .resampled_lengths
 
   .temp_DT %>%
-      tidytable::distinct(YEAR, hauljoin_unique, .keep_all = T) %>%
-      tidytable::select(-LENGTH, -SUM_FREQUENCY) %>%
-      tidytable::right_join(.resampled_lengths)
+    tidytable::distinct(YEAR, hauljoin_unique, .keep_all = T) %>%
+    tidytable::select(-LENGTH, -SUM_FREQUENCY) %>%
+    tidytable::right_join(.resampled_lengths) %>%
+    tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YAGMH_SFREQ)
 }
 
 
