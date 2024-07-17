@@ -6,7 +6,7 @@
 
 # Load in necessary EBS Pcod data
 og_lf_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
-# Need a data table with lengths and weightings.
+
 
 # for reference:
 colnames(og_lf_data) #  "SPECIES"       "YEAR"          "AREA2"         "GEAR"          "MONTH"         "CRUISE"        "VES_AKR_ADFG"  "HAUL_JOIN"     "LENGTH"        "YAGMH_STONS"   "YAGMH_SNUM"
@@ -77,9 +77,13 @@ boot_length(.joined_hauls) -> .joined_lengths
 
 
 
-# Expand bootstrapped population
+# Expand bootstrapped population once
 boot1_l_props = expand_length_props(.joined_lengths)
 
+
+
+# Play with rss function once
+rss(og_l_props[YEAR==2022, FREQ], boot1_l_props[YEAR==2022, FREQ])
 
 
 
