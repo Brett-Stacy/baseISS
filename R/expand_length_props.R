@@ -12,7 +12,7 @@
 
 
 # TESTING
-length_DT = og_lf_data
+# length_DT = og_lf_data
 expand_length_props = function(length_DT) {
 
 

@@ -72,8 +72,13 @@ og_lf_data %>%
 
 
 # Boot lengths
-boot_length(.joined_hauls)
+boot_length(.joined_hauls) -> .joined_lengths
 
+
+
+
+# Expand bootstrapped population
+boot1_l_props = expand_length_props(.joined_lengths)
 
 
 
