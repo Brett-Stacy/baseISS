@@ -14,7 +14,7 @@
 #' @export
 #'
 # TESTING
-iters = 1
+iters = 10
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
 yrs = 2021
 boot_thl = TRUE
@@ -29,8 +29,46 @@ fishery_iss <- function(iters = 1,
                                     boot_thl = FALSE)
 
 
+  # run resampling iterations ----
+  rr <- purrr::map(1:iters, ~fishery_length_props(lfreq_data = lfreq_data,
+                                         yrs = yrs,
+                                         boot_thl = boot_thl))
+
+  r_length <- base::do.call(mapply, c(base::list, rr, SIMPLIFY = FALSE))$length %>% # reverse iterations[[type]] to type[[iterations]], i.e., to length[[1]]
+    tidytable::map_df(~base::as.data.frame(.x), .id = "sim") # over all iterations (list elements), map the data frame function to reduce the list to one combined data frame, creating a new column, .id = "sim". tidytable::map_df forces a tidytable class to result. The return is one long table of length = years x iterations x #lengthbins
 
 
+  # compute statistics ----
+  ## skip intermediaries ----
+  lfreq_data -> .lfreq_data
 
+  ## now get statistics ----
+  out_stats <- compute_stats(r_age, oga, r_length, ogl, .specimen_data, .lfreq_data)
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
