@@ -12,6 +12,11 @@
 iss_length <- function(rss_length,
                        lfreq_data) {
 
-
+  rss_length %>%
+    tidytable::summarise(iss = psych::harmonic.mean(rss, na.rm = TRUE, zero = FALSE),
+                         .by = c(YEAR)) %>%
+    # add nominal sample size (nss) and number of hauls (nhls)
+    tidytable::left_join(lfreq_data %>%
+                           tidytable::summarise(nss = sum(SUM_FREQUENCY), nhls = length(unique(HAUL_JOIN)), .by = YEAR))
 
 }
