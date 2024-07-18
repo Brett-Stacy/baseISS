@@ -24,7 +24,7 @@ comp_stats <- function(sim_length_props,
 
   # length comps:
   # compute harmonic mean of iterated realized sample size, which is the input sample size (iss)
-  .iss_length <- iss_length(.rss_length, lfreq_data, survey_region)
+  .iss_length <- iss_length(.rss_length, lfreq_data)
 
   # compute average relative bias in pop'n estimates (avg relative bias across length)
   .bias_length <- bias_length(r_length, ogl)
