@@ -2,11 +2,12 @@
 #'
 #' @description
 #' Follows loosely srvy_comps.R from surveyISS package.
+#'
 #' @param lfreq_data  length frequency input dataframe
 #' @param yrs any year filter >= (default = NULL)
 #' @param boot_thl Boolean. Resample trips, hauls, and lengths w/replacement? (default = FALSE). FALSE will return og proportions-at-length
 #'
-#' @return List of length number of bootstrap iterations with dataframes of annual population proportions-at-length .lpop.
+#' @return List of a dataframe of annual population proportions-at-length .lpop.
 #'
 #' @export
 #'
