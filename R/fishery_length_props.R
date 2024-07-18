@@ -1,7 +1,7 @@
 #' Resample data and compute proportions-at-length population expansion
 #'
 #' @description
-#' Follows loosly srvy_comps.R from surveyISS package.
+#' Follows loosely srvy_comps.R from surveyISS package.
 #' @param lfreq_data  length frequency input dataframe
 #' @param yrs any year filter >= (default = NULL)
 #' @param boot_thl Boolean. Resample trips, hauls, and lengths w/replacement? (default = FALSE). FALSE will return og proportions-at-length
@@ -50,13 +50,13 @@ fishery_length_props <- function(lfreq_data,
 
     # Boot lengths
     .joined_hauls %>%
-      boot_length() -> .joined_lengths
+      boot_length() -> .lfreq # this is intentionally named the same as prior to the conditional statement to be used equivalently in the expanded_length_props() function as a non-bootstrapped data table.
 
   }
 
 
   # calculate population proportions-at-length ----
-  .joined_lengths %>%
+  .lfreq %>%
       expand_length_props() -> .lpop
 
 
