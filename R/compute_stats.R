@@ -3,8 +3,8 @@
 #' @description
 #' Wrapper function to compute statistics of bootstrap resampling of length composition.
 #'
-#' @param r_length list of replicated abundance at length
-#' @param ogl original abundance at length (computed with data that has not been resampled)
+#' @param sim_length_props list of replicated abundance at length
+#' @param og_length_props original abundance at length (computed with data that has not been resampled)
 #' @param lfreq_data length frequency input dataframe
 #'
 #' @return list of dataframes for realized sample size by replicate (.rss_length for length composition),
@@ -13,12 +13,13 @@
 #'
 #' @export
 #'
-comp_stats <- function(r_length,
-                       ogl,
+comp_stats <- function(sim_length_props,
+                       og_length_props,
                        lfreq_data){
 
 
-  rss_length(r_length, ogl) -> .rss_length
+
+  .rss_length = rss_length(sim_length_props = sim_length_props, og_length_props = og_length_props)
 
 
   # length comps:

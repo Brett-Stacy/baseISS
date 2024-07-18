@@ -2,7 +2,8 @@
 #'
 #' @description
 #' Bootstrap data sources to replicate EBS Pcod fishery observer measurements of length composition
-#' for computation of input sample size. Follows loosely srvy_iss.R from surveyISS package.
+#' for computation of input sample size.
+#' Follows loosely srvy_iss.R from surveyISS package.
 #'
 #' @param iters number of iterations
 #' @param lfreq_data  length frequency input dataframe
@@ -24,9 +25,12 @@ fishery_iss <- function(iters = 1,
                         boot_thl = FALSE){
 
   # get original population proportions-at-length values ----
-  og_l_props = fishery_length_props(lfreq_data = lfreq_data,
+  og_length_props = fishery_length_props(lfreq_data = lfreq_data,
                                     yrs = yrs,
                                     boot_thl = FALSE)
+  og_length_props$length %>% # put in the same format as sim_length_props below to be able to join them in rss
+    tidytable::tidytable() %>%
+    tidytable::rename(og_FREQ = FREQ) -> .og_length_props # rename with og_ prefix to distinguish from sim data when joining later.
 
 
   # run resampling iterations ----
@@ -34,8 +38,9 @@ fishery_iss <- function(iters = 1,
                                          yrs = yrs,
                                          boot_thl = boot_thl))
 
-  r_length <- base::do.call(mapply, c(base::list, rr, SIMPLIFY = FALSE))$length %>% # reverse iterations[[type]] to type[[iterations]], i.e., to length[[1]]
-    tidytable::map_df(~base::as.data.frame(.x), .id = "sim") # over all iterations (list elements), map the data frame function to reduce the list to one combined data frame, creating a new column, .id = "sim". tidytable::map_df forces a tidytable class to result. The return is one long table of length = years x iterations x #lengthbins
+  sim_length_props <- base::do.call(mapply, c(base::list, rr, SIMPLIFY = FALSE))$length %>% # reverse iterations[[type]] to type[[iterations]], i.e., to length[[1]]
+    tidytable::map_df(~base::as.data.frame(.x), .id = "sim") %>% # over all iterations (list elements), map the data frame function to reduce the list to one combined data frame, creating a new column, .id = "sim". tidytable::map_df forces a tidytable class to result. The return is one long table of length = years x iterations x #lengthbins
+    tidytable::rename(sim_FREQ = FREQ) -> .sim_length_props
 
 
   # compute statistics ----
@@ -43,7 +48,7 @@ fishery_iss <- function(iters = 1,
   lfreq_data -> .lfreq_data
 
   ## now get statistics ----
-  out_stats <- compute_stats(r_age, oga, r_length, ogl, .specimen_data, .lfreq_data)
+  out_stats <- compute_stats(.sim_length_props, .og_length_props, .lfreq_data)
 
 }
 
