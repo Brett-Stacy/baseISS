@@ -15,10 +15,10 @@
 #' @export
 #'
 # TESTING
-iters = 10
-lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
-yrs = 2021
-boot_thl = TRUE
+# iters = 10
+# lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
+# yrs = 2021
+# boot_thl = TRUE
 fishery_iss <- function(iters = 1,
                         lfreq_data,
                         yrs = NULL,
@@ -49,6 +49,8 @@ fishery_iss <- function(iters = 1,
 
   ## now get statistics ----
   out_stats <- compute_stats(.sim_length_props, .og_length_props, .lfreq_data)
+
+  return(out_stats)
 
 }
 
