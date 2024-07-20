@@ -1,6 +1,6 @@
-iters = 10
+iters = 100
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
-yrs = 2015
+yrs = NULL
 boot_thl = TRUE
 
 
