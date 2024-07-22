@@ -6,8 +6,6 @@
 #'
 #' @export
 #'
-# TESTING
-# resampled_hauls = .joined_hauls
 boot_length = function(resampled_hauls) {
   resampled_hauls %>%
     data.table() %>%
@@ -24,8 +22,8 @@ boot_length = function(resampled_hauls) {
     tidytable::right_join(.resampled_lengths) %>%
     tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YAGMH_SFREQ)
 }
-
-
+# TESTING
+# resampled_hauls = .joined_hauls
 
 
 

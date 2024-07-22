@@ -1,18 +1,12 @@
-
-
-
-
-
-# expand_length_props = function(y2) - probably call "y2" whatever Ben calls it - the length frequency data.
-# this is the function that takes length frequency data and expands it into fished population proportions at length using the weightings
-# from the relevent data. The relevent data can be the og data or bootstrapped data.
-
-
-
-
-
-# TESTING
-# length_DT = og_lf_data
+#' Expand sample level proportions-at-length to population level
+#'
+#' @description
+#' takes length frequency data and expands it into fished population proportions at length using the weightings from the relevant data. The relevant data can be the og data or bootstrapped data.
+#'
+#' @param length_DT data table of length frequency data in the form of EBS Pcod y2 object
+#'
+#' @export
+#'
 expand_length_props = function(length_DT) {
 
 
@@ -50,7 +44,8 @@ expand_length_props = function(length_DT) {
 }
 
 
-
+# TESTING
+# length_DT = og_lf_data
 
 
 

@@ -11,10 +11,6 @@
 #'
 #' @export
 #'
-# TESTING:
-lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
-yrs = 2021
-boot_thl = TRUE
 fishery_length_props <- function(lfreq_data,
                        yrs = NULL,
                        boot_thl = FALSE) {
@@ -65,3 +61,8 @@ fishery_length_props <- function(lfreq_data,
   list(length = .lpop)
 
 }
+
+# TESTING:
+# lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
+# yrs = 2021
+# boot_thl = TRUE

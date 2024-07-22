@@ -7,7 +7,7 @@
 #' @param sim_length_props list of replicated abundance at length
 #' @param og_length_props original abundance at length
 #'
-#' @export rss_length
+#' @export
 #'
 rss_length = function(sim_length_props,
                       og_length_props) {
