@@ -42,7 +42,7 @@ fishery_length_props <- function(lfreq_data,
       tidytable::mutate(hauljoin_unique = .I) -> .r_hauls # resampled hauls
 
     .lfreq %>% # Get a DT that looks like og_lf_data but consists only of .r_hauls.
-      right_join(.r_hauls) -> .joined_hauls
+      tidytable::right_join(.r_hauls) -> .joined_hauls
 
 
     # Boot lengths
