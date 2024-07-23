@@ -8,7 +8,7 @@
 #'
 boot_haul = function(resampled_trips) {
   resampled_trips %>%
-    tidytable::select(-CRUISE) %>%
+    tidytable::select(-TRIP_JOIN) %>%
     tidytable::mutate(HAUL_JOIN= sample(HAUL_JOIN, .N, replace = TRUE), .by = YEAR)
 }
 

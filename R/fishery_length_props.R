@@ -31,7 +31,7 @@ fishery_length_props <- function(lfreq_data,
     .lfreq %>%
       boot_trip() -> .r_trips # resampled trips
 
-    .lfreq[, unique(HAUL_JOIN), by = .(YEAR, CRUISE)] %>% # turn og data into a tidytable and condense to the unique YEAR, CRUISE, HAUL_JOIN
+    .lfreq[, unique(HAUL_JOIN), by = .(YEAR, TRIP_JOIN)] %>% # turn og data into a tidytable and condense to the unique YEAR, CRUISE, HAUL_JOIN
       tidytable::rename(HAUL_JOIN = V1) %>% # gives only resampled trips and associated hauls. Hauls are repeated if resampled trips are repeated. ready for boot_haul.
       tidytable::right_join(.r_trips) -> .joined_trips
 
