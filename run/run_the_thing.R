@@ -9,6 +9,10 @@ tictoc::tic()
 fishery_iss(iters = iters,
             lfreq_data = lfreq_data,
             yrs = yrs,
-            boot_thl = boot_thl)
+            boot_thl = boot_thl) -> .output
 tictoc::toc()
+
+
+saveRDS(.output, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/ISS_output_to_email_7_23_24.RDS")
+
 
