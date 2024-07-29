@@ -4,13 +4,15 @@ iters = 1
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett_TRIP_STRATA.RDS")
 yrs = NULL
 boot_thl = TRUE
+expand_by_sampling_strata = TRUE
 
 
 tictoc::tic()
 fishery_iss(iters = iters,
             lfreq_data = lfreq_data,
             yrs = yrs,
-            boot_thl = boot_thl) -> .output
+            boot_thl = boot_thl,
+            expand_by_sampling_strata = expand_by_sampling_strata) -> .output
 tictoc::toc()
 
 
