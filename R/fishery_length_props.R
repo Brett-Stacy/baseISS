@@ -6,6 +6,7 @@
 #' @param lfreq_data  length frequency input dataframe
 #' @param yrs any year filter >= (default = NULL)
 #' @param boot_thl Boolean. Resample trips, hauls, and lengths w/replacement? (default = FALSE). FALSE will return og proportions-at-length
+#' @param expand_by_sampling_strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #'
 #' @return List of a dataframe of annual population proportions-at-length .lpop.
 #'
@@ -13,7 +14,8 @@
 #'
 fishery_length_props <- function(lfreq_data,
                        yrs = NULL,
-                       boot_thl = FALSE) {
+                       boot_thl = FALSE,
+                       expand_by_sampling_strata = FALSE) {
   # globals ----
   # year switch
   if (is.null(yrs)) yrs <- 0
@@ -27,7 +29,7 @@ fishery_length_props <- function(lfreq_data,
 
   # randomize trips, hauls, and lengths ----
   if(isTRUE(boot_thl)) {
-    # Boot trips (CRUISE for now)
+    # Boot trips
     .lfreq %>%
       boot_trip() -> .r_trips # resampled trips
 
@@ -54,7 +56,7 @@ fishery_length_props <- function(lfreq_data,
 
   # calculate population proportions-at-length ----
   .lfreq %>%
-      expand_length_props() -> .lpop
+      expand_length_props(expand_by_sampling_strata = expand_by_sampling_strata) -> .lpop
 
 
   # return as list ----
@@ -62,7 +64,4 @@ fishery_length_props <- function(lfreq_data,
 
 }
 
-# TESTING:
-# lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
-# yrs = 2021
-# boot_thl = TRUE
+

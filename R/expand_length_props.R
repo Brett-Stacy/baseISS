@@ -9,13 +9,13 @@
 #' @export
 #'
 expand_length_props = function(length_DT,
-                               expand_by_sampling_strata = TRUE) {
+                               expand_by_sampling_strata = FALSE) {
 
 
   # Add in sampling strata weighting functionality ----
 
   if(isTRUE(expand_by_sampling_strata)){
-    length_DT
+    print("expand by sampling strata activated")
   }
 
 
@@ -54,7 +54,7 @@ expand_length_props = function(length_DT,
 
 
 # TESTING
-# length_DT = og_lf_data
+# length_DT = lfreq_data
 
 
 

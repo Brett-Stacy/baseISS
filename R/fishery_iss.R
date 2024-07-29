@@ -24,8 +24,8 @@ fishery_iss <- function(iters = 1,
   # get original population proportions-at-length values ----
   og_length_props = fishery_length_props(lfreq_data = lfreq_data,
                                     yrs = yrs,
-                                    boot_thl = FALSE,
-                                    expand_by_sampling_strata = FALSE)
+                                    boot_thl = FALSE, # overrides any global environment assignment
+                                    expand_by_sampling_strata = FALSE) # overrides any global environment assignment
   og_length_props$length %>% # put in the same format as sim_length_props below to be able to join them in rss
     tidytable::tidytable() %>%
     tidytable::rename(og_FREQ = FREQ) -> .og_length_props # rename with og_ prefix to distinguish from sim data when joining later.
@@ -34,8 +34,8 @@ fishery_iss <- function(iters = 1,
   # run resampling iterations ----
   rr <- purrr::map(1:iters, ~fishery_length_props(lfreq_data = lfreq_data,
                                          yrs = yrs,
-                                         boot_thl = boot_thl,
-                                         expand_by_sampling_strata = expand_by_sampling_strata))
+                                         boot_thl = boot_thl, # set to the global environmental assignment
+                                         expand_by_sampling_strata = expand_by_sampling_strata)) # set to the global environmental assignment
 
   # run resampling iterations with furrr ----
   # not working yet. some error in passing function arguements up the chain.
