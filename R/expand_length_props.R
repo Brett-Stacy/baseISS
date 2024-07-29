@@ -13,9 +13,17 @@ expand_length_props = function(length_DT,
 
 
   # Add in sampling strata weighting functionality ----
-
   if(isTRUE(expand_by_sampling_strata)){
     print("expand by sampling strata activated")
+    length_DT %>%
+      tidytable::summarise(YAGMH_SNUM, .by = c(YEAR, SAMPLING_STRATA_NAME, hauljoin_unique)) %>% # this will currently only work for bootstrapped lengths because those length_DT objects have hauljoin_unique
+      tidytable::distinct() %>%
+      tidytable::mutate(YS_TNUM = base::sum(YAGMH_SNUM), .by = c(YEAR, SAMPLING_STRATA_NAME)) %>%
+      tidytable::summarise(YS_TNUM, .by = c(YEAR, SAMPLING_STRATA_NAME)) %>%
+      tidytable::distinct() %>%
+      tidytable::mutate(WEIGHT_YS = YS_TNUM/base::sum(YS_TNUM), .by = YEAR) %>%
+      tidytable::right_join(length_DT) %>%
+      tidytable::mutate(WEIGHT1 = WEIGHT1*WEIGHT_YS) -> length_DT
   }
 
 
@@ -54,7 +62,7 @@ expand_length_props = function(length_DT,
 
 
 # TESTING
-# length_DT = lfreq_data
+# length_DT = .lfreq
 
 
 

@@ -18,7 +18,7 @@ fishery_length_props <- function(lfreq_data,
                        expand_by_sampling_strata = FALSE) {
   # globals ----
   # year switch
-  if (is.null(yrs)) yrs <- 0
+  if (is.null(yrs)) yrs <- 0 # when NULL, drop yrs to 0 so it picks up all possible years
 
 
   # prep data ----

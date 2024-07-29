@@ -1,4 +1,4 @@
-iters = 1
+iters = 2
 # lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
 # lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett_TRIP.RDS")
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett_TRIP_STRATA.RDS")
@@ -16,6 +16,6 @@ fishery_iss(iters = iters,
 tictoc::toc()
 
 
-saveRDS(.output, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/ISS_output_to_email_7_23_24.RDS")
+# saveRDS(.output, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/ISS_output_to_email_7_23_24.RDS")
 
 
