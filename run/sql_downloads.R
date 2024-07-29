@@ -5,7 +5,12 @@
 
 
 
+## Functions ----
 
+sql_run <- function(database, query) {
+  query = paste(query, collapse = "\n")
+  DBI::dbGetQuery(database, query, as.is=TRUE, believeNRows=FALSE)
+}
 
 
 
@@ -35,6 +40,7 @@
 
 #### Take 2, manual trip join
 # let's try to make a unique trip join identifier using Jen's suggested combination of Cruise, Permit, and trip_seq
+lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
 lfreq2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test2.sql') # test2.sql includes Cruise, Permit, and trip_seq
 
 temp2=sql_run(akfin, lfreq2)
@@ -51,9 +57,31 @@ new_lfreq_data2 = tidytable::left_join(lfreq_data, .joinDT2) # this looks better
 saveRDS(new_lfreq_data2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett_TRIP.RDS")
 
 
+
+
+
+
+
+
+
+
 #### Incorporate sampling strata column
+# for use in bootstrapping within strata
+lfreq_data_trip = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett_TRIP.RDS")
+sampling_strata = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/sampling_strata.sql') # includes haul_join and sampling_strata
+
+temp_sampling_strata = sql_run(akfin, sampling_strata)
+joinDT_temp = data.table::setDT(temp_sampling_strata)
+
+# join it with the input data frame for baseISS
+new_lfreq_data3 = tidytable::left_join(lfreq_data, joinDT_temp) # this looks better
+
+# save the new data table with TRIP_JOIN added
+saveRDS(new_lfreq_data3, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett_TRIP_STRATA.RDS")
 
 
+# play with it
+new_lfreq_data3[,.N, by=.(SAMPLING_STRATA_NAME, YEAR)] %>% print(n=100)
 
 
 

@@ -4,10 +4,17 @@
 #' takes length frequency data and expands it into fished population proportions at length using the weightings from the relevant data. The relevant data can be the og data or bootstrapped data.
 #'
 #' @param length_DT data table of length frequency data in the form of EBS Pcod y2 object
+#' @param by_sampling_strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #'
 #' @export
 #'
-expand_length_props = function(length_DT) {
+expand_length_props = function(length_DT,
+                               by_sampling_strata = TRUE) {
+
+
+  # Add in sampling strata functionality ----
+
+
 
 
   # Expansion copied from EBS Pcod code 2023 ----
