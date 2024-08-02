@@ -38,7 +38,7 @@ sql_run <- function(database, query) {
 # # well that din't work because there are a bunch of trip_join values that are just "T"
 
 
-#### Take 2, manual trip join
+#### Take 2, manual trip join ----
 # let's try to make a unique trip join identifier using Jen's suggested combination of Cruise, Permit, and trip_seq
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
 lfreq2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test2.sql') # test2.sql includes Cruise, Permit, and trip_seq
@@ -65,25 +65,72 @@ saveRDS(new_lfreq_data2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHu
 
 
 
-#### Incorporate sampling strata column
+#### Incorporate sampling strata column ----
 # for use in bootstrapping within strata
-lfreq_data_trip = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett_TRIP.RDS")
+lfreq_data_trip = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_ebs_pcod_Brett_TRIP.RDS")
 sampling_strata = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/sampling_strata.sql') # includes haul_join and sampling_strata
 
 temp_sampling_strata = sql_run(akfin, sampling_strata)
 joinDT_temp = data.table::setDT(temp_sampling_strata)
 
 # join it with the input data frame for baseISS
-new_lfreq_data3 = tidytable::left_join(lfreq_data, joinDT_temp) # this looks better
+new_lfreq_data3 = tidytable::left_join(lfreq_data_trip, joinDT_temp)
 
-# save the new data table with TRIP_JOIN added
-saveRDS(new_lfreq_data3, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett_TRIP_STRATA.RDS")
+# save the new data table with SAMPLING_STRATA_... added
+saveRDS(new_lfreq_data3, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_ebs_pcod_Brett_TRIP_STRATA2.RDS") # this is 2 because for the first one, I forgot to rename lfreq_data to lfreq_data_trip in the left_join.
 
 
 # play with it
 new_lfreq_data3[,.N, by=.(SAMPLING_STRATA_NAME, YEAR)] %>% print(n=100)
 
 
+
+
+
+
+
+
+
+
+
+#### Steve's EBS Pcod 2023 y2 object - add trip join ----
+
+lfreq_data_steve = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve.RDS")
+# inspect this a bit
+lfreq_data_steve[, unique(YEAR)] # years in the data 1977-2023
+lfreq_data_steve[,.N, by = .(YEAR, HAUL_JOIN)][,.N, by = .(YEAR)] # number of unique hauls every year
+# According to this line of SQL code in dom_length_port_C.sql: concat('P', TO_CHAR(obsint.debriefed_length.port_join)) AS haul_join,
+# there is a "port_join" column that is turned into "haul_join", designated with a "P" prefix.
+
+
+lfreq_data_steve %>%
+  tidytable::tidytable() %>%
+  tidytable::mutate(join_prefix = substr(HAUL_JOIN, 1, 1)) -> .temp # new column of prefix P or H
+
+.temp %>% # how many Ps and Hs are there?
+  tidytable::count(join_prefix)
+
+.temp[join_prefix=="P",] %>% # there are like 200 observations per port_join here. This means port_join represents a delivery right?
+  print(n=200)
+.temp[join_prefix=="P", summary(YAGMH_SFREQ)] # median is 120
+.temp[join_prefix=="P", unique(YAGMH_SFREQ)] %>% hist()
+
+
+
+lfreq2.2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test3.sql') # test3.sql adds YEAR column
+
+temp2.2=sql_run(akfin, lfreq2.2)
+joinDT2.2 = data.table::setDT(temp2.2)
+
+joinDT2.2 %>%
+  tidytable::mutate(TRIP_JOIN = paste(CRUISE, PERMIT, TRIP_SEQ, sep = "-")) %>%
+  tidytable::select(HAUL_JOIN, TRIP_JOIN) -> .joinDT2.2
+
+# join it with the input data frame for baseISS
+new_lfreq_data2 = tidytable::left_join(lfreq_data_steve, .joinDT2.2) #
+
+# save the new data table with TRIP_JOIN added
+saveRDS(new_lfreq_data2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP.RDS")
 
 
 

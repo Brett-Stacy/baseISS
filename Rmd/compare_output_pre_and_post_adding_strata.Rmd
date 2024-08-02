@@ -1,0 +1,156 @@
+---
+title: "Compare output pre and post adding strata"
+author: "Brett Stacy"
+date: "2024-07-30"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+```
+
+# Data
+
+
+
+```{r}
+out1 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/ISS_output_to_email_7_23_24.RDS")
+
+out2 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/ISS_1000iters_output_7_30_24.RDS")
+
+```
+
+
+
+
+# Output
+
+## Time series of sample size
+
+```{r}
+
+par(mfrow = c(3,1), mar = c(2, 4.5, .5, .5))
+plot(out1$iss_length$YEAR, out1$iss_length$nss, type = "l", ylab = "nominal sample size", xlab = "", cex.lab = 1.3) 
+
+
+plot(out1$iss_length$YEAR, out1$iss_length$nhls, type = "l", ylab = "number of hauls", xlab = "", col = "black", cex.lab = 1.3) 
+
+plot(out1$iss_length$YEAR, out1$iss_length$iss, type = "l", ylab = "ISS", xlab = "year", cex.lab = 1.3) 
+lines(out2$iss_length$YEAR, out2$iss_length$iss, col = "blue")
+legend("topleft", lty = c(1,1), col = c("black", "blue"), legend = c("without sampling strata", "with sampling strata"))
+
+
+
+m1 = lm(out2$iss_length$nss ~ out2$iss_length$iss)
+# summary(m1)
+
+m2 = lm(out2$iss_length$nhls ~ out2$iss_length$iss)
+# summary(m2)
+
+
+
+
+```
+
+
+
+## Boxplots of RSS
+
+
+```{r}
+df = data.frame(rss = out2$rss_length$rss, year = as.factor(out2$rss_length$YEAR))
+# plot(df$year, df$rss, xaxt = "n", yaxt = "n", ylab = "", xlab = "")
+plot(df$year, df$rss, ylab = "rss", cex.lab = 1.3)
+```
+
+
+
+## All together
+
+```{r, fig.height=8}
+# par(mfrow = c(4,1), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
+par(mfrow = c(4,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
+plot(out1$iss_length$YEAR, out1$iss_length$nss, type = "l", ylab = "nominal sample size", xlab = "", cex.lab = 1.3, xaxt = "n") 
+
+
+plot(out1$iss_length$YEAR, out1$iss_length$nhls, type = "l", ylab = "number of hauls", xlab = "", col = "black", cex.lab = 1.3, xaxt = "n")
+
+plot(df$year, df$rss, ylab = "RSS", cex.lab = 1.3, xaxt = "n")
+
+plot(out1$iss_length$YEAR, out1$iss_length$iss, type = "l", ylab = "ISS", xlab = "year", cex.lab = 1.3) 
+lines(out2$iss_length$YEAR, out2$iss_length$iss, col = "blue")
+legend("topleft", lty = c(1,1), col = c("black", "blue"), legend = c("without sampling strata", "with sampling strata"))
+
+
+
+
+
+
+
+
+
+```
+
+
+
+
+
+
+```{r from my phd, eval=F}
+box.plot.status.proj2 = function(proj.raw, ...){
+  sta_err = list()
+  for(i in 1:length(proj.raw)){
+    sta_err[[i]] = SSB.err.rel.proj(output = proj.raw[[i]], final.year.ind = grep("SSB", names(proj.raw[[i]]$M.TR.))[length(grep("SSB", names(proj.raw[[i]]$M.TR.)))])
+  }
+  
+  # temp.ass.names = as.character(1:length(sta_err))
+  # temp.ass.names = 1:length(sta_err)
+  temp.ass.names = as.character(assessment_years)
+  df = data.frame(error = c(unlist(sta_err)), type = as.factor(c(sapply(temp.ass.names, function(x) rep(x, 1000)))))
+  
+  # plot(df$type, df$error, ylim = c(-0.5, .5), xaxt = "n", yaxt = "n", ylab = "", xlab = "", ...)
+  plot(df$type, df$error, xaxt = "n", yaxt = "n", ylab = "", xlab = "", ...)
+  abline(h = 0, lwd = 0.5, lty = 2, col = "black")
+  
+  abline(v = 13, lty = 2, lwd = 0.5)
+
+}
+
+
+
+par(mfrow = c(2,3), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
+  for (i in c(2,4,6)) {
+    box.plot.status.proj2(out.projections.raw.I$`0.6`[[i]], ylim = c(-0.35, .8))
+    text(2, .75, plot.letters[i/2], cex = subplot.letter.cex)
+    if(i %in% c(1,2)) axis(side = 2, las = 2)
+  }
+  for (i in c(2,4,6)) {
+    box.plot.status.proj2(out.projections.raw.R$`0.6`[[i]], ylim = c(-0.36, .12))
+    text(2, .1, plot.letters[i/2+3], cex = subplot.letter.cex)
+    if(i %in% c(2,4,6)) axis(side = 1, at = c(1, 7, 13, 19), labels = c(1996, 2002, 2008, 2014))
+    if(i %in% c(1,2)) axis(side = 2, las = 2)
+  }
+mtext(text = expression(paste("SSB"["status"], " RE")), side = 2, outer = T, line = 2, las = 0, cex = 1.2)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
