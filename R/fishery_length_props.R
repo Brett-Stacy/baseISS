@@ -7,6 +7,7 @@
 #' @param yrs any year filter >= (default = NULL)
 #' @param boot_thl Boolean. Resample trips, hauls, and lengths w/replacement? (default = FALSE). FALSE will return og proportions-at-length
 #' @param expand_by_sampling_strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
+#' @param expand_using_weighting_factors expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.
 #'
 #' @return List of a dataframe of annual population proportions-at-length .lpop.
 #'
@@ -15,7 +16,9 @@
 fishery_length_props <- function(lfreq_data,
                        yrs = NULL,
                        boot_thl = FALSE,
-                       expand_by_sampling_strata = FALSE) {
+                       expand_by_sampling_strata = FALSE,
+                       expand_using_weighting_factors = expand_using_weighting_factors)
+  {
   # globals ----
   # year switch
   if (is.null(yrs)) yrs <- 0 # when NULL, drop yrs to 0 so it picks up all possible years
@@ -56,7 +59,8 @@ fishery_length_props <- function(lfreq_data,
 
   # calculate population proportions-at-length ----
   .lfreq %>%
-      expand_length_props(expand_by_sampling_strata = expand_by_sampling_strata) -> .lpop
+      expand_length_props(expand_by_sampling_strata = expand_by_sampling_strata,
+                          expand_using_weighting_factors = expand_using_weighting_factors) -> .lpop
 
 
   # return as list ----

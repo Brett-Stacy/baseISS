@@ -10,6 +10,7 @@
 #' @param yrs any year filter >= (default = NULL)
 #' @param boot_thl Boolean. Resample trips, hauls, and lengths w/replacement? (default = FALSE). FALSE will return og proportions-at-length
 #' @param expand_by_sampling_strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
+#' @param expand_using_weighting_factors expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.
 #'
 #' @return Dataframe of input sample size by year
 #'
@@ -19,13 +20,16 @@ fishery_iss <- function(iters = 1,
                         lfreq_data,
                         yrs = NULL,
                         boot_thl = FALSE,
-                        expand_by_sampling_strata = FALSE){
+                        expand_by_sampling_strata = FALSE,
+                        expand_using_weighting_factors = expand_using_weighting_factors) # expanding by weighting factors must be the same for og props and resampled props for an apples to apples comparison
+  {
 
   # get original population proportions-at-length values ----
   og_length_props = fishery_length_props(lfreq_data = lfreq_data,
                                     yrs = yrs,
                                     boot_thl = FALSE, # overrides any global environment assignment
-                                    expand_by_sampling_strata = FALSE) # overrides any global environment assignment
+                                    expand_by_sampling_strata = FALSE, # overrides any global environment assignment
+                                    expand_using_weighting_factors = expand_using_weighting_factors)
   og_length_props$length %>% # put in the same format as sim_length_props below to be able to join them in rss
     tidytable::tidytable() %>%
     tidytable::rename(og_FREQ = FREQ) -> .og_length_props # rename with og_ prefix to distinguish from sim data when joining later.
@@ -35,7 +39,8 @@ fishery_iss <- function(iters = 1,
   rr <- purrr::map(1:iters, ~fishery_length_props(lfreq_data = lfreq_data,
                                          yrs = yrs,
                                          boot_thl = boot_thl, # set to the global environmental assignment
-                                         expand_by_sampling_strata = expand_by_sampling_strata)) # set to the global environmental assignment
+                                         expand_by_sampling_strata = expand_by_sampling_strata, # set to the global environmental assignment
+                                         expand_using_weighting_factors = expand_using_weighting_factors))
 
   # run resampling iterations with furrr ----
   # not working yet. some error in passing function arguements up the chain.
