@@ -18,7 +18,8 @@ knitr::opts_chunk$set(echo = F)
 ```{r}
 out1 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/ISS_output_to_email_7_23_24.RDS")
 
-out2 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/ISS_1000iters_output_7_30_24.RDS")
+# out2 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/ISS_1000iters_output_7_30_24.RDS")
+out2 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/ISS_1000iters_output_8_2_24.RDS")
 
 ```
 
