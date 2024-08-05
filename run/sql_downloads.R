@@ -115,6 +115,7 @@ lfreq_data_steve %>%
 .temp[join_prefix=="P", summary(YAGMH_SFREQ)] # median is 120
 .temp[join_prefix=="P", unique(YAGMH_SFREQ)] %>% hist()
 
+# LEFT OFF HERE 8/2: NEED TO MODIFY BELOW TRIP_JOIN ASSIGNMENT BASED OF NOTEBOOK NOTES
 
 
 lfreq2.2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test3.sql') # test3.sql adds YEAR column

@@ -13,7 +13,7 @@ boot_length = function(resampled_hauls) {
 
   .temp_DT %>%
     tidytable::uncount(SUM_FREQUENCY) %>%
-    tidytable::mutate(LENGTH = comp_sample(LENGTH, n.samples = .N), .by = c(YEAR, hauljoin_unique)) %>%
+    tidytable::mutate(LENGTH = generic_sample(LENGTH, n.samples = .N), .by = c(YEAR, hauljoin_unique)) %>%
     tidytable::summarise(SUM_FREQUENCY = n(unique(LENGTH)), .by = c(YEAR, hauljoin_unique, LENGTH)) -> .resampled_lengths
 
   .temp_DT %>%
