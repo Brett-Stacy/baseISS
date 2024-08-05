@@ -11,7 +11,7 @@ boot_trip = function(length_DT) { # based on surveyISS::boot_haul
     tidytable::tidytable() %>%
     tidytable::select(YEAR, TRIP_JOIN) %>% # TRIP_JOIN is "Cruise, Permit, Trip_Seq" pasted together.
     tidytable::distinct() %>%
-    tidytable::mutate(TRIP_JOIN = base::sample(TRIP_JOIN, .N, replace = TRUE), .by = YEAR)
+    tidytable::mutate(TRIP_JOIN = generic_sample(TRIP_JOIN, n.samples = .N), .by = YEAR)
 }
 
 
