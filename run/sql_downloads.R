@@ -3,7 +3,7 @@
 
 # Need to connect to AKFIN with username and passoword to run below code.
 
-
+library(dplyr)
 
 ## Functions ----
 
@@ -40,7 +40,7 @@ sql_run <- function(database, query) {
 
 #### Take 2, manual trip join ----
 # let's try to make a unique trip join identifier using Jen's suggested combination of Cruise, Permit, and trip_seq
-lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
+lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_ebs_pcod_Brett.RDS")
 lfreq2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test2.sql') # test2.sql includes Cruise, Permit, and trip_seq
 
 temp2=sql_run(akfin, lfreq2)
@@ -48,13 +48,13 @@ joinDT2 = data.table::setDT(temp2)
 
 joinDT2 %>%
   tidytable::mutate(TRIP_JOIN = paste(CRUISE, PERMIT, TRIP_SEQ, sep = "-")) %>%
-  tidytable::select(HAUL_JOIN, TRIP_JOIN) -> .joinDT2 # there are NAs in TRIP_SEQ so they show up in this joined ID but it's still better than the TRIP_JOIN that comes with the data download
+  tidytable::select(YEAR, HAUL_JOIN, TRIP_JOIN) -> .joinDT2 # there are NAs in TRIP_SEQ so they show up in this joined ID but it's still better than the TRIP_JOIN that comes with the data download
 
 # join it with the input data frame for baseISS
 new_lfreq_data2 = tidytable::left_join(lfreq_data, .joinDT2) # this looks better
 
 # save the new data table with TRIP_JOIN added
-saveRDS(new_lfreq_data2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett_TRIP.RDS")
+saveRDS(new_lfreq_data2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_ebs_pcod_Brett_TRIP.RDS")
 
 
 
@@ -110,12 +110,20 @@ lfreq_data_steve %>%
 .temp %>% # how many Ps and Hs are there?
   tidytable::count(join_prefix)
 
+.temp %>% # were there Ps and Hs every year?
+  tidytable::summarise(, .by = c(YEAR, join_prefix)) %>%
+  print(n=80)
+
+.temp %>% # were there Ps and Hs every year?
+  tidytable::summarise(sum(join_prefix=="P"), .by = YEAR) %>%
+  print(n=50)
+
 .temp[join_prefix=="P",] %>% # there are like 200 observations per port_join here. This means port_join represents a delivery right?
   print(n=200)
 .temp[join_prefix=="P", summary(YAGMH_SFREQ)] # median is 120
 .temp[join_prefix=="P", unique(YAGMH_SFREQ)] %>% hist()
 
-# LEFT OFF HERE 8/2: NEED TO MODIFY BELOW TRIP_JOIN ASSIGNMENT BASED OF NOTEBOOK NOTES
+
 
 
 lfreq2.2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test3.sql') # test3.sql adds YEAR column
@@ -125,7 +133,11 @@ joinDT2.2 = data.table::setDT(temp2.2)
 
 joinDT2.2 %>%
   tidytable::mutate(TRIP_JOIN = paste(CRUISE, PERMIT, TRIP_SEQ, sep = "-")) %>%
-  tidytable::select(HAUL_JOIN, TRIP_JOIN) -> .joinDT2.2
+  tidytable::select(YEAR, HAUL_JOIN, TRIP_JOIN) -> .joinDT2.2
+# LEFT OFF HERE 8/6: NEED TO MODIFY BELOW TRIP_JOIN ASSIGNMENT BASED OF NOTEBOOK NOTES:
+# MODIFY TRIP JOIN TO BE HAUL JOIN BECAUSE IT WAS ORIGINALLY PORT JOIN AND THIS IS DIRECTLY COMPRABLE TO TRIP JOIN.
+# THEN DEAL WITH HAUL JOIN SOMEHOW. CAN PROBABLY JUST LEAVE IT AS IS BECAUSE WE JUST NEED IT TO STAY ONE HAUL PER TRIP JOIN
+# ALSO: NEED FOREIGN ONBOARD OBSERVER TRIP RECORDS 1977-1990
 
 # join it with the input data frame for baseISS
 new_lfreq_data2 = tidytable::left_join(lfreq_data_steve, .joinDT2.2) #
