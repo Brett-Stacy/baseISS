@@ -126,7 +126,7 @@ lfreq_data_steve %>%
 
 
 
-lfreq2.2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test3.sql') # test3.sql adds YEAR column
+lfreq2.2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test2.sql') # test3.sql adds YEAR column
 
 temp2.2=sql_run(akfin, lfreq2.2)
 joinDT2.2 = data.table::setDT(temp2.2)
