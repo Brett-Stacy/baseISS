@@ -126,7 +126,7 @@ lfreq_data_steve %>%
 
 
 
-lfreq2.2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test2.sql') # test3.sql adds YEAR column
+lfreq2.2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test2.sql')
 
 temp2.2=sql_run(akfin, lfreq2.2)
 joinDT2.2 = data.table::setDT(temp2.2)
@@ -137,14 +137,38 @@ joinDT2.2 %>%
 # LEFT OFF HERE 8/6: NEED TO MODIFY BELOW TRIP_JOIN ASSIGNMENT BASED OF NOTEBOOK NOTES:
 # MODIFY TRIP JOIN TO BE HAUL JOIN BECAUSE IT WAS ORIGINALLY PORT JOIN AND THIS IS DIRECTLY COMPRABLE TO TRIP JOIN.
 # THEN DEAL WITH HAUL JOIN SOMEHOW. CAN PROBABLY JUST LEAVE IT AS IS BECAUSE WE JUST NEED IT TO STAY ONE HAUL PER TRIP JOIN
-# ALSO: NEED FOREIGN ONBOARD OBSERVER TRIP RECORDS 1977-1990
+# ALSO: NEED FOREIGN ONBOARD OBSERVER TRIP RECORDS 1977-1990. PROBABLY JUST CALL THIS CRUISE FOR NOW UNTIL I CAN GET THE FOREIGN TRIP DATA LIKE I GOT THE DOMESTIC TRIP SEQUENCE
 
 # join it with the input data frame for baseISS
-new_lfreq_data2 = tidytable::left_join(lfreq_data_steve, .joinDT2.2) #
+new_lfreq_data2 = tidytable::left_join(lfreq_data_steve, .joinDT2.2) # this will join TRIP_JOIN to Steve's y2 data by YEAR and HAUL_JOIN. There will be NAs for TRIP_JOIN where Steve's data does not have a match for YEAR and HAUL_JOIN, i.e., for port data and most foreign data. For port data, there won't be a match because the HAUL_JOINs start with "P". For foreign data, there will only be a few YEARs that match.
+
+# look at what happened to trip_join for PORT DATA
+new_lfreq_data2 %>%
+  tidytable::summarise(length(unique(TRIP_JOIN)), .by = YEAR) %>%
+  print(n = 100)
+
+new_lfreq_data2[YEAR==1986, .N, by = .(TRIP_JOIN, HAUL_JOIN)]
+
+new_lfreq_data2 %>% # port samples start in 1990
+  tidytable::summarise(unique(substr(HAUL_JOIN, 1, 1)), .by = YEAR) %>%
+  print(n = 100)
+
+new_lfreq_data2[substr(HAUL_JOIN, 1, 1)=="P",] %>% # confirms there are NAs for all port data for TRIP_JOIN
+  tidytable::summarise(unique(TRIP_JOIN), .by = YEAR) %>%
+  print(n = 100)
+
+# Transfer haul_join to trip_join, adding year to make sure it is a unique identifier. Do this only for port ("P" prefix) data to avoid doing it for foriegn data as well as port.
+new_lfreq_data2[substr(HAUL_JOIN, 1, 1)=="P"] %>%
+  tidytable::mutate(TRIP_JOIN = base::paste(YEAR, HAUL_JOIN, sep = "-")) -> new_lfreq_data2.2
 
 # save the new data table with TRIP_JOIN added
 saveRDS(new_lfreq_data2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP.RDS")
 
 
 
+
+
+
+#### Steve's EBS Pcod 2023 y2 object - add strata join ----
+# REMEMBER: FOR THIS I WILL NEED TO MATCH UP "HAUL_JOIN" FROM THE PORT DATA WITH THAT FROM THE STRATA.SQL DOWNLOAD. THIS WILL NEED TO CONSIDER THE "P" PREFIX. Probably make a new .sql file that does not concat H or P, but
 
