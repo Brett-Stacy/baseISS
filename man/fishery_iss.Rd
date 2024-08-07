@@ -4,7 +4,14 @@
 \alias{fishery_iss}
 \title{Fishery input sample size function}
 \usage{
-fishery_iss(iters = 1, lfreq_data, yrs = NULL, boot_thl = FALSE)
+fishery_iss(
+  iters = 1,
+  lfreq_data,
+  yrs = NULL,
+  boot_thl = FALSE,
+  expand_by_sampling_strata = FALSE,
+  expand_using_weighting_factors = expand_using_weighting_factors
+)
 }
 \arguments{
 \item{iters}{number of iterations}
@@ -14,6 +21,10 @@ fishery_iss(iters = 1, lfreq_data, yrs = NULL, boot_thl = FALSE)
 \item{yrs}{any year filter >= (default = NULL)}
 
 \item{boot_thl}{Boolean. Resample trips, hauls, and lengths w/replacement? (default = FALSE). FALSE will return og proportions-at-length}
+
+\item{expand_by_sampling_strata}{expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.}
+
+\item{expand_using_weighting_factors}{expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.}
 }
 \value{
 Dataframe of input sample size by year

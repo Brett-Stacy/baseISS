@@ -4,10 +4,18 @@
 \alias{expand_length_props}
 \title{Expand sample level proportions-at-length to population level}
 \usage{
-expand_length_props(length_DT)
+expand_length_props(
+  length_DT,
+  expand_by_sampling_strata = FALSE,
+  expand_using_weighting_factors = TRUE
+)
 }
 \arguments{
 \item{length_DT}{data table of length frequency data in the form of EBS Pcod y2 object}
+
+\item{expand_by_sampling_strata}{expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.}
+
+\item{expand_using_weighting_factors}{expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.}
 }
 \description{
 takes length frequency data and expands it into fished population proportions at length using the weightings from the relevant data. The relevant data can be the og data or bootstrapped data.
