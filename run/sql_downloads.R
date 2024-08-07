@@ -134,10 +134,8 @@ joinDT2.2 = data.table::setDT(temp2.2)
 joinDT2.2 %>%
   tidytable::mutate(TRIP_JOIN = paste(CRUISE, PERMIT, TRIP_SEQ, sep = "-")) %>%
   tidytable::select(YEAR, HAUL_JOIN, TRIP_JOIN) -> .joinDT2.2
-# LEFT OFF HERE 8/6: NEED TO MODIFY BELOW TRIP_JOIN ASSIGNMENT BASED OF NOTEBOOK NOTES:
-# MODIFY TRIP JOIN TO BE HAUL JOIN BECAUSE IT WAS ORIGINALLY PORT JOIN AND THIS IS DIRECTLY COMPRABLE TO TRIP JOIN.
-# THEN DEAL WITH HAUL JOIN SOMEHOW. CAN PROBABLY JUST LEAVE IT AS IS BECAUSE WE JUST NEED IT TO STAY ONE HAUL PER TRIP JOIN
-# ALSO: NEED FOREIGN ONBOARD OBSERVER TRIP RECORDS 1977-1990. PROBABLY JUST CALL THIS CRUISE FOR NOW UNTIL I CAN GET THE FOREIGN TRIP DATA LIKE I GOT THE DOMESTIC TRIP SEQUENCE
+
+
 
 # join it with the input data frame for baseISS
 new_lfreq_data2 = tidytable::left_join(lfreq_data_steve, .joinDT2.2) # this will join TRIP_JOIN to Steve's y2 data by YEAR and HAUL_JOIN. There will be NAs for TRIP_JOIN where Steve's data does not have a match for YEAR and HAUL_JOIN, i.e., for port data and most foreign data. For port data, there won't be a match because the HAUL_JOINs start with "P". For foreign data, there will only be a few YEARs that match.
@@ -157,12 +155,71 @@ new_lfreq_data2[substr(HAUL_JOIN, 1, 1)=="P",] %>% # confirms there are NAs for 
   tidytable::summarise(unique(TRIP_JOIN), .by = YEAR) %>%
   print(n = 100)
 
-# Transfer haul_join to trip_join, adding year to make sure it is a unique identifier. Do this only for port ("P" prefix) data to avoid doing it for foriegn data as well as port.
-new_lfreq_data2[substr(HAUL_JOIN, 1, 1)=="P"] %>%
-  tidytable::mutate(TRIP_JOIN = base::paste(YEAR, HAUL_JOIN, sep = "-")) -> new_lfreq_data2.2
+## Transfer haul_join to trip_join. Do this only for port ("P" prefix) data to avoid doing it for foreign data as well as port.
+# new_lfreq_data2.2 = new_lfreq_data2
+# new_lfreq_data2.2[substr(HAUL_JOIN, 1, 1)=="P", TRIP_JOIN := HAUL_JOIN] # this doesn't work appropriately. It replaces values in new_lfreq_data2 as well as 2.2!!! BAD
+
+# test a different suffix
+# new_lfreq_data2_test = new_lfreq_data2
+# new_lfreq_data2_test[substr(HAUL_JOIN, 1, 1)=="P", TRIP_JOIN := HAUL_JOIN]
+
+# try a different way
+new_lfreq_data2.2 = new_lfreq_data2 %>%
+  # tidytable::mutate(TRIP_JOIN = base::replace(TRIP_JOIN, base::substr(HAUL_JOIN, 1, 1)=="P", HAUL_JOIN)) # intent: replace trip join with haul join where haul join has "P" prefix.
+  # tidytable::mutate(TRIP_JOIN = base::replace(TRIP_JOIN, base::substr(HAUL_JOIN, 1, 1)=="P", HAUL_JOIN[base::substr(HAUL_JOIN, 1, 1)=="P"])) # this works but is convoluted
+  # tidytable::mutate(TRIP_JOIN = base::replace(TRIP_JOIN, base::substr(HAUL_JOIN, 1, 1)=="P", HAUL_JOIN[base::substr(new_lfreq_data2.2$HAUL_JOIN, 1, 1)=="P"])) # this works but is more convoluted
+  tidytable::mutate(TRIP_JOIN = base::ifelse(base::substr(HAUL_JOIN, 1, 1)=="P", HAUL_JOIN, TRIP_JOIN)) # this works and is clear
+
+
+
+# check
+new_lfreq_data2[YEAR==1990, unique(TRIP_JOIN)] # should be NAs
+new_lfreq_data2.2[YEAR==1990, unique(TRIP_JOIN)] # should be no more NAs, replaced with haul join
+
+# test a different suffix
+# new_lfreq_data2_test[YEAR==1989, unique(TRIP_JOIN)]
+
+
+## Foreign onboard observer trip 1977-1990
+# For now, call NA foreign trip_joins CRUISE. Then update when I get the trip data somehow.
+new_lfreq_data2.2 %>%
+  tidytable::summarise(length(unique(TRIP_JOIN)), .by = YEAR) %>%
+  print(n = 100)
+
+
+# new_lfreq_data2.3 = new_lfreq_data2.2
+# new_lfreq_data2.3[is.na(TRIP_JOIN), TRIP_JOIN := CRUISE] # the remainder trip_joins are NA and they represent the foreign data, so pick these out and call them year x cruise.
+
+# test a different suffix
+# new_lfreq_data2_test_again = new_lfreq_data2_test
+# new_lfreq_data2_test_again[is.na(TRIP_JOIN), TRIP_JOIN := CRUISE] # the remainder trip_joins are NA and they represent the foreign data, so pick these out and call them year x cruise.
+# wtf? it appears that := changes every object equal to the one being worked on! even with a different suffix (expected result)
+
+# try a different way for this too
+new_lfreq_data2.3 = new_lfreq_data2.2 %>%
+  tidytable::mutate(TRIP_JOIN = base::ifelse(base::is.na(TRIP_JOIN), CRUISE, TRIP_JOIN))
+
+
+# check
+sum(is.na(new_lfreq_data2.3$TRIP_JOIN))
+new_lfreq_data2.3[1:10, TRIP_JOIN]
+
+new_lfreq_data2.2[YEAR==1989, unique(TRIP_JOIN)] # should be NAs
+new_lfreq_data2.3[YEAR==1989, unique(TRIP_JOIN)] # should be no more NAs, replaced with haul join
+
+# everything checks out as at 8/7/24
 
 # save the new data table with TRIP_JOIN added
 saveRDS(new_lfreq_data2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP.RDS")
+
+
+
+
+
+
+
+
+
 
 
 
