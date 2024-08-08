@@ -229,3 +229,94 @@ saveRDS(new_lfreq_data2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHu
 #### Steve's EBS Pcod 2023 y2 object - add strata join ----
 # REMEMBER: FOR THIS I WILL NEED TO MATCH UP "HAUL_JOIN" FROM THE PORT DATA WITH THAT FROM THE STRATA.SQL DOWNLOAD. THIS WILL NEED TO CONSIDER THE "P" PREFIX. Probably make a new .sql file that does not concat H or P, but
 
+lfreq_data_trip2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP.RDS")
+sampling_strata = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/sampling_strata2.sql') # includes haul_join port_join and sampling_strata
+
+temp_sampling_strata = sql_run(akfin, sampling_strata)
+saveRDS(temp_sampling_strata, "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/sampling_strata2_V1_sql_download.RDS")
+
+joinDT_temp = data.table::setDT(temp_sampling_strata)
+
+# match the port_joins
+# lfreq_data_trip2 %>%
+#   tidytable::summarise(HAUL_JOIN = unique(HAUL_JOIN)) %>%
+#   tidytable::filter(base::substr(HAUL_JOIN, 1, 1)=="P") %>%
+#   tidytable::mutate(PORT_JOIN = base::substr(HAUL_JOIN, 2, base::nchar(HAUL_JOIN))) %>%
+#   tidytable::select(PORT_JOIN) %>%
+#   tidytable::left_join(joinDT_temp) -> temp
+#
+# sum(!is.na(temp$SAMPLING_STRATA_NAME)) # some not NAs - good
+# sum(!is.na(temp$HAUL_JOIN)) # all NAs - good
+# temp[!is.na(SAMPLING_STRATA_NAME), unique(SAMPLING_STRATA_NAME)] # some names in here
+
+# port strata join
+lfreq_data_trip2 %>%
+  tidytable::mutate(PORT_JOIN = base::ifelse(base::substr(HAUL_JOIN, 1, 1)=="P", HAUL_JOIN, NA)) %>% # make a temporary column for port join where haul join starts with "P". These were originally port joins before being renamed haul joins in the sql download
+  tidytable::mutate(PORT_JOIN = base::substr(PORT_JOIN, 2, base::nchar(PORT_JOIN))) %>% # substr to match sql download
+  tidytable::left_join(joinDT_temp %>%
+                         tidytable::select(-HAUL_JOIN) %>%
+                         tidytable::drop_na(PORT_JOIN) %>%
+                         tidytable::distinct(PORT_JOIN, .keep_all = TRUE)) -> temp_P # this now includes the strata information for port data, now I need to add the strata information for onboard data
+
+# haul strata join
+lfreq_data_trip2 %>%
+  tidytable:: mutate(TEMP_HAUL_JOIN = base::ifelse(base::substr(HAUL_JOIN, 1, 1)=="H", HAUL_JOIN, NA)) %>% # make temporary haul join column where it is only not an NA when prefix "H" is present. This will isolate the non-port observations
+  tidytable::mutate(TEMP_HAUL_JOIN = base::substr(HAUL_JOIN, 2, base::nchar(HAUL_JOIN))) %>%
+  tidytable::left_join(joinDT_temp %>%
+                         tidytable::select(-PORT_JOIN) %>%
+                         tidytable::drop_na(HAUL_JOIN) %>%
+                         tidytable::distinct(HAUL_JOIN, .keep_all = TRUE) %>%
+                         tidytable::mutate(TEMP_HAUL_JOIN = HAUL_JOIN) %>%
+                         tidytable::select(-HAUL_JOIN)) -> temp_H
+
+# good.names = c("SAMPLING_STRATA", "SAMPLING_STRATA_NAME", "SAMPLING_STRATA_DEPLOYMENT_CATEGORY", "SAMPLING_STRATA_SELECTION_RATE")
+
+# combine
+temp_combine = tidytable::select(temp_H, -TEMP_HAUL_JOIN)
+temp_combine[base::substr(HAUL_JOIN, 1, 1)=="P", c("SAMPLING_STRATA", "SAMPLING_STRATA_NAME", "SAMPLING_STRATA_DEPLOYMENT_CATEGORY", "SAMPLING_STRATA_SELECTION_RATE")] =
+  temp_P[base::substr(HAUL_JOIN, 1, 1)=="P", c("SAMPLING_STRATA", "SAMPLING_STRATA_NAME", "SAMPLING_STRATA_DEPLOYMENT_CATEGORY", "SAMPLING_STRATA_SELECTION_RATE")]
+
+
+
+
+
+# lfreq_data_trip2 %>%
+#   tidytable::mutate(PORT_JOIN = base::ifelse(base::substr(HAUL_JOIN, 1, 1)=="P", HAUL_JOIN, NA)) %>% # make a temporary column for port join where haul join starts with "P". These were originally port joins before being renamed haul joins in the sql download
+#   tidytable::mutate(PORT_JOIN = base::substr(PORT_JOIN, 2, base::nchar(PORT_JOIN))) %>% # substr to match sql download
+#   tidytable::mutate(TEMP_HAUL_JOIN = base::ifelse(base::substr(HAUL_JOIN, 1, 1)=="H", HAUL_JOIN, NA)) %>% # make temporary haul join column where it is only not an NA when prefix "H" is present. This will isolate the non-port observations
+#   tidytable::mutate(TEMP_HAUL_JOIN = base::substr(HAUL_JOIN, 2, base::nchar(HAUL_JOIN))) %>%
+#   tidytable::left_join(joinDT_temp %>%
+#                          tidytable::distinct(PORT_JOIN, HAUL_JOIN, .keep_all = TRUE) %>%
+#                          tidytable::mutate(TEMP_HAUL_JOIN = HAUL_JOIN) %>%
+#                          tidytable::select(-HAUL_JOIN)) -> temp_PH
+
+  # tidytable::select(-PORT_JOIN, -TEMP_HAUL_JOIN) -> new_lfreq_data3.2
+
+# inspect
+
+temp_P[!is.na(SAMPLING_STRATA_NAME), unique(SAMPLING_STRATA_NAME)]
+temp_H[!is.na(SAMPLING_STRATA_NAME), unique(SAMPLING_STRATA_NAME)]
+# temp_PH[!is.na(SAMPLING_STRATA_NAME), unique(SAMPLING_STRATA_NAME)]
+# temp[!is.na(PORT_JOIN), unique(SAMPLING_STRATA_NAME)]
+temp_combine[!is.na(SAMPLING_STRATA_NAME), unique(SAMPLING_STRATA_NAME)] # looks good finally
+
+# for baseISS
+new_lfreq_data3.2 = temp_combine
+
+# save the new data table with SAMPLING_STRATA_... added
+saveRDS(new_lfreq_data3.2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP_STRATA.RDS")
+
+
+# play with it
+new_lfreq_data3.2[,.N, by=.(SAMPLING_STRATA_NAME, YEAR)] %>% print(n=100) # well, for some reason there are NAs in 2023. Not sure why.
+
+new_lfreq_data3.2[YEAR==2023,.N, by=.(SAMPLING_STRATA_NAME)] %>% print(n=100)
+
+new_lfreq_data3.2[YEAR==2023 & is.na(SAMPLING_STRATA_NAME), c(8, 38:42)] %>% print(n=100) # they are haul joins
+
+
+new_lfreq_data3.2[YEAR==2010,.N, by=.(SAMPLING_STRATA_NAME)] %>% print(n=100) # and in 2010
+new_lfreq_data3.2[YEAR==2010 & is.na(SAMPLING_STRATA_NAME), c(8, 38:42)] %>% print(n=100) # but this makes a little more sense because they are port joins.
+
+
+
