@@ -5,7 +5,9 @@
 #'
 #' @param lfreq_data  length frequency input dataframe
 #' @param yrs any year filter >= (default = NULL)
-#' @param boot_thl Boolean. Resample trips, hauls, and lengths w/replacement? (default = FALSE). FALSE will return og proportions-at-length
+#' @param boot.trip Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
+#' @param boot.haul Boolean. Resample hauls w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
+#' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
 #' @param expand_by_sampling_strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #' @param expand_using_weighting_factors expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.
 #'
@@ -15,7 +17,9 @@
 #'
 fishery_length_props <- function(lfreq_data,
                        yrs = NULL,
-                       boot_thl = FALSE,
+                       boot.trip = FALSE, # overrides any global environment assignment
+                       boot.haul = FALSE, # overrides any global environment assignment
+                       boot.length = FALSE, # overrides any global environment assignment
                        expand_by_sampling_strata = FALSE,
                        expand_using_weighting_factors = expand_using_weighting_factors)
   {
@@ -26,9 +30,24 @@ fishery_length_props <- function(lfreq_data,
 
   # prep data ----
   lfreq_data %>%
-    data.table::setDT() %>%
     tidytable::filter(YEAR >= yrs) -> .lfreq
 
+
+
+  # randomize trips if boot.trip == true ----
+  if(base::isTRUE(boot.trip)) {
+    # Boot trips
+    .freq %>%
+      boot_trip() -> .r_trips # resampled trips
+  }
+
+
+
+
+
+
+
+  # old: bootstrap trips, hauls, lengths as one switch:
 
   # randomize trips, hauls, and lengths ----
   if(isTRUE(boot_thl)) {
