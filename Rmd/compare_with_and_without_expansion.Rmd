@@ -37,9 +37,11 @@ out2 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_d
 # par(mfrow = c(4,1), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
 par(mfrow = c(1,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
 
-plot(out1$iss_length$YEAR, out1$iss_length$iss, type = "l", ylab = "ISS", xlab = "year", cex.lab = 1.3, ylim = c(0, max(out2$iss_length$iss)*1.1)) 
+plot(out1$iss_length$YEAR, out1$iss_length$iss, type = "l", ylab = "Sample Size", xlab = "year", cex.lab = 1.3, ylim = c(0, max(out2$iss_length$nss)*1.1)) 
 lines(out2$iss_length$YEAR, out2$iss_length$iss, col = "blue")
-legend("topleft", lty = c(1,1), col = c("black", "blue"), legend = c("with expansion", "without expansion"))
+lines(out2$iss_length$YEAR, out2$iss_length$nss, col = "orange")
+legend("topright", lty = c(1,1,1), col = c("orange", "black", "blue"), legend = c("nominal", "with expansion", "without expansion"))
+
 
 ```
 
