@@ -8,7 +8,9 @@
 #' @param iters number of iterations
 #' @param lfreq_data  length frequency input dataframe
 #' @param yrs any year filter >= (default = NULL)
-#' @param boot_thl Boolean. Resample trips, hauls, and lengths w/replacement? (default = FALSE). FALSE will return og proportions-at-length
+#' @param boot.trip Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
+#' @param boot.haul Boolean. Resample hauls w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
+#' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
 #' @param expand_by_sampling_strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #' @param expand_using_weighting_factors expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.
 #'
@@ -19,7 +21,9 @@
 fishery_iss <- function(iters = 1,
                         lfreq_data,
                         yrs = NULL,
-                        boot_thl = FALSE,
+                        boot.trip = FALSE, # overrides any global environment assignment
+                        boot.haul = FALSE, # overrides any global environment assignment
+                        boot.length = FALSE, # overrides any global environment assignment
                         expand_by_sampling_strata = FALSE,
                         expand_using_weighting_factors = expand_using_weighting_factors) # expanding by weighting factors must be the same for og props and resampled props for an apples to apples comparison
   {
@@ -27,7 +31,9 @@ fishery_iss <- function(iters = 1,
   # get original population proportions-at-length values ----
   og_length_props = fishery_length_props(lfreq_data = lfreq_data,
                                     yrs = yrs,
-                                    boot_thl = FALSE, # overrides any global environment assignment
+                                    boot.trip = FALSE, # overrides any global environment assignment
+                                    boot.haul = FALSE, # overrides any global environment assignment
+                                    boot.length = FALSE, # overrides any global environment assignment
                                     expand_by_sampling_strata = FALSE, # overrides any global environment assignment
                                     expand_using_weighting_factors = expand_using_weighting_factors)
   og_length_props$length %>% # put in the same format as sim_length_props below to be able to join them in rss
@@ -38,7 +44,9 @@ fishery_iss <- function(iters = 1,
   # run resampling iterations ----
   rr <- purrr::map(1:iters, ~fishery_length_props(lfreq_data = lfreq_data,
                                          yrs = yrs,
-                                         boot_thl = boot_thl, # set to the global environmental assignment
+                                         boot.trip = boot.trip, # set to the global environmental assignment
+                                         boot.haul = boot.haul, # set to the global environmental assignment
+                                         boot.length = boot.length, # set to the global environmental assignment
                                          expand_by_sampling_strata = expand_by_sampling_strata, # set to the global environmental assignment
                                          expand_using_weighting_factors = expand_using_weighting_factors))
 
