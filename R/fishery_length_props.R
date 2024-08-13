@@ -17,9 +17,9 @@
 #'
 fishery_length_props <- function(lfreq_data,
                        yrs = NULL,
-                       boot.trip = FALSE, # overrides any global environment assignment
-                       boot.haul = FALSE, # overrides any global environment assignment
-                       boot.length = FALSE, # overrides any global environment assignment
+                       boot.trip = FALSE,
+                       boot.haul = FALSE,
+                       boot.length = FALSE,
                        expand_by_sampling_strata = FALSE,
                        expand_using_weighting_factors = expand_using_weighting_factors)
   {
@@ -36,44 +36,72 @@ fishery_length_props <- function(lfreq_data,
 
   # randomize trips if boot.trip == true ----
   if(base::isTRUE(boot.trip)) {
-    # Boot trips
-    .freq %>%
-      boot_trip() -> .r_trips # resampled trips
-  }
-
-
-
-
-
-
-
-  # old: bootstrap trips, hauls, lengths as one switch:
-
-  # randomize trips, hauls, and lengths ----
-  if(isTRUE(boot_thl)) {
-    # Boot trips
     .lfreq %>%
-      boot_trip() -> .r_trips # resampled trips
+      boot_trip() %>%
+      tidytable::mutate(tripjoin_unique = .I) -> .r_trips
 
-    .lfreq[, unique(HAUL_JOIN), by = .(YEAR, TRIP_JOIN)] %>% # turn og data into a tidytable and condense to the unique YEAR, CRUISE, HAUL_JOIN
-      tidytable::rename(HAUL_JOIN = V1) %>% # gives only resampled trips and associated hauls. Hauls are repeated if resampled trips are repeated. ready for boot_haul.
-      tidytable::right_join(.r_trips) -> .joined_trips
-
-
-    # Boot hauls
-    .joined_trips %>%
-      boot_haul() %>%
-      tidytable::mutate(hauljoin_unique = .I) -> .r_hauls # resampled hauls
-
-    .lfreq %>% # Get a DT that looks like og_lf_data but consists only of .r_hauls.
-      tidytable::right_join(.r_hauls) -> .joined_hauls
-
-
-    # Boot lengths
-    .joined_hauls %>%
-      boot_length() -> .lfreq # this is intentionally named the same as prior to the conditional statement to be used equivalently in the expanded_length_props() function as a non-bootstrapped data table.
-
+    .lfreq %>%
+      tidytable::right_join(.r_trips) %>%
+      tidytable::rename(tripjoin_orig = "TRIP_JOIN",
+                        TRIP_JOIN = "tripjoin_unique") -> .lfreq
   }
+
+  # randomize hauls if boot.haul == true ----
+  if(base::isTRUE(boot.haul)) {
+    .lfreq %>%
+      boot_haul() %>%
+      tidytable::mutate(hauljoin_unique = .I) -> .r_hauls
+
+    .lfreq %>%
+      tidytable::right_join(.r_hauls) %>%
+      tidytable::rename(hauljoin_orig = "HAUL_JOIN",
+                        HAUL_JOIN = "hauljoin_unique") -> .lfreq # hauljoin_unique must be renamed to HAUL_JOIN to be generically compatible, i.e., look the same as the original data frame
+  }
+
+  # randomize lengths if boot.length == true ----
+  if(base::isTRUE(boot.length)) {
+    .lfreq %>%
+      boot_length() -> .lfreq
+  }
+
+
+# recalculate WEIGHT1 for any combination of conditional statement execution above: WEIGHT1 = proportions at length by haul
+  .lfreq %>%
+    tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YAGMH_SFREQ) -> .lfreq
+
+
+
+
+
+  # ## BEGIN old: bootstrap trips, hauls, lengths as one switch:
+  #
+  # # randomize trips, hauls, and lengths ----
+  # if(isTRUE(boot_thl)) {
+  #   # Boot trips
+  #   .lfreq %>%
+  #     boot_trip() -> .r_trips # resampled trips
+  #
+  #   .lfreq[, unique(HAUL_JOIN), by = .(YEAR, TRIP_JOIN)] %>% # turn og data into a tidytable and condense to the unique YEAR, CRUISE, HAUL_JOIN
+  #     tidytable::rename(HAUL_JOIN = V1) %>% # gives only resampled trips and associated hauls. Hauls are repeated if resampled trips are repeated. ready for boot_haul.
+  #     tidytable::right_join(.r_trips) -> .joined_trips
+  #
+  #
+  #   # Boot hauls
+  #   .joined_trips %>%
+  #     boot_haul() %>%
+  #     tidytable::mutate(hauljoin_unique = .I) -> .r_hauls # resampled hauls
+  #
+  #   .lfreq %>% # Get a DT that looks like og_lf_data but consists only of .r_hauls.
+  #     tidytable::right_join(.r_hauls) -> .joined_hauls
+  #
+  #
+  #   # Boot lengths
+  #   .joined_hauls %>%
+  #     boot_length() -> .lfreq # this is intentionally named the same as prior to the conditional statement to be used equivalently in the expanded_length_props() function as a non-bootstrapped data table.
+  #
+  # }
+  #
+  # ## END old
 
 
   # calculate population proportions-at-length ----
@@ -86,5 +114,6 @@ fishery_length_props <- function(lfreq_data,
   list(length = .lpop)
 
 }
-
+# for testing ----
+length_DT = .lfreq
 

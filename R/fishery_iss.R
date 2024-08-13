@@ -24,7 +24,7 @@ fishery_iss <- function(iters = 1,
                         boot.trip = FALSE, # overrides any global environment assignment
                         boot.haul = FALSE, # overrides any global environment assignment
                         boot.length = FALSE, # overrides any global environment assignment
-                        expand_by_sampling_strata = FALSE,
+                        expand_by_sampling_strata = FALSE, # overrides any global environment assignment
                         expand_using_weighting_factors = expand_using_weighting_factors) # expanding by weighting factors must be the same for og props and resampled props for an apples to apples comparison
   {
 

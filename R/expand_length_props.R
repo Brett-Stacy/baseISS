@@ -18,7 +18,7 @@ expand_length_props = function(length_DT,
   if(isTRUE(expand_by_sampling_strata)){
     print("expand by sampling strata activated")
     length_DT %>%
-      tidytable::summarise(YAGMH_SNUM, .by = c(YEAR, SAMPLING_STRATA_NAME, hauljoin_unique)) %>% # this will currently only work for bootstrapped lengths because those length_DT objects have hauljoin_unique
+      tidytable::summarise(YAGMH_SNUM, .by = c(YEAR, SAMPLING_STRATA_NAME, HAUL_JOIN)) %>% # this should only be used for the bootstrapped samples because the og samples are not expanded by strata.
       tidytable::distinct() %>%
       tidytable::mutate(YS_TNUM = base::sum(YAGMH_SNUM), .by = c(YEAR, SAMPLING_STRATA_NAME)) %>%
       tidytable::summarise(YS_TNUM, .by = c(YEAR, SAMPLING_STRATA_NAME)) %>%
