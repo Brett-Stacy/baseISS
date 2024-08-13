@@ -115,5 +115,5 @@ fishery_length_props <- function(lfreq_data,
 
 }
 # for testing ----
-length_DT = .lfreq
+# length_DT = .lfreq
 

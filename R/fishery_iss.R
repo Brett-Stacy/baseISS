@@ -37,7 +37,6 @@ fishery_iss <- function(iters = 1,
                                     expand_by_sampling_strata = FALSE, # overrides any global environment assignment
                                     expand_using_weighting_factors = expand_using_weighting_factors)
   og_length_props$length %>% # put in the same format as sim_length_props below to be able to join them in rss
-    tidytable::tidytable() %>%
     tidytable::rename(og_FREQ = FREQ) -> .og_length_props # rename with og_ prefix to distinguish from sim data when joining later.
 
 

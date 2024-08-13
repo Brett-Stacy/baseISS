@@ -15,7 +15,7 @@ rss_length = function(sim_length_props,
   sim_length_props %>%
     tidytable::full_join(og_length_props) %>%
     tidytable::replace_na(list(sim_FREQ = 0, og_FREQ = 0)) %>%
-    tidytable::summarise(rss = base::sum(sim_FREQ * (1 - sim_FREQ)) / base::sum((sim_FREQ - og_FREQ)^2),
+    tidytable::summarise(rss = base::sum(sim_FREQ * (1 - sim_FREQ)) / base::sum((sim_FREQ - og_FREQ)^2), # when sim_FREQ==og_FREQ, this is zero and dividing by zero for rss returns Inf
                          .by = c(sim, YEAR)) %>%
     tidytable::drop_na()
 
