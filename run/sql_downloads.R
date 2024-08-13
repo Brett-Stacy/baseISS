@@ -129,6 +129,9 @@ lfreq_data_steve %>%
 lfreq2.2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test2.sql')
 
 temp2.2=sql_run(akfin, lfreq2.2)
+saveRDS(temp2.2, "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/temp2.2_trip_V1_sql_download.RDS")
+
+
 joinDT2.2 = data.table::setDT(temp2.2)
 
 joinDT2.2 %>%
@@ -205,12 +208,14 @@ sum(is.na(new_lfreq_data2.3$TRIP_JOIN))
 new_lfreq_data2.3[1:10, TRIP_JOIN]
 
 new_lfreq_data2.2[YEAR==1989, unique(TRIP_JOIN)] # should be NAs
-new_lfreq_data2.3[YEAR==1989, unique(TRIP_JOIN)] # should be no more NAs, replaced with haul join
+new_lfreq_data2.3[YEAR==1989, unique(TRIP_JOIN)] # should be no more NAs, replaced with cruise
+
+new_lfreq_data2.3[YEAR==1980, unique(TRIP_JOIN)] # should be no more NAs, replaced with cruise
 
 # everything checks out as at 8/7/24
 
 # save the new data table with TRIP_JOIN added
-saveRDS(new_lfreq_data2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP.RDS")
+saveRDS(new_lfreq_data2.3, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP.RDS")
 
 
 
@@ -232,8 +237,9 @@ saveRDS(new_lfreq_data2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHu
 lfreq_data_trip2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP.RDS")
 sampling_strata = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/sampling_strata2.sql') # includes haul_join port_join and sampling_strata
 
-temp_sampling_strata = sql_run(akfin, sampling_strata)
-saveRDS(temp_sampling_strata, "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/sampling_strata2_V1_sql_download.RDS")
+# temp_sampling_strata = sql_run(akfin, sampling_strata)
+# saveRDS(temp_sampling_strata, "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/sampling_strata2_V1_sql_download.RDS")
+temp_sampling_strata = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/sampling_strata2_V1_sql_download.RDS")
 
 joinDT_temp = data.table::setDT(temp_sampling_strata)
 
