@@ -9,7 +9,7 @@
 #'
 #' @export
 #'
-expand_by_sampling_strata = function(lengDT) {
+expand_by_sampling_strata = function(length_DT) {
   length_DT %>%
     tidytable::summarise(YAGMH_SNUM, .by = c(YEAR, SAMPLING_STRATA_NAME, HAUL_JOIN)) %>% # this should only be used for the bootstrapped samples because the og samples are not expanded by strata.
     tidytable::distinct() %>%

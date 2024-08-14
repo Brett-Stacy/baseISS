@@ -8,8 +8,10 @@ fishery_iss(
   iters = 1,
   lfreq_data,
   yrs = NULL,
-  boot_thl = FALSE,
-  expand_by_sampling_strata = FALSE,
+  boot.trip = FALSE,
+  boot.haul = FALSE,
+  boot.length = FALSE,
+  expand.by.sampling.strata = FALSE,
   expand_using_weighting_factors = expand_using_weighting_factors
 )
 }
@@ -20,9 +22,13 @@ fishery_iss(
 
 \item{yrs}{any year filter >= (default = NULL)}
 
-\item{boot_thl}{Boolean. Resample trips, hauls, and lengths w/replacement? (default = FALSE). FALSE will return og proportions-at-length}
+\item{boot.trip}{Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length}
 
-\item{expand_by_sampling_strata}{expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.}
+\item{boot.haul}{Boolean. Resample hauls w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length}
+
+\item{boot.length}{Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length}
+
+\item{expand.by.sampling.strata}{expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.}
 
 \item{expand_using_weighting_factors}{expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.}
 }

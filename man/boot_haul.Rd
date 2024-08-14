@@ -4,13 +4,13 @@
 \alias{boot_haul}
 \title{Resample hauls w/replacement.}
 \usage{
-boot_haul(resampled_trips)
+boot_haul(length_DT)
 }
 \arguments{
-\item{resampled_trips}{resampled trips input data table. This is a truncated data table compared to length_DT. It has a column for YEAR, CRUISE, HAUL_JOIN only and one row per unique HAUL_JOIN.}
+\item{length_DT}{length frequency input data table. Can be the output object from boot_trip() if boot.trip == true}
 }
 \value{
-data table of resampled hauls by year
+length frequency data table including resampled hauls as HAUL_JOIN and associated data
 }
 \description{
 Resample hauls w/replacement.

@@ -10,7 +10,7 @@ boot_trip(length_DT)
 \item{length_DT}{length frequency input data table.}
 }
 \value{
-length frequency data table including only resampled trips and associated data
+length frequency data table including resampled trips as TRIP_JOIN and associated data
 }
 \description{
 Resample trips w/replacement.
