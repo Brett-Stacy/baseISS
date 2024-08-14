@@ -3,12 +3,12 @@
 #' @description
 #' Follows loosely srvy_comps.R from surveyISS package.
 #'
-#' @param lfreq_data  length frequency input dataframe
+#' @param lfreq_data  length frequency input dataframe, not necessarily a data.table or tidytable object yet, hence a different name than subsequent functions (lengthDT)
 #' @param yrs any year filter >= (default = NULL)
 #' @param boot.trip Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
 #' @param boot.haul Boolean. Resample hauls w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
 #' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
-#' @param expand_by_sampling_strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
+#' @param expand.by.sampling.strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #' @param expand_using_weighting_factors expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.
 #'
 #' @return List of a dataframe of annual population proportions-at-length .lpop.
@@ -20,7 +20,7 @@ fishery_length_props <- function(lfreq_data,
                        boot.trip = FALSE,
                        boot.haul = FALSE,
                        boot.length = FALSE,
-                       expand_by_sampling_strata = FALSE,
+                       expand.by.sampling.strata = FALSE,
                        expand_using_weighting_factors = expand_using_weighting_factors)
   {
   # globals ----
@@ -30,7 +30,7 @@ fishery_length_props <- function(lfreq_data,
 
   # prep data ----
   lfreq_data %>%
-    tidytable::filter(YEAR >= yrs) -> .lfreq
+    tidytable::filter(YEAR >= yrs) -> .lfreq # filters for only years requested and forces lfreq_data into a tidytable format
 
 
 
@@ -106,7 +106,7 @@ fishery_length_props <- function(lfreq_data,
 
   # calculate population proportions-at-length ----
   .lfreq %>%
-      expand_length_props(expand_by_sampling_strata = expand_by_sampling_strata,
+      expand_length_props(expand.by.sampling.strata = expand.by.sampling.strata,
                           expand_using_weighting_factors = expand_using_weighting_factors) -> .lpop
 
 

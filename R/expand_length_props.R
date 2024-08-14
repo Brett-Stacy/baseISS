@@ -4,28 +4,21 @@
 #' takes length frequency data and expands it into fished population proportions at length using the weightings from the relevant data. The relevant data can be the og data or bootstrapped data.
 #'
 #' @param length_DT data table of length frequency data in the form of EBS Pcod y2 object
-#' @param expand_by_sampling_strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
+#' @param expand.by.sampling.strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #' @param expand_using_weighting_factors expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.
 #'
 #' @export
 #'
 expand_length_props = function(length_DT,
-                               expand_by_sampling_strata = FALSE,
+                               expand.by.sampling.strata = FALSE,
                                expand_using_weighting_factors = TRUE) {
 
 
   # Add in sampling strata weighting functionality ----
-  if(isTRUE(expand_by_sampling_strata)){
+  if(isTRUE(expand.by.sampling.strata)){
     print("expand by sampling strata activated")
     length_DT %>%
-      tidytable::summarise(YAGMH_SNUM, .by = c(YEAR, SAMPLING_STRATA_NAME, HAUL_JOIN)) %>% # this should only be used for the bootstrapped samples because the og samples are not expanded by strata.
-      tidytable::distinct() %>%
-      tidytable::mutate(YS_TNUM = base::sum(YAGMH_SNUM), .by = c(YEAR, SAMPLING_STRATA_NAME)) %>%
-      tidytable::summarise(YS_TNUM, .by = c(YEAR, SAMPLING_STRATA_NAME)) %>%
-      tidytable::distinct() %>%
-      tidytable::mutate(WEIGHT_YS = YS_TNUM/base::sum(YS_TNUM), .by = YEAR) %>%
-      tidytable::right_join(length_DT) %>%
-      tidytable::mutate(WEIGHT1 = WEIGHT1*WEIGHT_YS) -> length_DT
+      expand_by_sampling_strata() -> length_DT
   }
 
 
