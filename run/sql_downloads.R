@@ -93,7 +93,7 @@ new_lfreq_data3[,.N, by=.(SAMPLING_STRATA_NAME, YEAR)] %>% print(n=100)
 
 
 
-#### Steve's EBS Pcod 2023 y2 object - add trip join ----
+#### Steve's EBS Pcod 2023 y2 object combined sex - add trip join ----
 
 lfreq_data_steve = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve.RDS")
 # inspect this a bit
@@ -231,7 +231,7 @@ saveRDS(new_lfreq_data2.3, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Git
 
 
 
-#### Steve's EBS Pcod 2023 y2 object - add strata join ----
+#### Steve's EBS Pcod 2023 y2 object combined sex - add strata join ----
 # REMEMBER: FOR THIS I WILL NEED TO MATCH UP "HAUL_JOIN" FROM THE PORT DATA WITH THAT FROM THE STRATA.SQL DOWNLOAD. THIS WILL NEED TO CONSIDER THE "P" PREFIX. Probably make a new .sql file that does not concat H or P, but
 
 lfreq_data_trip2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP.RDS")
@@ -323,6 +323,41 @@ new_lfreq_data3.2[YEAR==2023 & is.na(SAMPLING_STRATA_NAME), c(8, 38:42)] %>% pri
 
 new_lfreq_data3.2[YEAR==2010,.N, by=.(SAMPLING_STRATA_NAME)] %>% print(n=100) # and in 2010
 new_lfreq_data3.2[YEAR==2010 & is.na(SAMPLING_STRATA_NAME), c(8, 38:42)] %>% print(n=100) # but this makes a little more sense because they are port joins.
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Steve's EBS Pcod 2023 y2 object separate sex - join to above ----
+new_lfreq_data3.2 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP_STRATA.RDS")
+
+lfreq_data_steve_sex = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve.RDS")
+
+lfreq_data_steve_sex[, .N, by = SEX]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -5,6 +5,7 @@
 #'
 #' @param lfreq_data  length frequency input dataframe, not necessarily a data.table or tidytable object yet, hence a different name than subsequent functions (lengthDT)
 #' @param yrs any year filter >= (default = NULL)
+#' @param post_strata if NULL, then no post stratification. Otherwise, character string with name(s) of post strata type. Accepted types are "GEAR", etc.
 #' @param boot.trip Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
 #' @param boot.haul Boolean. Resample hauls w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
 #' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
@@ -16,12 +17,13 @@
 #' @export
 #'
 fishery_length_props <- function(lfreq_data,
-                       yrs = NULL,
-                       boot.trip = FALSE,
-                       boot.haul = FALSE,
-                       boot.length = FALSE,
-                       expand.by.sampling.strata = FALSE,
-                       expand_using_weighting_factors = expand_using_weighting_factors)
+                                 yrs = NULL,
+                                 post_strata = NULL,
+                                 boot.trip = FALSE,
+                                 boot.haul = FALSE,
+                                 boot.length = FALSE,
+                                 expand.by.sampling.strata = FALSE,
+                                 expand_using_weighting_factors = TRUE)
   {
   # globals ----
   # year switch
