@@ -1,4 +1,4 @@
-#' Stratify ISS results by post-stratum.
+#' Administrate ISS
 #'
 #' @param lfreq_data length frequency input dataframe, not necessarily a data.table or tidytable object yet, hence a different name than subsequent functions (length_DT)
 #'
@@ -6,7 +6,7 @@
 #'
 #' @export
 #'
-post_stratify = function(lfreq_data) {
+administrate_iss = function(lfreq_data) {
 
   # get original population proportions-at-length values ----
   og_length_props = fishery_length_props(lfreq_data = lfreq_data,
