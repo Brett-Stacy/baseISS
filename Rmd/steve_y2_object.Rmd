@@ -19,9 +19,9 @@ load("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Data/From Steve B/y2_data.RData"
 # save as .RDS to load into run.r script
 saveRDS(y2_nosex, "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve.RDS")
 
+saveRDS(y2_sex, "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve.RDS")
 
 
-lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_ebs_pcod_Brett_TRIP_STRATA.RDS")
 
 ```
 
