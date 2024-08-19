@@ -3,9 +3,8 @@
 #' @description
 #' Follows loosely srvy_comps.R from surveyISS package.
 #'
-#' @param lfreq_data  length frequency input dataframe, not necessarily a data.table or tidytable object yet, hence a different name than subsequent functions (lengthDT)
+#' @param lfreq_data  length frequency input dataframe, not necessarily a data.table or tidytable object yet, hence a different name than subsequent functions (length_DT)
 #' @param yrs any year filter >= (default = NULL)
-#' @param post_strata if NULL, then no post stratification. Otherwise, character string with name(s) of post strata type. Accepted types are "GEAR", etc.
 #' @param boot.trip Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
 #' @param boot.haul Boolean. Resample hauls w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
 #' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
@@ -18,7 +17,6 @@
 #'
 fishery_length_props <- function(lfreq_data,
                                  yrs = NULL,
-                                 post_strata = NULL,
                                  boot.trip = FALSE,
                                  boot.haul = FALSE,
                                  boot.length = FALSE,

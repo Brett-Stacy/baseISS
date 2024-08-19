@@ -11,11 +11,11 @@ fishery_length_props(
   boot.haul = FALSE,
   boot.length = FALSE,
   expand.by.sampling.strata = FALSE,
-  expand_using_weighting_factors = expand_using_weighting_factors
+  expand_using_weighting_factors = TRUE
 )
 }
 \arguments{
-\item{lfreq_data}{length frequency input dataframe, not necessarily a data.table or tidytable object yet, hence a different name than subsequent functions (lengthDT)}
+\item{lfreq_data}{length frequency input dataframe, not necessarily a data.table or tidytable object yet, hence a different name than subsequent functions (length_DT)}
 
 \item{yrs}{any year filter >= (default = NULL)}
 

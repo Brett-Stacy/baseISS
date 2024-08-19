@@ -8,11 +8,12 @@ fishery_iss(
   iters = 1,
   lfreq_data,
   yrs = NULL,
+  post_strata = NULL,
   boot.trip = FALSE,
   boot.haul = FALSE,
   boot.length = FALSE,
   expand.by.sampling.strata = FALSE,
-  expand_using_weighting_factors = expand_using_weighting_factors
+  expand_using_weighting_factors = TRUE
 )
 }
 \arguments{
@@ -21,6 +22,8 @@ fishery_iss(
 \item{lfreq_data}{length frequency input dataframe}
 
 \item{yrs}{any year filter >= (default = NULL)}
+
+\item{post_strata}{if NULL, then no post stratification. Otherwise, character string with name(s) of post strata type. Accepted types are "GEAR", etc. This must be a column name in the data frame where each row has an entry and there are no NAs. Also, if there are multiple post-strata categories (e.g., "GEAR", "SEX"), then the final results will be a nested list in order of the listed post-strata}
 
 \item{boot.trip}{Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length}
 

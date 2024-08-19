@@ -1,10 +1,11 @@
-# First try booting trip, haul, length with separate switches.
-run_name = "separate_boot_switches"
+# Post_stratify
+run_name = "post_stratify_GEAR"
 iters = 2
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 
 yrs = NULL
-boot.trip = T # all combinations of boot. = T/F work as expected. tested 8/14/24
+post_strata = "GEAR" # try GEAR post-strata to start
+boot.trip = T
 boot.haul = T
 boot.length = T
 expand.by.sampling.strata = TRUE
@@ -15,6 +16,7 @@ tictoc::tic()
 fishery_iss(iters = iters,
             lfreq_data = lfreq_data,
             yrs = yrs,
+            post_strata = post_strata,
             boot.trip = boot.trip,
             boot.haul = boot.haul,
             boot.length = boot.length,
