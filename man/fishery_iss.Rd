@@ -23,7 +23,7 @@ fishery_iss(
 
 \item{yrs}{any year filter >= (default = NULL)}
 
-\item{post_strata}{if NULL, then no post stratification. Otherwise, character string with name(s) of post strata type. Accepted types are "GEAR", etc. This must be a column name in the data frame where each row has an entry and there are no NAs; perhaps there should be an error message for attempts with strata names that are not in lfreq_data or it does exist, but there are NAs in it. This needs to be developed to accept only a list(strata = c(), nested = FALSE) to allow for nested post-strata (e.g., "GEAR", "SEX") that are ordered in the desired hierarchy, then the final results will be a nested list in order of the listed post-strata}
+\item{post_strata}{list(strata = character string, nested = Boolean) if NULL, then no post stratification. The first element of post_strata is a character string with name(s) of post strata type. Accepted types are "GEAR", etc. These must be column name(s) in the data frame where each row has an entry and there are no NAs. The second element in post_strata allows for nested post-strata (e.g., "GEAR", "SEX") that are in order of the desired nested hierarchy, then the final results will be a nested list in order of the listed post-strata as well. Perhaps there should be an error message for attempts with strata names that are not in lfreq_data or it does exist, but there are NAs in it.}
 
 \item{boot.trip}{Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length}
 
