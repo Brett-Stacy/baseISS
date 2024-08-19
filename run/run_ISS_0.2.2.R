@@ -1,10 +1,10 @@
-# Post_stratify take 1
-run_name = "post_stratify_GEAR"
+# Post_stratify take 2
+run_name = "post_stratify_AREA2"
 iters = 2
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 
 yrs = NULL
-post_strata = "GEAR" # try GEAR post-strata to start - works. so does NULL.
+post_strata = "AREA2" # try AREA2 post-strata - works.
 boot.trip = T
 boot.haul = T
 boot.length = T

@@ -8,7 +8,7 @@
 #' @param iters number of iterations
 #' @param lfreq_data  length frequency input dataframe
 #' @param yrs any year filter >= (default = NULL)
-#' @param post_strata if NULL, then no post stratification. Otherwise, character string with name(s) of post strata type. Accepted types are "GEAR", etc. This must be a column name in the data frame where each row has an entry and there are no NAs; perhaps there should be an error message for attempts with strata names that are not in lfreq_data or it does exist, but there are NAs in it. This needs to be developed to accept only a list(strata = c(), nested = FALSE) to allow for nested post-strata (e.g., "GEAR", "SEX") that are ordered in the desired hierarchy, then the final results will be a nested list in order of the listed post-strata
+#' @param post_strata soon to be list(strata = character string, nested = Boolean) if NULL, then no post stratification. Otherwise, character string with name(s) of post strata type. Accepted types are "GEAR", etc. This must be a column name in the data frame where each row has an entry and there are no NAs; perhaps there should be an error message for attempts with strata names that are not in lfreq_data or it does exist, but there are NAs in it. This needs to be developed to accept only a list(strata = c(), nested = FALSE) to allow for nested post-strata (e.g., "GEAR", "SEX") that are ordered in the desired hierarchy, then the final results will be a nested list in order of the listed post-strata
 #' @param boot.trip Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
 #' @param boot.haul Boolean. Resample hauls w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
 #' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
@@ -37,6 +37,7 @@ fishery_iss <- function(iters = 1,
     lfreq_data %>%
       tidytable::distinct(post_strata %>%
                             tidytable::all_of()) -> .temp
+
     # this is a clunky process but I could not think of a better way to code it.
     base::vector("list", .temp[, .N]) -> .temp2
     base::names(.temp2) = tidytable::pull(.temp)
@@ -46,10 +47,10 @@ fishery_iss <- function(iters = 1,
     # I know, loops are inefficient, but I'm not sure how else to do this and it only loops a few times (number of stratum levels)
     for(i in 1:base::length(out_stats[[post_strata]])) {
       lfreq_data %>%
-        tidytable::filter(!!sym(post_strata) == names(out_stats[[post_strata]])[i]) -> lfreq_data_strata
+        tidytable::filter(!!sym(post_strata) == names(out_stats[[post_strata]])[i]) -> .lfreq_data_strata
 
       # perform the ISS routine. Put all the original code below that did this without post-strata into a function called post_stratify().
-      lfreq_data_strata %>%
+      .lfreq_data_strata %>%
         administrate_iss() -> out_stats[[post_strata]][[i]]
 
     }
