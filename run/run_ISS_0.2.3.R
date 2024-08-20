@@ -2,9 +2,11 @@
 run_name = "post_stratify_nested"
 iters = 2
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP_STRATA.RDS")
+# library(tidytable)
 
 yrs = NULL
 post_strata = list(strata = c("GEAR", "AREA2"), nested = TRUE) # nested post stratification option.
+# post_strata = NULL
 boot.trip = T
 boot.haul = T
 boot.length = T
