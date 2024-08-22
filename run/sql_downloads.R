@@ -339,9 +339,22 @@ new_lfreq_data3.2[YEAR==2010 & is.na(SAMPLING_STRATA_NAME), c(8, 38:42)] %>% pri
 #### Steve's EBS Pcod 2023 y2 object separate sex - join to above ----
 new_lfreq_data3.2 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 
-lfreq_data_steve_sex = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve.RDS")
+lfreq_data_steve_sex = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve.RDS") %>%
+  tidytable::as_tidytable()
 
 lfreq_data_steve_sex[, .N, by = SEX]
+
+new_lfreq_data3.2[, n_distinct(HAUL_JOIN)]
+lfreq_data_steve_sex[, n_distinct(HAUL_JOIN)]
+
+lfreq_data_steve_sex %>%
+  tidytable::left_join(new_lfreq_data3.2) -> new_lfreq_data3.3
+
+# save the new data table with sex added
+saveRDS(new_lfreq_data3.3, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
+
+
+
 
 
 
