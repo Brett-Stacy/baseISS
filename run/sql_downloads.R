@@ -348,7 +348,20 @@ new_lfreq_data3.2[, n_distinct(HAUL_JOIN)]
 lfreq_data_steve_sex[, n_distinct(HAUL_JOIN)]
 
 lfreq_data_steve_sex %>%
-  tidytable::left_join(new_lfreq_data3.2) -> new_lfreq_data3.3
+  tidytable::left_join(new_lfreq_data3.2 %>%
+                         tidytable::select(YEAR, HAUL_JOIN, TRIP_JOIN, SAMPLING_STRATA, SAMPLING_STRATA_NAME, SAMPLING_STRATA_DEPLOYMENT_CATEGORY, SAMPLING_STRATA_SELECTION_RATE) %>%
+                         tidytable::distinct())  -> new_lfreq_data3.3 # OK this works now
+
+unique(new_lfreq_data3.2$TRIP_JOIN)
+unique(new_lfreq_data3.3$TRIP_JOIN) # this is bad!!! FIX THIS! SOMETHING WENT WRONG WITH LEFT_JOIN ABOVE. I FIXED IT using the above select and distinct code.
+glimpse(new_lfreq_data3.2)
+glimpse(lfreq_data_steve_sex)
+glimpse(new_lfreq_data3.3)
+# identical(lfreq_data_steve_sex,
+#           new_lfreq_data3.3 %>%
+#             tidytable::select(-c(TRIP_JOIN, SAMPLING_STRATA, SAMPLING_STRATA_NAME, SAMPLING_STRATA_DEPLOYMENT_CATEGORY, SAMPLING_STRATA_SELECTION_RATE)))
+identical(unique(new_lfreq_data3.2$TRIP_JOIN), unique(new_lfreq_data3.3$TRIP_JOIN))
+
 
 # save the new data table with sex added
 saveRDS(new_lfreq_data3.3, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
@@ -363,6 +376,116 @@ saveRDS(new_lfreq_data3.3, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Git
 
 
 
+
+
+
+
+
+
+
+
+#### Age
+
+# read in the latest data join
+new_lfreq_data3.3 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
+# age_data = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/age1.sql')
+# temp_age = sql_run(akfin, age_data)
+# saveRDS(temp_age, "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/age_data_V1_sql_download.RDS")
+temp_age = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/age_data_V1_sql_download.RDS") %>%
+  tidytable::as_tidytable()
+
+
+### try downloading the data by species because I can't get haul_joins to match with y2 object and maybe that's why?
+# age_data2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/age2.sql')
+# temp_age2 = sql_run(akfin, age_data2)
+# saveRDS(temp_age2, "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/age_data_V2_sql_download.RDS")
+temp_age = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/age_data_V2_sql_download.RDS") %>%
+  tidytable::as_tidytable()
+
+
+
+
+# convert stuff to character to later join it
+# options(scipen=999)
+# temp_age %>% tidytable::mutate(HAUL_JOIN = as.character(HAUL_JOIN),
+                               # PORT_JOIN = as.character(PORT_JOIN)) -> temp_age
+
+
+# Inspect the haul_join prefixes because I will need to merge the age data using haul_join
+new_lfreq_data3.3 %>%
+  tidytable::tidytable() %>%
+  tidytable::mutate(join_prefix = substr(HAUL_JOIN, 1, 1)) -> .temp # new column of prefix P or H
+
+.temp %>% # how many Ps and Hs are there?
+  tidytable::count(join_prefix)
+
+# find out if these haul_joins are unique without their prefixes. I hope they are.
+new_lfreq_data3.3[, n_distinct(HAUL_JOIN)]
+new_lfreq_data3.3[, n_distinct(substr(HAUL_JOIN, 2, base::nchar(HAUL_JOIN)))]
+# uh-oh, there are 200 mismatch
+
+
+
+
+########## for now, just go with the information that matches the age data. Join by haul_join without any prefix
+
+# check common columns
+names(new_lfreq_data3.3)[names(new_lfreq_data3.3) %in% names(temp_age)]
+
+# check if any hauls match up
+# new_lfreq_data3.3[YEAR==2023, substr(unique(HAUL_JOIN), 2, nchar(HAUL_JOIN))]
+# temp_age[YEAR==2023, unique(HAUL_JOIN)]
+
+# new_lfreq_data3.3[YEAR==2023, substr(unique(HAUL_JOIN), 2, nchar(HAUL_JOIN))] %in%
+# temp_age[YEAR==2023, unique(HAUL_JOIN)] %>% sum()
+new_lfreq_data3.3[YEAR==2023, unique(HAUL_JOIN)] %in%
+  temp_age[YEAR==2023, unique(HAUL_JOIN)] %>% sum()
+
+# new_lfreq_data3.3[YEAR==2023, substr(unique(HAUL_JOIN), 2, nchar(HAUL_JOIN))][1:10]
+# temp_age[YEAR==2023, unique(HAUL_JOIN)][1:10]
+
+
+
+
+
+### join
+# This will join the age data with the hauls from which length data was used.
+
+# new_lfreq_data3.3 %>%
+#   tidytable::distinct(HAUL_JOIN, .keep_all = TRUE) %>% # only keep data pertaining to unique haul_join values
+#   tidytable::select(-c(LENGTH, SUM_FREQUENCY, WEIGHT1, YAGMH_SFREQ, YAGM_SFREQ, YAG_SFREQ, YG_SFREQ, Y_SFREQ, SEX)) %>% # get rid of columns only applicable to length data
+#   tidytable::right_join(temp_age %>%
+#                           tidytable::select(YEAR, SPECIES, HAUL_JOIN, PORT_JOIN, SEX, LENGTH, AGE) %>%
+#                           tidytable::drop_na(AGE, LENGTH, SEX) %>%
+#                           tidytable::mutate(HAUL_JOIN = base::ifelse(base::is.na(HAUL_JOIN), base::paste0("P", PORT_JOIN), base::paste0("H", HAUL_JOIN))) %>%
+#                           tidytable::select(-PORT_JOIN)) -> temp_combined
+#   tidytable::drop_na(TRIP_JOIN)
+# temp_combined %>% glimpse()
+
+# with V2
+new_lfreq_data3.3 %>%
+  tidytable::distinct(HAUL_JOIN, .keep_all = TRUE) %>% # only keep rows pertaining to unique haul_join values
+  tidytable::select(-c(LENGTH, SUM_FREQUENCY, WEIGHT1, YAGMH_SFREQ, YAGM_SFREQ, YAG_SFREQ, YG_SFREQ, Y_SFREQ, SEX)) %>% # get rid of columns only applicable to length data
+  tidytable::left_join(temp_age %>% # join with age. Even thought there is only one row per unique haul_join, this join will expand each unique row by the number of age observations in the corresponding age data frame.
+                          tidytable::select(YEAR, HAUL_JOIN, SEX, LENGTH, AGE) %>% # Only keep the necessary columns.
+                          tidytable::drop_na(AGE, LENGTH, SEX)) %>% # many NAs for age for some reason
+tidytable::drop_na(AGE) -> new_afreq_data1.0
+new_afreq_data1.0 %>% glimpse()
+
+
+# check years
+sort(unique(new_lfreq_data3.3$YEAR))
+sort(unique(temp_age$YEAR))
+sort(unique(new_afreq_data1.0$YEAR))
+
+
+
+sort(unique(new_afreq_data1.0$AGE)) # no 17 year olds I guess
+
+
+
+# save the new age data table
+saveRDS(new_afreq_data1.0, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_age_sex_ebs_pcod_Steve_TRIP_STRATA_V1.RDS")
 
 
 
