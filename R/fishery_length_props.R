@@ -65,43 +65,10 @@ fishery_length_props <- function(lfreq_data,
   }
 
 
-# recalculate WEIGHT1 for any combination of conditional statement execution above: WEIGHT1 = proportions at length by haul
-  .lfreq %>%
-    tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YAGMH_SFREQ) -> .lfreq
+  # recalculate WEIGHT1 for any combination of conditional statement execution above: WEIGHT1 = proportions at length by haul
+    .lfreq %>%
+      tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YAGMH_SFREQ) -> .lfreq
 
-
-
-
-
-  # ## BEGIN old: bootstrap trips, hauls, lengths as one switch:
-  #
-  # # randomize trips, hauls, and lengths ----
-  # if(isTRUE(boot_thl)) {
-  #   # Boot trips
-  #   .lfreq %>%
-  #     boot_trip() -> .r_trips # resampled trips
-  #
-  #   .lfreq[, unique(HAUL_JOIN), by = .(YEAR, TRIP_JOIN)] %>% # turn og data into a tidytable and condense to the unique YEAR, CRUISE, HAUL_JOIN
-  #     tidytable::rename(HAUL_JOIN = V1) %>% # gives only resampled trips and associated hauls. Hauls are repeated if resampled trips are repeated. ready for boot_haul.
-  #     tidytable::right_join(.r_trips) -> .joined_trips
-  #
-  #
-  #   # Boot hauls
-  #   .joined_trips %>%
-  #     boot_haul() %>%
-  #     tidytable::mutate(hauljoin_unique = .I) -> .r_hauls # resampled hauls
-  #
-  #   .lfreq %>% # Get a DT that looks like og_lf_data but consists only of .r_hauls.
-  #     tidytable::right_join(.r_hauls) -> .joined_hauls
-  #
-  #
-  #   # Boot lengths
-  #   .joined_hauls %>%
-  #     boot_length() -> .lfreq # this is intentionally named the same as prior to the conditional statement to be used equivalently in the expanded_length_props() function as a non-bootstrapped data table.
-  #
-  # }
-  #
-  # ## END old
 
 
   # calculate population proportions-at-length ----

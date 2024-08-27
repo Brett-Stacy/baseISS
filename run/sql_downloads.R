@@ -473,14 +473,19 @@ tidytable::drop_na(AGE) -> new_afreq_data1.0
 new_afreq_data1.0 %>% glimpse()
 
 
-# check years
+# check stuff - looks good
 sort(unique(new_lfreq_data3.3$YEAR))
 sort(unique(temp_age$YEAR))
 sort(unique(new_afreq_data1.0$YEAR))
-
-
-
+sort(unique(new_afreq_data1.0$SAMPLING_STRATA_NAME))
 sort(unique(new_afreq_data1.0$AGE)) # no 17 year olds I guess
+
+
+# recalculate necessaries - sum_frequency (for weight1), yagmh_sfreq (for weight1), yagm_sfreq (for >30 filter)
+# wait, perhaps not because I have and need length in there. Sum_frequency would only be for age, then what would happen to lengths? Hold off on this for now.
+new_afreq_data1.0 %>%
+  tidytable::summarise(SUM_FREQUENCY = n(base::unique(AGE)), .by = c(YEAR, HAUL_JOIN, AGE)) -> temp
+# if decide to continue making this look like length data frames, look at boot_length and fishery_length_props
 
 
 
