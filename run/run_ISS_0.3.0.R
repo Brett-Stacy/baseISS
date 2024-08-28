@@ -1,8 +1,9 @@
 # Age
 run_name = "age_V1"
 iters = 2
-lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_age_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
+lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 library(tidytable)
+specimen_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 
 yrs = NULL
 post_strata = list(strata = c("SEX"))

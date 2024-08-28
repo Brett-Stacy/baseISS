@@ -14,8 +14,8 @@
 #' @export
 #'
 compute_stats <- function(sim_length_props,
-                       og_length_props,
-                       lfreq_data){
+                          og_length_props,
+                          lfreq_data){
 
 
 
@@ -30,7 +30,9 @@ compute_stats <- function(sim_length_props,
   .bias_length <- bias_length(sim_length_props, og_length_props)
 
   # return
-  list(rss_length = .rss_length,
+  list(iterations = iters,
+       og_length_props = og_length_props,
+       rss_length = .rss_length,
        iss_length = .iss_length,
        bias_length = .bias_length)
 
