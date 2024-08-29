@@ -1,13 +1,13 @@
 #' Fishery input sample size function
 #'
 #' @description
-#' Bootstrap data sources to replicate EBS Pcod fishery observer measurements of length composition
+#' Bootstrap data sources to replicate EBS Pcod fishery observer measurements of length or age composition
 #' for computation of input sample size.
 #' Follows loosely srvy_iss.R from surveyISS package.
 #'
 #' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
 #' @param iters number of iterations
-#' @param lfreq_data  length frequency input dataframe
+#' @param freq_data  length or age frequency input dataframe
 #' @param yrs any year filter >= (default = NULL)
 #' @param post_strata list(strata = character string, nested = Boolean) if NULL, then no post stratification. The first element of post_strata is a character string with name(s) of post strata type. Accepted types are "GEAR", etc. These must be column name(s) in the data frame where each row has an entry and there are no NAs. The second element in post_strata allows for nested post-strata (e.g., "GEAR", "SEX") that are in order of the desired nested hierarchy, then the final results will be a nested list in order of the listed post-strata as well. Perhaps there should be an error message for attempts with strata names that are not in lfreq_data or it does exist, but there are NAs in it.
 #' @param boot.trip Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
@@ -20,19 +20,27 @@
 #'
 #' @export
 #'
-fishery_iss <- function(iters = 1,
-                        lfreq_data,
+fishery_iss <- function(length_based = TRUE,
+                        iters = 1,
+                        freq_data,
                         yrs = NULL,
                         post_strata = NULL,
                         boot.trip = FALSE,
                         boot.haul = FALSE,
-                        boot.length = FALSE,
+                        boot.length = TRUE,
+                        boot.age = FALSE,
                         expand.by.sampling.strata = FALSE,
                         expand_using_weighting_factors = TRUE) # expanding by weighting factors must be the same for og props and resampled props for an apples to apples comparison
   {
 
 
-  if(!is.null(post_strata)){ # post_stratify. PROBS MAKE THIS A FUNCTION: post_stratify.   output will be organized as a list with each entry corresponding to a post_strata name
+  # Necessary checks
+  if(base::isTRUE(boot.length & boot.age)){
+    base::stop("Feature not developed. Run fishery_iss with length and age separately instead.")
+  }
+
+
+  if(!is.null(post_strata)){ # post_stratify. output will be organized as a list with each entry corresponding to a post_strata name
 
     lfreq_data %>%
       post_stratify(post_strata = post_strata) -> out_stats

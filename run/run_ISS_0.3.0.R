@@ -5,19 +5,21 @@ lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Re
 library(tidytable)
 alfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 
-length_based = TRUE # if FALSE, then age_based.
+length_based = TRUE # if FALSE, then age_based. Try TRUE first to test if still works.
 iters = 2
 yrs = NULL
 post_strata = list(strata = c("SEX")) # try SEX post-strata - works
 boot.trip = T
 boot.haul = T
 boot.length = T
+boot.age = F
 expand.by.sampling.strata = TRUE
 expand_using_weighting_factors = TRUE
 
 
 tictoc::tic()
-fishery_iss(iters = iters,
+fishery_iss(length_based = length_based,
+            iters = iters,
             lfreq_data = lfreq_data,
             yrs = yrs,
             post_strata = post_strata,
