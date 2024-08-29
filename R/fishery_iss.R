@@ -5,6 +5,7 @@
 #' for computation of input sample size.
 #' Follows loosely srvy_iss.R from surveyISS package.
 #'
+#' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
 #' @param iters number of iterations
 #' @param lfreq_data  length frequency input dataframe
 #' @param yrs any year filter >= (default = NULL)

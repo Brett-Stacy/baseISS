@@ -5,24 +5,15 @@ lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Re
 library(tidytable)
 alfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 
-
-
-iters_length = 2
-iters_age = 3
-yrs_length = "ALL"
-yrs_age = "ALL"
-post_strata_length = list(strata = c("SEX"))
-post_strata_age = list(strata = c("GEAR", "SEX"), nested = TRUE)
-boot.trip_length = TRUE
-boot.trip_age = TRUE
-boot.haul_length = TRUE
-boot.haul_age = TRUE
-boot.length = TRUE
-boot.age = TRUE
-expand.by.sampling.strata_length = TRUE
-expand.by.sampling.strata_length = TRUE
-expand_using_weighting_factors_length = TRUE
-expand_using_weighting_factors_age = TRUE
+length_based = TRUE # if FALSE, then age_based.
+iters = 2
+yrs = NULL
+post_strata = list(strata = c("SEX")) # try SEX post-strata - works
+boot.trip = T
+boot.haul = T
+boot.length = T
+expand.by.sampling.strata = TRUE
+expand_using_weighting_factors = TRUE
 
 
 tictoc::tic()
