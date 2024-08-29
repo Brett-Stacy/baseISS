@@ -17,7 +17,7 @@
 #'
 #' @export
 #'
-fishery_props <- function(length_based = length_based,
+fishery_props <- function(length_based,
                           freq_data,
                           yrs = NULL,
                           boot.trip = FALSE,
@@ -84,12 +84,14 @@ fishery_props <- function(length_based = length_based,
 
   # calculate population proportions-at-length or -age ----
   .freq %>%
-      expand_length_props(expand.by.sampling.strata = expand.by.sampling.strata,
-                          expand_using_weighting_factors = expand_using_weighting_factors) -> .pop
+      expand_props(species_code = species_code,
+                   area_code = area_code,
+                   expand.by.sampling.strata = expand.by.sampling.strata,
+                   expand_using_weighting_factors = expand_using_weighting_factors) -> .pop
 
 
   # return as list ----
-  list(length = .pop)
+  list(length = .pop) # DEVELOP THIS TO BE SOMETHING OTHER THAN length
 
 }
 # for testing ----

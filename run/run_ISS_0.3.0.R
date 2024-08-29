@@ -1,4 +1,4 @@
-# Age
+# Age - first integration, set up code framework. test with length only. - works
 run_name = "age_V1"
 
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
@@ -6,7 +6,8 @@ library(tidytable)
 library(baseISS)
 # alfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 
-
+species_code = "202"
+area_code = "EBS"
 length_based = TRUE # if FALSE, then age_based. Try TRUE first to test if still works.
 iters = 2
 freq_data = lfreq_data # try with lfreq first.
@@ -21,7 +22,9 @@ expand_using_weighting_factors = TRUE
 
 
 tictoc::tic()
-fishery_iss(length_based = length_based,
+fishery_iss(species_code = species_code,
+            area_code = area_code,
+            length_based = length_based,
             iters = iters,
             freq_data = freq_data,
             yrs = yrs,

@@ -5,6 +5,8 @@
 #' for computation of input sample size.
 #' Follows loosely srvy_iss.R from surveyISS package.
 #'
+#' @param species_code species number code. Used for specific expansion
+#' @param area_code area character code. Used for specific expansion
 #' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
 #' @param iters number of iterations
 #' @param freq_data  length or age frequency input dataframe
@@ -21,7 +23,9 @@
 #'
 #' @export
 #'
-fishery_iss <- function(length_based = TRUE,
+fishery_iss <- function(species_code,
+                        area_code,
+                        length_based = TRUE,
                         iters = 1,
                         freq_data,
                         yrs = NULL,

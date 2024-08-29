@@ -5,7 +5,7 @@
 \title{Resample data and compute proportions-at-length or -age population expansion}
 \usage{
 fishery_props(
-  length_based = length_based,
+  length_based,
   freq_data,
   yrs = NULL,
   boot.trip = FALSE,

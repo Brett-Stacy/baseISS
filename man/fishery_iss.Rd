@@ -5,6 +5,8 @@
 \title{Fishery input sample size function}
 \usage{
 fishery_iss(
+  species_code,
+  area_code,
   length_based = TRUE,
   iters = 1,
   freq_data,
@@ -19,6 +21,10 @@ fishery_iss(
 )
 }
 \arguments{
+\item{species_code}{species number code. Used for specific expansion}
+
+\item{area_code}{area character code. Used for specific expansion}
+
 \item{length_based}{Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.}
 
 \item{iters}{number of iterations}
