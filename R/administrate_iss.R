@@ -8,7 +8,7 @@
 #'
 administrate_iss = function(freq_data) {
 
-  ######## NEW
+  ######## NEW (with age)
   # get original population proportions-at-length or -age values ----
   og_props = fishery_props(length_based = length_based,
                            freq_data = freq_data,
