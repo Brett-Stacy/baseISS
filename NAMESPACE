@@ -3,6 +3,7 @@
 export("%>%")
 export(administrate_iss)
 export(bias_length)
+export(boot_age)
 export(boot_haul)
 export(boot_length)
 export(boot_trip)

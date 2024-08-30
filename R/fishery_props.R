@@ -91,7 +91,11 @@ fishery_props <- function(length_based,
 
 
   # return as list ----
-  list(length = .pop) # DEVELOP THIS TO BE SOMETHING OTHER THAN length
+  # create a useful name based on length or age
+  base::ifelse(base::isTRUE(length_based), "length", "age") -> .data_type
+  pop_freq = list(.pop)
+  names(pop_freq) = .data_type
+  return(pop_freq)
 
 }
 # for testing ----
