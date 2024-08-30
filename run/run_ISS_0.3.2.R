@@ -1,4 +1,4 @@
-# Age - third integration, test with age data. Use fake data again. test if agnostic compute_stats.r and dependencies function as expected.
+# Age - third integration, test with age data. Use fake data again. test if agnostic compute_stats.r and dependencies function as expected. - works
 run_name = "age_V3"
 
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
