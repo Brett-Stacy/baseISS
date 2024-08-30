@@ -4,20 +4,20 @@
 \alias{compute_stats}
 \title{Compute fishery ISS statistics}
 \usage{
-compute_stats(sim_length_props, og_length_props, lfreq_data)
+compute_stats(sim_props, og_props, freq_data)
 }
 \arguments{
-\item{sim_length_props}{list of replicated abundance at length}
+\item{sim_props}{list of replicated abundance at length or age}
 
-\item{og_length_props}{original abundance at length (computed with data that has not been resampled)}
+\item{og_props}{original abundance at length or age (computed with data that has not been resampled)}
 
-\item{lfreq_data}{length frequency input dataframe}
+\item{lfreq_data}{length or age frequency input dataframe}
 }
 \value{
-list of dataframes for realized sample size by replicate (.rss_length for length composition),
-input sample size by year? (.iss_length for length composition),
-bias in resampled comp data compared to original values (.bias_length for length composition)
+list of dataframes for realized sample size by replicate (.rss for length or age composition),
+input sample size by year (.iss),
+bias in resampled comp data compared to original values (.bias for length or age composition)
 }
 \description{
-Wrapper function to compute statistics of bootstrap resampling of length composition.
+Wrapper function to compute statistics of bootstrap resampling of length or age composition.
 }
