@@ -1,40 +1,40 @@
 #' Compute fishery ISS statistics
 #'
 #' @description
-#' Wrapper function to compute statistics of bootstrap resampling of length composition.
+#' Wrapper function to compute statistics of bootstrap resampling of length or age composition.
 #'
-#' @param sim_length_props list of replicated abundance at length
-#' @param og_length_props original abundance at length (computed with data that has not been resampled)
-#' @param lfreq_data length frequency input dataframe
+#' @param sim_props list of replicated abundance at length or age
+#' @param og_props original abundance at length or age (computed with data that has not been resampled)
+#' @param lfreq_data length or age frequency input dataframe
 #'
-#' @return list of dataframes for realized sample size by replicate (.rss_length for length composition),
-#' input sample size by year? (.iss_length for length composition),
-#' bias in resampled comp data compared to original values (.bias_length for length composition)
+#' @return list of dataframes for realized sample size by replicate (.rss for length or age composition),
+#' input sample size by year (.iss),
+#' bias in resampled comp data compared to original values (.bias for length or age composition)
 #'
 #' @export
 #'
-compute_stats <- function(sim_length_props,
-                          og_length_props,
-                          lfreq_data){
+compute_stats <- function(sim_props,
+                          og_props,
+                          freq_data){
 
 
 
-  .rss_length = rss_length(sim_length_props = sim_length_props, og_length_props = og_length_props)
+  .rss = rss(sim_props = sim_props, og_props = og_props)
 
 
   # length comps:
   # compute harmonic mean of iterated realized sample size, which is the input sample size (iss)
-  .iss_length <- iss_length(.rss_length, lfreq_data)
+  .iss <- iss(.rss, lfreq_data)
 
   # compute average relative bias in pop'n estimates (avg relative bias across length)
-  .bias_length <- bias_length(sim_length_props, og_length_props)
+  .bias <- bias(sim_props, og_props)
 
   # return
   list(iterations = iters,
-       og_length_props = og_length_props,
-       rss_length = .rss_length,
-       iss_length = .iss_length,
-       bias_length = .bias_length)
+       og_props = og_props,
+       rss = .rss,
+       iss = .iss,
+       bias = .bias)
 
 
 

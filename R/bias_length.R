@@ -1,20 +1,20 @@
-#' calculate bias in bootstrapped proportions-at-length
+#' calculate bias in bootstrapped proportions-at-length or -age
 #'
 #' @description
-#' Computes the mean bias in bootstrapped population at length compared to original unsampled
-#' population at length
+#' Computes the mean bias in bootstrapped population at length or age compared to original unsampled
+#' population at length or age
 #'
-#' @param sim_length_props list of replicated abundance at length
-#' @param og_length_props original abundance at length (computed with data that has not been resampled)
+#' @param sim_props list of replicated abundance at length or age
+#' @param og_props original abundance at length or age (computed with data that has not been resampled)
 #'
 #' @export
 #'
-bias_length <- function(sim_length_props,
-                        og_length_props) {
+bias <- function(sim_props,
+                        og_props) {
 
 
-  sim_length_props %>%
-    tidytable::left_join(og_length_props) %>%
+  sim_props %>%
+    tidytable::left_join(og_props) %>%
     tidytable::mutate(bias = sim_FREQ - og_FREQ) %>%
     tidytable::summarise(bias = base::mean(bias), .by = YEAR)
 
