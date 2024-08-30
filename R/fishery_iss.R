@@ -45,6 +45,7 @@ fishery_iss <- function(species_code,
   }
 
 
+  # Post-stratify if requested
   if(!is.null(post_strata)){ # post_stratify. output will be organized as a list with each entry corresponding to a post_strata name
 
     lfreq_data %>%
@@ -58,6 +59,13 @@ fishery_iss <- function(species_code,
       administrate_iss() -> out_stats
 
   }
+
+  # Label the output list object as length or age to inexorably tie the data type to the output
+  base::ifelse(base::isTRUE(length_based), "length", "age") -> .data_type
+
+  out_stats = list(out_stats)
+  names(out_stats) = .data_type
+
 
   return(out_stats)
 
