@@ -11,7 +11,7 @@
 #' @param iters number of iterations
 #' @param freq_data  length or age frequency input dataframe
 #' @param yrs any year filter >= (default = NULL)
-#' @param post_strata list(strata = character string, nested = Boolean) if NULL, then no post stratification. The first element of post_strata is a character string with name(s) of post strata type. Accepted types are "GEAR", etc. These must be column name(s) in the data frame where each row has an entry and there are no NAs. The second element in post_strata allows for nested post-strata (e.g., "GEAR", "SEX") that are in order of the desired nested hierarchy, then the final results will be a nested list in order of the listed post-strata as well. Perhaps there should be an error message for attempts with strata names that are not in lfreq_data or it does exist, but there are NAs in it.
+#' @param post_strata list(strata = character string, nested = Boolean) if NULL, then no post stratification. The first element of post_strata is a character string with name(s) of post strata type. Accepted types are "GEAR", etc. These must be column name(s) in the data frame where each row has an entry and there are no NAs. The second element in post_strata allows for nested post-strata (e.g., "GEAR", "SEX") that are in order of the desired nested hierarchy, then the final results will be a nested list in order of the listed post-strata as well. Perhaps there should be an error message for attempts with strata names that are not in freq_data or it does exist, but there are NAs in it.
 #' @param minimum_sample_size list(resolution = character string, size = integer) if NULL, then no minimum sample size. The sample size at the chosen resolution (must be column in freq_data, e.g., YAGM_SFREQ for EBS Pcod) for which to filter out data that does not meet the minimum sample size requested. Example: minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30). Note that this filters to keep only samples GREATER than 30 at the YAGM resolution.
 #' @param boot.trip Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length or -age
 #' @param boot.haul Boolean. Resample hauls w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length or -age
@@ -50,14 +50,14 @@ fishery_iss <- function(species_code,
   # Post-stratify if requested
   if(!is.null(post_strata)){ # post_stratify. output will be organized as a list with each entry corresponding to a post_strata name
 
-    lfreq_data %>%
+    freq_data %>%
       post_stratify(post_strata = post_strata) -> out_stats
 
   }else { # do not post-stratify
 
     base::print("no post-stratification")
 
-    lfreq_data %>%
+    freq_data %>%
       administrate_iss() -> out_stats
 
   }
