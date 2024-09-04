@@ -5,7 +5,7 @@
 #'
 #' @param sim_props list of replicated abundance at length or age
 #' @param og_props original abundance at length or age (computed with data that has not been resampled)
-#' @param lfreq_data length or age frequency input dataframe
+#' @param freq_data length or age frequency input dataframe
 #'
 #' @return list of dataframes for realized sample size by replicate (.rss for length or age composition),
 #' input sample size by year (.iss),
@@ -24,7 +24,7 @@ compute_stats <- function(sim_props,
 
   # length comps:
   # compute harmonic mean of iterated realized sample size, which is the input sample size (iss)
-  .iss <- iss(.rss, lfreq_data)
+  .iss <- iss(.rss, freq_data)
 
   # compute average relative bias in pop'n estimates (avg relative bias across length)
   .bias <- bias(sim_props, og_props)

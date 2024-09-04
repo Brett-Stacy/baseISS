@@ -1,5 +1,5 @@
 # Rerun 0.3.2 fixing the lfreq mistakes everywhere. change these to freq in all relevant functions.
-run_name = "age_V3_cleanup"
+run_name = "age_V3_cleanup_lfreq"
 
 lfreq_data_test = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 library(tidytable)
@@ -22,6 +22,7 @@ iters = 2
 freq_data = lfreq_data_test # use fake age data
 yrs = NULL
 post_strata = list(strata = c("SEX")) # try SEX post-strata
+minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30)
 boot.trip = T
 boot.haul = T
 boot.length = F

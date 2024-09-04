@@ -150,7 +150,7 @@ expand_props = function(DT,
 
 
 # TESTING
-# DT = .lfreq
+# DT = .freq
 
 
 

@@ -99,5 +99,5 @@ fishery_props <- function(length_based,
 
 }
 # for testing ----
-# length_DT = .lfreq
+# length_DT = .freq
 

@@ -11,7 +11,7 @@ compute_stats(sim_props, og_props, freq_data)
 
 \item{og_props}{original abundance at length or age (computed with data that has not been resampled)}
 
-\item{lfreq_data}{length or age frequency input dataframe}
+\item{freq_data}{length or age frequency input dataframe}
 }
 \value{
 list of dataframes for realized sample size by replicate (.rss for length or age composition),
