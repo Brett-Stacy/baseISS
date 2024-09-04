@@ -1,4 +1,4 @@
-# Intermediate functionality adjustment - user defined minimum sample size to filter by. User chooses resolution and sample size to keep data greater than.
+# Intermediate functionality adjustment - user defined minimum sample size to filter by. User chooses resolution and sample size to keep data greater than. - tested: works
 # otherwise identical to age_V3
 run_name = "sample_size_V1"
 

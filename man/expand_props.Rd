@@ -24,5 +24,5 @@ expand_props(
 \item{expand_using_weighting_factors}{MAKE THIS GENERIC IN FUTURE. expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.}
 }
 \description{
-takes length or age frequency data and expands it into fished population proportions at length or age using the weightings from the relevant data. The relevant data can be the og data or bootstrapped data.
+This is intended to be a large function that consists of many conditional statements, each of which pertains to a unique species/area expansion method. The internals of the conditional statements can eventually turn into many species/area/length/age specific functions housed in another script. Takes length or age frequency data and expands it into fished population proportions at length or age using the weightings from the relevant data. The relevant data can be the og data or bootstrapped data.
 }
