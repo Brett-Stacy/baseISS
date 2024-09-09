@@ -1,0 +1,56 @@
+---
+title: "Should I re-calculate WEIGHT1 when post-stratifying by sex?"
+author: "Brett Stacy"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(tidytable)
+```
+
+# Description
+Sex is the only inter-haul characteristic (in length data) that can be post-stratified by. But does this mean that WEIGHT1 needs to be recalculated when sex is filtered by to post-stratify by it? WEIGHT1 = SUM_FREQUENCY/YAGMH_SFREQ. i.e., the number of fish of a particular length divided by the total number of fish lengthed in a haul.
+
+
+Load a sex-differentiated input data frame:
+```{r}
+lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
+
+```
+
+
+Determine if SUM_FREQUENCY and YAGMH_SFREQ are sex-dependent. 
+```{r}
+lfreq_data[HAUL_JOIN=="H101530"] %>% 
+  tidytable::glimpse()
+
+lfreq_data[HAUL_JOIN=="H101530", .(SEX, LENGTH, YAGMH_SFREQ, SUM_FREQUENCY, WEIGHT1)] 
+
+lfreq_data[HAUL_JOIN=="H101530", sum(WEIGHT1)] 
+
+lfreq_data[HAUL_JOIN=="H101530", .(SEX, LENGTH, YAGMH_SFREQ, SUM_FREQUENCY, WEIGHT1, WEIGHT2, WEIGHT4)] 
+
+
+
+```
+
+
+
+
+# Conclusion
+Sex can only be post-stratified by if it is included as a column in the input data frame. In the case of EBS Pcod, the WEIGHT1 column is calculated as combined-sex (see above r code). So there are two important questions:
+
+1. When a single sex is filtered, can we use the existing WEIGHT1 values?
+2. When WEIGHT1 is recalculated in fishery_props.R, is using the existing YAGMH_SFREQ value appropriate? Because it will often be larger than if we recalculated it. 
+
+
+
+
+
+
+
+
+

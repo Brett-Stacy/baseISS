@@ -78,8 +78,19 @@ expand_props = function(DT,
   }else if(species_code==202 & area_code=="EBS" & base::isFALSE(length_based)){
     warning("Age expansion for species 202 in area BS under development")
 
+    #### IMPORTANT NOTES:
+    ## In order to implement age expansion in the same fashion as the existing length expansion, the following columns to be resolved:
+    # 1. YAGMH_SFREQ: Haul-level number of age samples. This, combined with SUM_FREQUENCY are used for length to calculate WEIGHT1: proportions at length in a haul.
+    # 2. SUM_FREQUENCY: Haul-level number of samples at each observed age.
+    # 3. WEIGHT1: SUM_FREQUENCY/YAGMH_SFREQ
+    # 4. YAGM_SFREQ: Month-level number of age samples. This is used for length to filter out 30 or less samples at the end of the expansion.
+    # 5+. Y..._SFREQ: Any-level number of age samples desired to filter out by a minimum sample size.
+    ## These considerations also need to be addressed:
+    # 1. How to treat SUM_FREQUENCY when there exists the same ages at different lengths in a haul?
+    # 2. How to implement conditional age-at-length?
 
-    ########## BETA: TRY A CUSTOM AGE EXPANSION
+
+    ########## BETA: JUST USE THE EXPANSION FROM LENGTH. THIS IS FOR FAKE AGE DATA ONLY (LENGTH column in the lfreq data frame artificially changed to AGE)
     # Add in sampling strata weighting functionality ----
     if(isTRUE(expand.by.sampling.strata)){
       print("expand by sampling strata activated")
