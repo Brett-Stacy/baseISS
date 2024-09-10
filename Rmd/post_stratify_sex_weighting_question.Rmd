@@ -44,8 +44,13 @@ lfreq_data[HAUL_JOIN=="H101530", .(SEX, LENGTH, YAGMH_SFREQ, SUM_FREQUENCY, WEIG
 Sex can only be post-stratified by if it is included as a column in the input data frame. In the case of EBS Pcod, the WEIGHT1 column is calculated as combined-sex (see above r code). So there are two important questions:
 
 1. When a single sex is filtered, can we use the existing WEIGHT1 values?
-2. When WEIGHT1 is recalculated in fishery_props.R, is using the existing YAGMH_SFREQ value appropriate? Because it will often be larger than if we recalculated it. 
+Answer: mute point because WEIGHT1 is recalculated in fishery_props.R. 
 
+
+
+
+2. When WEIGHT1 is recalculated in fishery_props.R, is using the existing YAGMH_SFREQ value appropriate? Because it will often be larger than if we recalculated it. 
+Answer: I don't know, but just include code to recalculate it anyway. 
 
 
 

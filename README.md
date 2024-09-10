@@ -30,9 +30,22 @@ met: 1. (length data) There exists a WEIGHT1 column that represents the
 haul-level proportions-at-length of the observed lengths. This is
 calculated by dividing the frequency of the observed length within a
 haul by the total number of fish lengthed in that haul. It should be a
-standard calculation that is exactly the same for every species.
+standard calculation that is exactly the same for every species. This
+convention…
+
+2.  Length data be condensed with sum_frequency column.
+
+3.  Age data include associated lengths.
+
+4.  Age data flattened, no “sum_frequency” column.
 
 ### Current Functionality
+
+1.  Length ISS must be a separate analysis to age ISS. Unlike surveyISS,
+    this is necessary for several reasons: a. there will be many more
+    hauls with lengths than ages, b. it is likely that the user options
+    such as post_stratify will be different between length data and age
+    data, c. NOTE ANOTHER ONE WHEN YOU REMEMBER.
 
 ### Developing Functionality
 
