@@ -1,4 +1,4 @@
-# Based on 0.3.2. Incorporate YAGMH_SFREQ recalculation into booting process. Do it for length first.
+# Based on 0.3.2. Incorporate YAGMH_SFREQ recalculation into booting process. Do it for length first. tested - works.
 run_name = "custom_YAGMH_SFREQ"
 
 lfreq_data_test = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
@@ -25,8 +25,8 @@ post_strata = list(strata = c("SEX")) # try SEX post-strata
 minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30)
 boot.trip = T
 boot.haul = T
-boot.length = F
-boot.age = T
+boot.length = T
+boot.age = F
 expand.by.sampling.strata = TRUE
 expand_using_weighting_factors = TRUE
 
