@@ -51,7 +51,9 @@ administrate_iss = function(freq_data) {
   freq_data -> .freq_data
 
   ## now get statistics ----
-  compute_stats(.sim_props, .og_props, .freq_data)
+  compute_stats(sim_props = .sim_props,
+                og_props = .og_props,
+                freq_data = .freq_data)
 
 
 }

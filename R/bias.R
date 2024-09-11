@@ -10,7 +10,7 @@
 #' @export
 #'
 bias <- function(sim_props,
-                        og_props) {
+                 og_props) {
 
 
   sim_props %>%

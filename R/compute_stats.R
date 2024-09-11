@@ -22,12 +22,12 @@ compute_stats <- function(sim_props,
   .rss = rss(sim_props = sim_props, og_props = og_props)
 
 
-  # length comps:
+  # length or age comps:
   # compute harmonic mean of iterated realized sample size, which is the input sample size (iss)
-  .iss <- iss(.rss, freq_data)
+  .iss <- iss(rss = .rss, freq_data = freq_data)
 
   # compute average relative bias in pop'n estimates (avg relative bias across length)
-  .bias <- bias(sim_props, og_props)
+  .bias <- bias(sim_props = sim_props, og_props = og_props)
 
   # return
   list(iterations = iters,
