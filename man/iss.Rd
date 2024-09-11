@@ -11,6 +11,9 @@ iss(rss, freq_data)
 
 \item{freq_data}{length or age frequency input dataframe}
 }
+\value{
+iss
+}
 \description{
 Function to calculate length or age composition iss (harmonic mean of realized sample sizes) and add nominal sample
 size (the number of lengths or ages actually measured) and the number of sampled hauls to output.

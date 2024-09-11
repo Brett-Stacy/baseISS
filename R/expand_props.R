@@ -94,6 +94,7 @@ expand_props = function(DT,
     # Add in sampling strata weighting functionality ----
     if(isTRUE(expand.by.sampling.strata)){
       print("expand by sampling strata activated")
+      print(paste0("boot.age = ", boot.age))
       DT %>%
         expand_by_sampling_strata() -> DT
     }

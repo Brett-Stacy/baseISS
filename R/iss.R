@@ -7,6 +7,8 @@
 #' @param rss iterated length or age composition realized sample size
 #' @param freq_data length or age frequency input dataframe
 #'
+#' @return iss
+#'
 #' @export
 #'
 iss <- function(rss,
@@ -14,9 +16,23 @@ iss <- function(rss,
 
   rss %>%
     tidytable::summarise(iss = psych::harmonic.mean(rss, na.rm = TRUE, zero = FALSE),
-                         .by = c(YEAR)) %>%
-    # add nominal sample size (nss) and number of hauls (nhls)
-    tidytable::left_join(freq_data %>%
-                           tidytable::summarise(nss = sum(SUM_FREQUENCY), nhls = length(unique(HAUL_JOIN)), .by = YEAR))
+                         .by = c(YEAR)) -> .iss
+
+  # add nominal sample size (nss) and number of hauls (nhls). Conditional on length or age.
+  if(base::isTRUE(boot.length)){
+    .iss %>%
+      tidytable::left_join(freq_data %>%
+                             tidytable::summarise(nss = sum(SUM_FREQUENCY), nhls = length(unique(HAUL_JOIN)), .by = YEAR)) -> iss_out
+  }else{
+    .iss %>%
+      tidytable::left_join(freq_data %>%
+                             tidytable::summarise(SUM_FREQUENCY = n(base::unique(AGE)), .by = c(YEAR, HAUL_JOIN, AGE)) %>%
+                             tidytable::summarise(nss = sum(SUM_FREQUENCY), nhls = length(unique(HAUL_JOIN)), .by = YEAR)) -> iss_out
+  }
+
+
+return(iss_out)
+
+
 
 }

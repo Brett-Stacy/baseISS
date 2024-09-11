@@ -86,7 +86,7 @@ fishery_props <- function(length_based,
       tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YH_SFREQ) %>% # same WEIGHT1 calculation method as length
       tidytable::left_join(.freq %>% # add the missing columns back in, using the distinct function to avoid unwanted row replication.
                              tidytable::distinct()) -> .freq
-  }else if(base::isTRUE(boot.age)){
+  }else if(base::isTRUE(boot.age)){ # resampled age props where boot.age = TRUE
     .freq %>%
       tidytable::mutate(YH_SFREQ = base::sum(SUM_FREQUENCY), .by = c(YEAR, HAUL_JOIN)) %>%
       tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YH_SFREQ) -> .freq
