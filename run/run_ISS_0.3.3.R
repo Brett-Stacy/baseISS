@@ -13,7 +13,7 @@ alfreq_data$SEX = NULL # also nullify sex for now because it is complicating wei
 species_code = "202"
 area_code = "EBS"
 length_based = FALSE # if FALSE, then age_based. Try FALSE here
-iters = 2
+iters = 10
 freq_data = alfreq_data # use real age data
 yrs = NULL
 post_strata = list(strata = c("GEAR")) # try gear post-strata
