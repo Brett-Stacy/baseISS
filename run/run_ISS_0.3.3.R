@@ -5,8 +5,8 @@ run_name = "age_V4"
 library(tidytable)
 library(baseISS)
 alfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_age_sex_ebs_pcod_Steve_TRIP_STRATA_V1.RDS")
-
-
+alfreq_data$LENGTH = NULL # nullify length because it gets in the way when summarizing by age in boot_age.R.
+alfreq_data$SEX = NULL # also nullify sex for now because it is complicating weight1 calculation in fishery_props (multiple sexes translates to repeated SUM_FREQUENCY values). This is only necessary for testing, and won't be necessary when stratifying by SEX. There is a stop error if SEX is included in the input data frame, but not requested to be post-stratified by.
 
 
 
@@ -16,7 +16,8 @@ length_based = FALSE # if FALSE, then age_based. Try FALSE here
 iters = 2
 freq_data = alfreq_data # use real age data
 yrs = NULL
-post_strata = list(strata = c("SEX")) # try SEX post-strata
+post_strata = list(strata = c("GEAR")) # try gear post-strata
+minimum_sample_size = NULL # not implemented for age yet. no SFREQ stuff to filter minimal sample size by age yet.
 boot.trip = T
 boot.haul = T
 boot.length = F

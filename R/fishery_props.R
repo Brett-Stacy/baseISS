@@ -76,9 +76,22 @@ fishery_props <- function(length_based,
   }
 
 
+
+
   # recalculate WEIGHT1 for any combination of conditional statement execution above: WEIGHT1 = proportions at length or age by haul
-    .freq %>% # NEED TO DEVELOP FOR AGE: MAKE A WEIGHT1 COLUMN AND SUM_FREQUENCY AND YAGMH_STREQ COLUMNS SOMEWHERE HIGH UP IN AGE DATA FRAME.
+  if(base::isFALSE(length_based)){ # age. WEIGHT1 needs to be calculated initially for length
+    .freq %>% # need to revisit this for conditional age at length as SUM_FREQUENCY will for ages will be different if we consider their lengths
+      tidytable::summarise(SUM_FREQUENCY = n(base::unique(AGE)), .by = c(YEAR, HAUL_JOIN, AGE)) %>% # summarising excludes any irrelevant columns, add those back in with left_join below.
+      tidytable::mutate(YH_SFREQ = base::sum(SUM_FREQUENCY), .by = c(YEAR, HAUL_JOIN)) %>% # YH_SFREQ is analagous to YAGMH_SFREQ for length
+      tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YH_SFREQ) %>% # same WEIGHT1 calculation method as length
+      tidytable::left_join(.freq %>% # add the missing columns back in, using the distinct function to avoid unwanted row replication.
+                             tidytable::distinct()) -> .freq
+  }else{ # length. WEIGHT1 already exists but needs to be recalculated for resampled data.
+    .freq %>%
       tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YAGMH_SFREQ) -> .freq
+  }
+
+
 
 
 

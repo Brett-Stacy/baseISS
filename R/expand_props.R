@@ -104,7 +104,7 @@ expand_props = function(DT,
 
     y3<- y2[,c("YEAR","GEAR","AREA2","MONTH","CRUISE",
                "HAUL_JOIN", "AGE", "SUM_FREQUENCY", "YAGMH_SNUM",
-               "YAGMH_SFREQ","YAGM_SFREQ", "YG_SFREQ","Y_SFREQ","YAGM_TNUM","YG_TNUM","Y_TNUM","YAGMH_SNUM",
+               "YH_SFREQ","YAGM_TNUM","YG_TNUM","Y_TNUM","YAGMH_SNUM",
                "YAGM_SNUM","YG_SNUM","YG_SNUM","Y_SNUM","WEIGHT1","WEIGHT2","WEIGHT3","WEIGHT4")]     # get rid of some unneeded variables
 
     if(base::isTRUE(expand_using_weighting_factors)){

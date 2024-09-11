@@ -5,8 +5,8 @@
 #' for computation of input sample size.
 #' Follows loosely srvy_iss.R from surveyISS package.
 #'
-#' @param species_code species number code. Used for specific expansion
-#' @param area_code area character code. Used for specific expansion
+#' @param species_code species number code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.
+#' @param area_code area character code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.
 #' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
 #' @param iters number of iterations
 #' @param freq_data  length or age frequency input dataframe
@@ -44,6 +44,9 @@ fishery_iss <- function(species_code,
   # Necessary checks
   if(base::isTRUE(boot.length & boot.age)){
     base::stop("Feature not developed. Run fishery_iss with length and age separately instead.")
+  }
+  if(any(colnames(freq_data) %in% c("SEX", "Sex", "sex")) & isFALSE(!any(post_strata$strata %in% c("SEX", "Sex", "sex")))){
+    base::stop("Sex cannot yet be a column name in freq_data if it is not being post-stratified by. This arose because of my method for implementing WEIGHT1 in fishery_props.R to accomodate age data. This should be addressed in the future, but note that this is the only column other than length that will impact weight1 calculation since all other columns will be the same for each age observation.")
   }
 
 
