@@ -504,7 +504,8 @@ saveRDS(new_afreq_data1.0, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Git
 
 
 #### Age V2
-# add columns: SUM_FREQUENCY, WEIGHT1, YAGMH_SFREQ, YAGM_SFREQ, YAG_SFREQ, YG_SFREQ, Y_SFREQ,
+# add columns: SUM_FREQUENCY, WEIGHT1, YAGMH_SFREQ, YAGM_SFREQ, YAG_SFREQ, YG_SFREQ, Y_SFREQ
+# Or don't add these columns here because the important ones (SUM_FREQUENCY, YAGMH_SFREQ, and WEIGHT1) have to be recalculated anyway in boot_age.R
 
 # read in the latest data join
 new_afreq_data1.0 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_age_sex_ebs_pcod_Steve_TRIP_STRATA_V1.RDS")
@@ -522,14 +523,6 @@ new_afreq_data1.1[YEAR==2022 & HAUL_JOIN=="H25648004533000000049", .(HAUL_JOIN, 
   tidytable::glimpse() # 3 ages in this haul, two are the same but the associated lengths are different.
 
 
-# Goal: Calculate WEIGHT1 ignoring length for now:
-Length<-Length[,list(SUM_FREQUENCY=sum(SUM_FREQUENCY)),by=c("SPECIES","YEAR","AREA2","GEAR","MONTH","CRUISE","VES_AKR_ADFG","HAUL_JOIN","LENGTH","YAGMH_STONS","YAGMH_SNUM")] # sum the frequency of each observed length at haul level, summed over the excluded variables from this list: SEX. Also get rid of variables no longer needed that are the same for each flattened observation: EXTRAPOLATED_WEIGHT, SOURCE, AREA, QUARTER, NUMB
-
-L_YAGMH<-Length[,list(YAGMH_SFREQ=sum(SUM_FREQUENCY)),by=c("CRUISE","VES_AKR_ADFG","HAUL_JOIN")] # Sum again, aggregating over year, gear, month, cruise, ves_akr_adfg, length, yagmh_stons, yagmh_snum. This gives the amount of fish sampled for length for each vessel, cruise and haul.
-Length<-merge(Length,L_YAGMH,by=c("CRUISE","VES_AKR_ADFG","HAUL_JOIN"), all.x=T) # join the amount of fish sampled calculated previous in the big table Length. this spreads the aggregated number of fish sampled over their respective cruise, ves_akr_adfg, and haul_join observations.
-
-
-y2$WEIGHT1<-y2$SUM_FREQUENCY/y2$YAGMH_SFREQ
 
 
 
