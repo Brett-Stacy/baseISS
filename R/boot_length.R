@@ -8,7 +8,7 @@
 #'
 boot_length = function(length_DT) {
   length_DT %>%
-    tidytable::uncount(SUM_FREQUENCY) %>%
+    # tidytable::uncount(SUM_FREQUENCY) %>%
     tidytable::mutate(LENGTH = generic_sample(LENGTH, n.samples = .N), .by = c(YEAR, HAUL_JOIN)) %>%  # should this include .by trip join?? I don't think so because I think it would give the same answer
     tidytable::summarise(SUM_FREQUENCY = n(base::unique(LENGTH)), .by = c(YEAR, HAUL_JOIN, LENGTH)) %>% # after this line is where I would incorporate a different sample size feature. would need to set YAGMH_SFREQ to requested sample size.
     tidytable::mutate(YAGMH_SFREQ = base::sum(SUM_FREQUENCY), .by = c(YEAR, HAUL_JOIN)) %>%

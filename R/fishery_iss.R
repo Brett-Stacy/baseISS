@@ -41,7 +41,7 @@ fishery_iss <- function(species_code,
   {
 
 
-  # Necessary checks
+  ### Necessary checks
   if(base::isTRUE(boot.length & boot.age)){
     base::stop("Feature not developed. Run fishery_iss with length and age separately instead.")
   }
@@ -50,7 +50,14 @@ fishery_iss <- function(species_code,
   }
 
 
-  # Post-stratify if requested
+  ### Necessary preliminaries
+  # uncount the data frame if it is compressed by count of length or age, i.e., flatten the data frame. This only impacts length-only data frames because age input data frames should always be flattened. This avoids uncounting it in every resampling iteration. Work with the SUM_FREQUENCY column name for now, may need to change this with alternative input data frames.
+  if("SUM_FREQUENCY" %in% base::names(freq_data)){
+    freq_data %>%
+      tidytable::uncount(SUM_FREQUENCY) -> freq_data
+  }
+
+  ### Post-stratify if requested
   if(!is.null(post_strata)){ # post_stratify. output will be organized as a list with each entry corresponding to a post_strata name
 
     freq_data %>%
@@ -65,9 +72,8 @@ fishery_iss <- function(species_code,
 
   }
 
-  # Label the output list object as length or age to inexorably tie the data type to the output
+  ###Label the output list object as length or age to inexorably tie the data type to the output
   base::ifelse(base::isTRUE(length_based), "length", "age") -> .data_type
-
   out_stats = list(out_stats)
   names(out_stats) = .data_type
 

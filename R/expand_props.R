@@ -25,6 +25,19 @@ expand_props = function(freq_data,
 
     print("Expansion for species 202 in area BS")
 
+
+    # Add in SUM_FREQUENCY if it doesn't already exist (for og_props situation) ----
+    # uncount the data frame if it is compressed by count of length or age, i.e., flatten the data frame. This only impacts length-only data frames because age input data frames should always be flattened. This avoids uncounting it in every resampling iteration. Work with the SUM_FREQUENCY column name for now, may need to change this with alternative input data frames.
+    if(!("SUM_FREQUENCY" %in% base::names(freq_data)) & length_based==TRUE & boot.length==FALSE){ # applies only to og_props because boot.length==F only for og.
+      freq_data %>%
+        tidytable::summarise(SUM_FREQUENCY = n(base::unique(LENGTH)), .by = c(YEAR, HAUL_JOIN, LENGTH)) %>% # after this line is where I would incorporate a different sample size feature. would need to set YAGMH_SFREQ to requested sample size.
+        tidytable::mutate(YAGMH_SFREQ = base::sum(SUM_FREQUENCY), .by = c(YEAR, HAUL_JOIN)) %>%
+        tidytable::left_join(freq_data %>%
+                               tidytable::distinct(YEAR, HAUL_JOIN, .keep_all = TRUE) %>%
+                               tidytable::select(-LENGTH, -YAGMH_SFREQ)) -> freq_data
+    }
+
+
     # Add in sampling strata weighting functionality ----
     if(isTRUE(expand.by.sampling.strata)){
       print("expand by sampling strata activated")
