@@ -6,6 +6,7 @@
 #' @param freq_data length or age frequency input data frame
 #' @param species_code species specific number code to apply the expansion for. Conditional statements below activate species-specific expansions.
 #' @param area_code area specific character code to apply the conditional expansion below.
+#' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length. In this function, this activates a switch to calculate SUM_FREQUENCY for og_props.
 #' @param expand.by.sampling.strata MAKE THIS GENERIC IN FUTURE. expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #' @param expand_using_weighting_factors MAKE THIS GENERIC IN FUTURE. expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.
 #'
@@ -14,6 +15,7 @@
 expand_props = function(freq_data,
                         species_code,
                         area_code,
+                        boot.length = FALSE,
                         expand.by.sampling.strata = FALSE,
                         expand_using_weighting_factors = TRUE)
   {
@@ -28,7 +30,7 @@ expand_props = function(freq_data,
 
     # Add in SUM_FREQUENCY if it doesn't already exist (for og_props situation) ----
     # uncount the data frame if it is compressed by count of length or age, i.e., flatten the data frame. This only impacts length-only data frames because age input data frames should always be flattened. This avoids uncounting it in every resampling iteration. Work with the SUM_FREQUENCY column name for now, may need to change this with alternative input data frames.
-    if(!("SUM_FREQUENCY" %in% base::names(freq_data)) & length_based==TRUE & boot.length==FALSE){ # applies only to og_props because boot.length==F only for og.
+    if(!("SUM_FREQUENCY" %in% base::names(freq_data)) & base::isTRUE(length_based) & base::isFALSE(boot.length)){ # applies only to og_props because boot.length==F only for og.
       freq_data %>%
         tidytable::summarise(SUM_FREQUENCY = n(base::unique(LENGTH)), .by = c(YEAR, HAUL_JOIN, LENGTH)) %>% # after this line is where I would incorporate a different sample size feature. would need to set YAGMH_SFREQ to requested sample size.
         tidytable::mutate(YAGMH_SFREQ = base::sum(SUM_FREQUENCY), .by = c(YEAR, HAUL_JOIN)) %>%

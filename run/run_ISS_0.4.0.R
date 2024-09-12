@@ -1,4 +1,4 @@
-# Length - uncount at highest level to avoid processing speed bottleneck at low level (resampling)
+# Length - uncount at highest level to avoid processing speed bottleneck at low level (resampling). tested - works.
 run_name = "length_uncount_V1"
 
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")

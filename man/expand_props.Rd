@@ -8,6 +8,7 @@ expand_props(
   freq_data,
   species_code,
   area_code,
+  boot.length = FALSE,
   expand.by.sampling.strata = FALSE,
   expand_using_weighting_factors = TRUE
 )
@@ -18,6 +19,8 @@ expand_props(
 \item{species_code}{species specific number code to apply the expansion for. Conditional statements below activate species-specific expansions.}
 
 \item{area_code}{area specific character code to apply the conditional expansion below.}
+
+\item{boot.length}{Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length. In this function, this activates a switch to calculate SUM_FREQUENCY for og_props.}
 
 \item{expand.by.sampling.strata}{MAKE THIS GENERIC IN FUTURE. expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.}
 

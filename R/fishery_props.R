@@ -90,7 +90,7 @@ fishery_props <- function(length_based,
     .freq %>%
       tidytable::mutate(YH_SFREQ = base::sum(SUM_FREQUENCY), .by = c(YEAR, HAUL_JOIN)) %>%
       tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YH_SFREQ) -> .freq
-  }else{ # length. WEIGHT1 already exists but needs to be recalculated for resampled data.
+  }else if(base::isTRUE(boot.length)){ # length resampled data. WEIGHT1 already exists but needs to be recalculated for resampled data.
     .freq %>%
       tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YAGMH_SFREQ) -> .freq
   }
@@ -103,6 +103,7 @@ fishery_props <- function(length_based,
   .freq %>%
       expand_props(species_code = species_code,
                    area_code = area_code,
+                   boot.length = boot.length,
                    expand.by.sampling.strata = expand.by.sampling.strata,
                    expand_using_weighting_factors = expand_using_weighting_factors) -> .pop
 

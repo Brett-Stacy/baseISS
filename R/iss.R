@@ -22,6 +22,7 @@ iss <- function(rss,
   if(base::isTRUE(boot.length)){
     .iss %>%
       tidytable::left_join(freq_data %>%
+                             tidytable::summarise(SUM_FREQUENCY = n(base::unique(LENGTH)), .by = c(YEAR, HAUL_JOIN, LENGTH)) %>%
                              tidytable::summarise(nss = sum(SUM_FREQUENCY), nhls = length(unique(HAUL_JOIN)), .by = YEAR)) -> iss_out
   }else{
     .iss %>%
