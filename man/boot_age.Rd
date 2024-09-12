@@ -7,7 +7,7 @@
 boot_age(age_DT)
 }
 \arguments{
-\item{age_DT}{age frequency input data table. Can be the output object from boot_trip() if boot.trip == true, or boot_haul() if boot.haul == true, or both}
+\item{age_DT}{age frequency input data frame. Can be the output object from boot_trip() if boot.trip == true, or boot_haul() if boot.haul == true, or both}
 }
 \value{
 age frequency data table including resampled age frequencies as AGE and associated data

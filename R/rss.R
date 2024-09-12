@@ -10,7 +10,7 @@
 #' @export
 #'
 rss = function(sim_props,
-                      og_props) {
+               og_props) {
 
   sim_props %>%
     tidytable::full_join(og_props) %>%

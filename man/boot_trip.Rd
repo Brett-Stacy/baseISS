@@ -4,10 +4,10 @@
 \alias{boot_trip}
 \title{Resample trips w/replacement.}
 \usage{
-boot_trip(length_DT)
+boot_trip(freq_data)
 }
 \arguments{
-\item{length_DT}{length frequency input data table.}
+\item{freq_data}{length or age frequency input data frame}
 }
 \value{
 length frequency data table including resampled trips as TRIP_JOIN and associated data

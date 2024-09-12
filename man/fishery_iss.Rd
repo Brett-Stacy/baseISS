@@ -30,7 +30,7 @@ fishery_iss(
 
 \item{iters}{number of iterations}
 
-\item{freq_data}{length or age frequency input dataframe}
+\item{freq_data}{length or age frequency input data frame}
 
 \item{yrs}{any year filter >= (default = NULL)}
 

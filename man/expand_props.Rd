@@ -5,7 +5,7 @@
 \title{Expand species-specific sample level proportions-at-length or -age to population level}
 \usage{
 expand_props(
-  DT,
+  freq_data,
   species_code,
   area_code,
   expand.by.sampling.strata = FALSE,
@@ -13,7 +13,7 @@ expand_props(
 )
 }
 \arguments{
-\item{DT}{data table of length or age frequency data in the form of EBS Pcod y2 object}
+\item{freq_data}{length or age frequency input data frame}
 
 \item{species_code}{species specific number code to apply the expansion for. Conditional statements below activate species-specific expansions.}
 

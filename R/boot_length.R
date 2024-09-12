@@ -1,6 +1,6 @@
 #' Resample length frequency data w/replacement.
 #'
-#' @param length_DT length frequency input data table. Can be the output object from boot_trip() if boot.trip == true, or boot_haul() if boot.haul == true, or both
+#' @param length_DT length frequency input data frame. Can be the output object from boot_trip() if boot.trip == true, or boot_haul() if boot.haul == true, or both
 #'
 #' @return length frequency data table including resampled length frequencies as LENGTH and associated data
 #'

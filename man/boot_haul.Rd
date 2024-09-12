@@ -4,10 +4,10 @@
 \alias{boot_haul}
 \title{Resample hauls w/replacement.}
 \usage{
-boot_haul(length_DT)
+boot_haul(freq_data)
 }
 \arguments{
-\item{length_DT}{length frequency input data table. Can be the output object from boot_trip() if boot.trip == true}
+\item{freq_data}{length or age frequency input data frame. Can be the output object from boot_trip() if boot.trip == true}
 }
 \value{
 length frequency data table including resampled hauls as HAUL_JOIN and associated data

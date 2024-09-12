@@ -1,8 +1,8 @@
 #' Administrate ISS
 #'
-#' @param freq_data length or age frequency input dataframe, not necessarily a data.table or tidytable object yet, hence a different name than subsequent functions (length_DT)
+#' @param freq_data length or age frequency input data frame
 #'
-#' @return Dataframe of input sample size by year
+#' @return Data frame of input sample size by year
 #'
 #' @export
 #'

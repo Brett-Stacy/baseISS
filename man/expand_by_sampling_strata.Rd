@@ -4,10 +4,10 @@
 \alias{expand_by_sampling_strata}
 \title{Expand by observer sampling strata}
 \usage{
-expand_by_sampling_strata(length_DT)
+expand_by_sampling_strata(freq_data)
 }
 \arguments{
-\item{length_DT}{length frequency input data table.}
+\item{freq_data}{length or age frequency input data frame}
 }
 \value{
 length frequency data table with modified WEIGHT1 column incorporating sampling strata weighting

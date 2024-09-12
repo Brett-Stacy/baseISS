@@ -4,7 +4,7 @@
 #' Follows loosely srvy_comps.R from surveyISS package.
 #'
 #' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
-#' @param freq_data  length or age frequency input dataframe, not necessarily a data.table or tidytable object yet, hence a different name than subsequent functions (length_DT)
+#' @param freq_data length or age frequency input data frame
 #' @param yrs any year filter >= (default = NULL)
 #' @param boot.trip Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length or -age
 #' @param boot.haul Boolean. Resample hauls w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length or -age

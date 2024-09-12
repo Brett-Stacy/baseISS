@@ -7,7 +7,7 @@
 boot_length(length_DT)
 }
 \arguments{
-\item{length_DT}{length frequency input data table. Can be the output object from boot_trip() if boot.trip == true, or boot_haul() if boot.haul == true, or both}
+\item{length_DT}{length frequency input data frame. Can be the output object from boot_trip() if boot.trip == true, or boot_haul() if boot.haul == true, or both}
 }
 \value{
 length frequency data table including resampled length frequencies as LENGTH and associated data

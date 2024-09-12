@@ -3,7 +3,7 @@
 #' @description
 #' This is intended to be a large function that consists of many conditional statements, each of which pertains to a unique species/area expansion method. The internals of the conditional statements can eventually turn into many species/area/length/age specific functions housed in another script. Takes length or age frequency data and expands it into fished population proportions at length or age using the weightings from the relevant data. The relevant data can be the og data or bootstrapped data.
 #'
-#' @param DT data table of length or age frequency data in the form of EBS Pcod y2 object
+#' @param freq_data length or age frequency input data frame
 #' @param species_code species specific number code to apply the expansion for. Conditional statements below activate species-specific expansions.
 #' @param area_code area specific character code to apply the conditional expansion below.
 #' @param expand.by.sampling.strata MAKE THIS GENERIC IN FUTURE. expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
@@ -11,7 +11,7 @@
 #'
 #' @export
 #'
-expand_props = function(DT,
+expand_props = function(freq_data,
                         species_code,
                         area_code,
                         expand.by.sampling.strata = FALSE,
@@ -28,13 +28,13 @@ expand_props = function(DT,
     # Add in sampling strata weighting functionality ----
     if(isTRUE(expand.by.sampling.strata)){
       print("expand by sampling strata activated")
-      DT %>%
-        expand_by_sampling_strata() -> DT
+      freq_data %>%
+        expand_by_sampling_strata() -> freq_data
     }
 
 
     # Expansion copied from EBS Pcod code 2023 ----
-    y2 = DT
+    y2 = freq_data
 
     y3<- y2[,c("YEAR","GEAR","AREA2","MONTH","CRUISE",
                "HAUL_JOIN", "LENGTH", "SUM_FREQUENCY", "YAGMH_SNUM",
@@ -95,13 +95,13 @@ expand_props = function(DT,
     if(isTRUE(expand.by.sampling.strata)){
       print("expand by sampling strata activated")
       print(paste0("boot.age = ", boot.age))
-      DT %>%
-        expand_by_sampling_strata() -> DT
+      freq_data %>%
+        expand_by_sampling_strata() -> freq_data
     }
 
 
     # Expansion copied from EBS Pcod code 2023 ----
-    y2 = DT
+    y2 = freq_data
 
     y3<- y2[,c("YEAR","GEAR","AREA2","MONTH","CRUISE",
                "HAUL_JOIN", "AGE", "SUM_FREQUENCY", "YAGMH_SNUM",
@@ -162,7 +162,7 @@ expand_props = function(DT,
 
 
 # TESTING
-# DT = .freq
+# freq_data = .freq
 
 
 

@@ -7,10 +7,10 @@
 administrate_iss(freq_data)
 }
 \arguments{
-\item{freq_data}{length or age frequency input dataframe, not necessarily a data.table or tidytable object yet, hence a different name than subsequent functions (length_DT)}
+\item{freq_data}{length or age frequency input data frame}
 }
 \value{
-Dataframe of input sample size by year
+Data frame of input sample size by year
 }
 \description{
 Administrate ISS

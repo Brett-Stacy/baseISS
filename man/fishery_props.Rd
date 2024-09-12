@@ -19,7 +19,7 @@ fishery_props(
 \arguments{
 \item{length_based}{Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.}
 
-\item{freq_data}{length or age frequency input dataframe, not necessarily a data.table or tidytable object yet, hence a different name than subsequent functions (length_DT)}
+\item{freq_data}{length or age frequency input data frame}
 
 \item{yrs}{any year filter >= (default = NULL)}
 
