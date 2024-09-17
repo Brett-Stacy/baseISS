@@ -1,0 +1,107 @@
+---
+title: "Does it matter if we subsample WR or WOR?"
+author: "Brett Stacy"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(tidytable)
+```
+
+
+
+# Introduction
+I can't wrap my head around the justification to subsample an existing sample WOR. Does it even matter which one we do? Do a simulation to test it empirically. 
+
+More considerations:
+  - if we were taking a LARGER sample, say 125%, we would sample WR right? Test this too!
+  - the principle is: whatever sample we take, we want it to be representative by proportion of the original sample. 
+  
+# Special Note to remember
+If the optimal sample size depends on the expansion method (or post-stratification for that matter) for one species, then I think the optimal sample size will have to be species specific. Because lots of species have different expansion methods, that arguably should remain different. 
+  
+  
+  
+  
+  
+  
+## WR vs WOR subsample lower
+Make up some data. Sample the same size WR. Then do two things: 1. Subsample WR, 2. subsample WOR. Do these things many times, then summarize them and compare.
+  
+```{r}
+
+x = c(rep(1, 70), rep(0, 30))
+
+y1 = matrix(NA, nrow = 50, ncol = 100)
+y2 = matrix(NA, nrow = 50, ncol = 100)
+for(i in 1:100){
+  temp = sample(x, 100, replace = TRUE)
+  y1[,i] = sample(temp, 50, replace = FALSE)
+  y2[,i] = sample(temp, 50, replace = TRUE)
+}
+
+
+colMeans(y1) %>% mean()
+colMeans(y2) %>% mean()
+
+
+```
+  I'm getting the same result either WR or WOR.  
+  
+## WR vs WOR subsample higher
+same as above but subsample higher
+  
+```{r, eval=F}
+
+x = c(rep(1, 70), rep(0, 30))
+
+y1 = matrix(NA, nrow = 150, ncol = 100)
+y2 = matrix(NA, nrow = 150, ncol = 100)
+for(i in 1:100){
+  temp = sample(x, 100, replace = TRUE)
+  y1[,i] = sample(temp, 150, replace = FALSE)
+  y2[,i] = sample(temp, 150, replace = TRUE)
+}
+
+
+colMeans(y1) %>% mean()
+colMeans(y2) %>% mean()
+
+
+```
+This doesn't work! Because you can't take a sample from a population larger than the population WOR. This makes sense because once you have already chosen each element of a population and not replaced it, you will run out of elements to chose from once you reach the total number in the population. 
+
+# Conclusion
+Just use WR in baseISS. 
+
+BUT, now the question is, do I subsample the samples or run the whole thing again with the different N? I think running the whole thing again is better because we further randomize the hauls chosen by re-randomize the trips and hauls. But perhaps it does not matter because on average, both sets of resampled trips/hauls should be equally representative at high enough iterations.
+
+SO, figure out how to subsample after the fact like Ben and Pete do. Start with length.
+option = years, proportion/value, type, grp? SHould I code in post-strata-specific subsampling?
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

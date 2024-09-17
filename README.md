@@ -17,7 +17,7 @@ attached to this data type, and therefore regulates its leverage in
 assessment model outputs such as biomass predictions.
 
 The structure and functionality of this package resembles surveyISS with
-some notable differences that accomodate the neuances of
+some notable differences that accommodate the nuances of
 fishery-dependent data. These are covered in the next section,
 “Important Notes”.
 
@@ -30,14 +30,20 @@ met: 1. (length data) There exists a WEIGHT1 column that represents the
 haul-level proportions-at-length of the observed lengths. This is
 calculated by dividing the frequency of the observed length within a
 haul by the total number of fish lengthed in that haul. It should be a
-standard calculation that is exactly the same for every species. This
-convention…
+standard calculation that is exactly the same for every species.
 
 2.  Length data be condensed with sum_frequency column.
 
 3.  Age data include associated lengths.
 
 4.  Age data flattened, no “sum_frequency” column.
+
+5.  For EBS Pcod, age data has only been used when there exists alredy
+    pre-processed length data associated with it. I.e., I matched the y2
+    length data object recieved from Steve with age data I downloaded
+    when testing the baseISS functionality on age data. This was
+    necessary becasue I needed quantities like YAGM_SNUM to perform the
+    weighted expansion.
 
 ### Current Functionality
 
@@ -47,7 +53,15 @@ convention…
     such as post_stratify will be different between length data and age
     data, c. NOTE ANOTHER ONE WHEN YOU REMEMBER.
 
+2.  You can’t chose the species from a big data set containing all the
+    species. This is because data sets for each species should include
+    unique columns necessary to apply their unique expansion methods.
+    For EBS Pcod for example, these columns are only available after
+    much pre-processing and calculating of the raw data.
+
 ### Developing Functionality
+
+- subsampling
 
 ## Installation
 
