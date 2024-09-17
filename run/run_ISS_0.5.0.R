@@ -1,4 +1,5 @@
-# Change sample size option - option to reduce or increase the haul-level sample size
+# Change sample size option - option to reduce or increase the haul-level sample size. Length to start. Integrate the option into the boot_length function.
+# try 10 samples. only years 1999+. Do WR. Do conditional min or max based on median YAGMH_SFREQ over yrs.
 run_name = "haul_sample_size_change_V1"
 
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
@@ -9,11 +10,12 @@ library(baseISS)
 species_code = "202"
 area_code = "EBS"
 length_based = TRUE # TRUE for length
-iters = 10
+iters = 2
 freq_data = lfreq_data
-yrs = NULL
+yrs = 1999
 post_strata = NULL
-minimum_sample_size = NULL
+minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30) # throw minimum sample size back in because we are back to testing with length
+new_length_N = list(type = "fixed", amount = 10) # naming convention to allow type = "proportion" in the future.
 boot.trip = T
 boot.haul = T
 boot.length = T

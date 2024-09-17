@@ -378,8 +378,8 @@ different.</p>
 <p>Make up some data. Sample the same size WR. Then do two things: 1.
 Subsample WR, 2. subsample WOR. Do these things many times, then
 summarize them and compare.</p>
-<pre><code>## [1] 0.6956</code></pre>
-<pre><code>## [1] 0.7054</code></pre>
+<pre><code>## [1] 0.6896</code></pre>
+<pre><code>## [1] 0.6938</code></pre>
 <p>I’m getting the same result either WR or WOR.</p>
 </div>
 <div id="wr-vs-wor-subsample-higher" class="section level2">
@@ -400,10 +400,28 @@ thing again with the different N? I think running the whole thing again
 is better because we further randomize the hauls chosen by re-randomize
 the trips and hauls. But perhaps it does not matter because on average,
 both sets of resampled trips/hauls should be equally representative at
-high enough iterations.</p>
-<p>SO, figure out how to subsample after the fact like Ben and Pete do.
-Start with length. option = years, proportion/value, type, grp? SHould I
-code in post-strata-specific subsampling?</p>
+high enough iterations. in SWO, they subsample right after boot_length
+for every iteration. This means they take the same resampled hauls to
+subsample. I’m not sure why they do this instead of resample the hauls
+again. Is it just for speed optimization?</p>
+<p>For now, I’m going to code it into the existing boot_length function
+and necessitate running the whole thing over again if we want to
+resample. One potential advantage of doing it this way is that, since
+the sampling rate varies wildly prior to 1999, the years for which
+subsampling is applied will probably not be the full data year span.
+Therefore, the existing yrs option in fishery_iss can be used to control
+years to apply subsamples to. I can consider doing it the other way in
+the future. Start with length. start with a fixed value, 10, just for
+1999 and up I guess. Note that this cannot be applied when post_strata =
+“SEX” because the 20 fish target is sex-independent.</p>
+<p>Min/max problem: In SWO, the min(.N, samples) is taken. This is done
+instead of max() because they only considered reducing the sampling
+effort. I need to decide what to do with baseISS because I want to
+investigate greater-than sampling rates. Perhaps have a conditional
+statement that conditions on &gt; or &lt; the median YAGMH_SFREQ for the
+yrs spanned.</p>
+<p>option = years, proportion/value, type, grp? SHould I code in
+post-strata-specific subsampling? min/max stuff?</p>
 </div>
 
 
