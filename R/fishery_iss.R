@@ -12,7 +12,8 @@
 #' @param freq_data length or age frequency input data frame
 #' @param yrs any year filter >= (default = NULL)
 #' @param post_strata list(strata = character string, nested = Boolean) if NULL, then no post stratification. The first element of post_strata is a character string with name(s) of post strata type. Accepted types are "GEAR", etc. These must be column name(s) in the data frame where each row has an entry and there are no NAs. The second element in post_strata allows for nested post-strata (e.g., "GEAR", "SEX") that are in order of the desired nested hierarchy, then the final results will be a nested list in order of the listed post-strata as well. Perhaps there should be an error message for attempts with strata names that are not in freq_data or it does exist, but there are NAs in it.
-#' @param minimum_sample_size list(resolution = character string, size = integer) if NULL, then no minimum sample size. The sample size at the chosen resolution (must be column in freq_data, e.g., YAGM_SFREQ for EBS Pcod) for which to filter out data that does not meet the minimum sample size requested. Example: minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30). Note that this filters to keep only samples GREATER than 30 at the YAGM resolution.
+#' @param minimum_sample_size list(resolution = character string, size = integer). If NULL, then no minimum sample size. If not NULL, The sample size at the chosen resolution (must be column in freq_data, e.g., YAGM_SFREQ for EBS Pcod) for which to filter out data that does not meet the minimum sample size requested. Example: minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30). Note that this filters to keep only samples GREATER than 30 at the YAGM resolution.
+#' @param new_length_N list(type = character, amount = numeric). If NULL, then the number of length samples resampled in a haul equals the number actually sampled. If not NULL, then the haul-level number of samples is changed by type (acceptable entries are "fixed", or "proportion") at an amount (acceptable entries are an integer number or proportion). The amount can be less than or greater than the true N. Note that if it is either less than or greater than, the minimum of the two is chosen for N (this is still under consideration and may change in the future). The true N is taken to be... DOES THIS ONLY MATTER IF WE NEED A THRESHOLD TO DECIDE WHEN TO TAKE THE MAX?? The samples are still drawn with replacement. Warning: cannot do this if post_strata = "SEX"
 #' @param boot.trip Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length or -age
 #' @param boot.haul Boolean. Resample hauls w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length or -age
 #' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
@@ -32,6 +33,7 @@ fishery_iss <- function(species_code,
                         yrs = NULL,
                         post_strata = NULL,
                         minimum_sample_size = NULL,
+                        new_length_N = NULL,
                         boot.trip = FALSE,
                         boot.haul = FALSE,
                         boot.length = TRUE,
@@ -47,6 +49,11 @@ fishery_iss <- function(species_code,
   }
   if(any(colnames(freq_data) %in% c("SEX", "Sex", "sex")) & isFALSE(!any(post_strata$strata %in% c("SEX", "Sex", "sex")))){
     base::stop("Sex cannot yet be a column name in freq_data if it is not being post-stratified by. This arose because of my method for implementing WEIGHT1 in fishery_props.R to accomodate age data. This should be addressed in the future, but note that this is the only column other than length that will impact weight1 calculation since all other columns will be the same for each age observation.")
+  }
+  if(!is.null(post_strata)){
+    if(post_strata$strata %in% c("SEX", "Sex", "sex") & !is.null(new_length_N)){
+      base::stop("Sex cannot yet be a post-stratification at the same time as alternative length N values are resampled. This is because males and females are likely sampled at different rates and the new_length_N would need to be sex specific.")
+    }
   }
 
 

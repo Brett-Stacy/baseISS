@@ -37,6 +37,9 @@ hist(temp$YAGMH_SFREQ)
 summary(temp$YAGMH_SFREQ)
 
 
+
+
+
 ```
 Looks pretty normal
 
@@ -158,9 +161,21 @@ temp %>%
 
 
 
+## Check out YAGMH_SFREQ 1999-2023 in more detail
 
+```{r}
+lfreq_data[YEAR%in%c(1999:2023),] %>% tidytable::distinct(HAUL_JOIN, .keep_all = T) %>% tidytable::select(YAGMH_SFREQ)->temp
 
+hist(temp$YAGMH_SFREQ)
+summary(temp$YAGMH_SFREQ) # 540 is max!!!
 
+((temp$YAGMH_SFREQ>20) %>% sum)/nrow(temp)
+((temp$YAGMH_SFREQ>25) %>% sum)/nrow(temp) # about 2% over 20
+
+plot(temp$YAGMH_SFREQ[temp$YAGMH_SFREQ>25])
+plot(temp$YAGMH_SFREQ[temp$YAGMH_SFREQ>25], ylim = c(20, 100))
+
+```
 
 
 

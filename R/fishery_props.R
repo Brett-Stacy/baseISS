@@ -66,7 +66,7 @@ fishery_props <- function(length_based,
   # randomize lengths if boot.length == true ----
   if(base::isTRUE(boot.length)) {
     .freq %>%
-      boot_length() -> .freq
+      boot_length(new_length_N = new_length_N) -> .freq
   }
 
   # randomize ages if boot.age == true ----
