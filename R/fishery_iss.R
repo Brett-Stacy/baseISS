@@ -47,8 +47,8 @@ fishery_iss <- function(species_code,
   if(base::isTRUE(boot.length & boot.age)){
     base::stop("Feature not developed. Run fishery_iss with length and age separately instead.")
   }
-  if(any(colnames(freq_data) %in% c("SEX", "Sex", "sex")) & isFALSE(!any(post_strata$strata %in% c("SEX", "Sex", "sex")))){
-    base::stop("Sex cannot yet be a column name in freq_data if it is not being post-stratified by. This arose because of my method for implementing WEIGHT1 in fishery_props.R to accomodate age data. This should be addressed in the future, but note that this is the only column other than length that will impact weight1 calculation since all other columns will be the same for each age observation.")
+  if(any(colnames(freq_data) %in% c("SEX", "Sex", "sex")) & isFALSE(any(post_strata$strata %in% c("SEX", "Sex", "sex")))){
+    base::stop("Sex cannot yet be a column name in freq_data if it is not being post-stratified by. This arose because of my method for implementing WEIGHT1 in fishery_props.R to accomodate age data. This is also impacted when applying tidytable::distinct in boot_length() because WEIGHT1 is different between sexes. This should be addressed in the future, but note that this is the only column other than length that will impact weight1 calculation since all other columns will be the same for each age observation.")
   }
   if(!is.null(post_strata)){
     if(post_strata$strata %in% c("SEX", "Sex", "sex") & !is.null(new_length_N)){

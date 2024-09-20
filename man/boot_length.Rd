@@ -9,7 +9,7 @@ boot_length(length_DT, new_length_N = NULL)
 \arguments{
 \item{length_DT}{length frequency input data frame. Can be the output object from boot_trip() if boot.trip == true, or boot_haul() if boot.haul == true, or both}
 
-\item{new_length_N}{see description from fishery_iss.R}
+\item{new_length_N}{see description from fishery_iss.R. MAY DEPRECATE IF DON'T SUBSAMPLE INSIDE THIS UNCTION.}
 }
 \value{
 length frequency data table including resampled length frequencies as LENGTH and associated data
