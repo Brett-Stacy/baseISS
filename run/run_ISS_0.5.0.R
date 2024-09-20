@@ -10,7 +10,7 @@ library(baseISS)
 species_code = "202"
 area_code = "EBS"
 length_based = TRUE # TRUE for length
-iters = 2
+iters = 10
 freq_data = lfreq_data
 yrs = 1999
 post_strata = NULL
