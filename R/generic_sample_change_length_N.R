@@ -14,7 +14,7 @@ generic_sample_change_length_N = function(flex.vec,
                                           new_length_N = NULL)
   {
   # 0.5.0 case
-  flex.vec[base::sample.int(length(flex.vec), n = min(.N, new_length_N$amount), replace = TRUE)]
+  flex.vec[base::sample.int(length(flex.vec), size = min(.N, new_length_N$amount), replace = TRUE)]
 
 }
 

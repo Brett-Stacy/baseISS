@@ -6,6 +6,8 @@ editor_options:
   chunk_output_type: console
 ---
 
+IGNORE THIS SCRIPT!! THE RESULTS ARE INVALID! I DID NOT CODE THE SUBSAMPLING CORRECTLY, I DID NOT USE SIZE ARGUEMENT IN SAMPLE.INT LIKE I SHOULD HAVE. WHEN I TRIED TO USE IT, BOOT_LENGTH WOULD NOT WORK BECAUSE MUTATE CANNOT ACCEPT UNEQUAL LENGTH VECTORS TO WHAT IT IS ASKED TO REPLACE. 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F)
 library(tidytable)
@@ -78,6 +80,8 @@ Stats
 
 
 Try a more advanced option for changing length N where a separate sample function is called as a condition in boot_length. 
+
+UPDATE: THIS OUTPUT IS INNACURATE! I DID NOT CODE THE SAMPLING ROUTINE CORRECTLY: IT DOES NOT SUBSAMPLE, RATHER IT TAKES .N IN BOTH CASES WHEN I INTENDED OTHERWISE. 
 
 
 

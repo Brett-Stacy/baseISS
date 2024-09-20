@@ -1,5 +1,9 @@
 # Change sample size option - option to reduce or increase the haul-level sample size. Length to start. Integrate the option into the boot_length function.
 # try 10 samples. only years 1999+. Do WR. Do not do conditional min or max based on median YAGMH_SFREQ over yrs, just do min for now, assuming this is what will apply when greater than median sample size will be tested.
+
+
+### IGNORE THIS SCRIPT!! THE RESULTS ARE INVALID! I DID NOT CODE THE SUBSAMPLING CORRECTLY, I DID NOT USE SIZE ARGUEMENT IN SAMPLE.INT LIKE I SHOULD HAVE. WHEN I TRIED TO USE IT, BOOT_LENGTH WOULD NOT WORK BECAUSE MUTATE CANNOT ACCEPT UNEQUAL LENGTH VECTORS TO WHAT IT IS ASKED TO REPLACE.
+
 run_name = "haul_sample_size_change_V1"
 
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")

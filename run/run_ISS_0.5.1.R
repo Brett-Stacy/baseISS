@@ -1,5 +1,8 @@
 # Change sample size option - test with N=10, NULL, 30 and plot
 # also measure time difference and compare.
+
+### IGNORE THIS SCRIPT!! THE RESULTS ARE INVALID! I DID NOT CODE THE SUBSAMPLING CORRECTLY, I DID NOT USE SIZE ARGUEMENT IN SAMPLE.INT LIKE I SHOULD HAVE. WHEN I TRIED TO USE IT, BOOT_LENGTH WOULD NOT WORK BECAUSE MUTATE CANNOT ACCEPT UNEQUAL LENGTH VECTORS TO WHAT IT IS ASKED TO REPLACE.
+
 run_name = "haul_sample_size_change_V2"
 
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")

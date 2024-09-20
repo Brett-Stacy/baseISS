@@ -20,7 +20,7 @@ boot_length = function(length_DT,
 }
 # for testing
 # length_DT = .freq
-
+tidytable::mutate(length_DT, LENGTH = generic_sample_change_length_N(LENGTH, new_length_N), .by = c(YEAR, HAUL_JOIN))
 
 
 

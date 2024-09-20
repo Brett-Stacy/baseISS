@@ -10,7 +10,7 @@
 #'
 #' @export
 #'
-generic_sample = function(flex.vec, n.samples) flex.vec[base::sample.int(length(flex.vec), n = n.samples, replace = TRUE)]
+generic_sample = function(flex.vec, n.samples) flex.vec[base::sample.int(length(flex.vec), size = n.samples, replace = TRUE)]
 
 
 

@@ -1,4 +1,7 @@
 # Change sample size option - building off 0.5.0. Change to seperate function in boot_length when changing length N.
+
+# UPDATE: THIS WILL NOT WORK. SKIP THIS VERSION. SAMPLING DIFFERENT THAN .N CANNOT BE MUTATED IN BOOT_LENGTH. THIS MEANS THE PREVIOUS 0.5._ ITERATIONS ARE INVALID AS WELL.
+
 run_name = "haul_sample_size_change_V3"
 
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
