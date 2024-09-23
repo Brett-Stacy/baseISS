@@ -20,7 +20,7 @@ reboot_length_N = function(length_DT,
 
   .length_DT %>%
     tidytable::summarise(LENGTH = generic_sample_change_length_N(flex.vec = LENGTH,
-                                                      new_length_N = new_length_N), .by = c(YEAR, HAUL_JOIN)) %>%
+                                                                 new_length_N = new_length_N), .by = c(YEAR, HAUL_JOIN)) %>%
     tidytable::summarise(SUM_FREQUENCY = n(base::unique(LENGTH)), .by = c(YEAR, HAUL_JOIN, LENGTH)) %>%
     tidytable::mutate(YAGMH_SFREQ = base::sum(SUM_FREQUENCY), .by = c(YEAR, HAUL_JOIN)) %>%
     tidytable::left_join(.length_DT %>%
