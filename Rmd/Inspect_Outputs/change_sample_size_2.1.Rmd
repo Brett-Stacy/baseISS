@@ -1,0 +1,93 @@
+---
+title: "Inspect Different Length Sample Size impact on ISS 2.1"
+author: "Brett Stacy"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(tidytable)
+library(ggplot2)
+```
+
+# Data Generated With:
+C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/run/run_ISS_0.6.1.R
+
+```{r}
+
+# speed: this took ~1000 seconds
+out.10 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/haul_sample_size_change_V2.4_N_samples_10_ISS_100iters_output_2024-09-23.RDS")
+
+# speed: this took ~1000 seconds
+out.N = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/haul_sample_size_change_V2.4_N_samples_.N_ISS_100iters_output_2024-09-23.RDS")
+
+# speed: this took ~1000 seconds
+out.30 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/haul_sample_size_change_V2.4_N_samples_30_ISS_100iters_output_2024-09-23.RDS")
+
+```
+
+
+# Introduction
+Plot the ISS resulting from three levels of haul-level sample size:
+1. 10
+2. length(flex.vec)
+3. 30
+
+ancillary details:
+- sample WR
+- years 1999-2023 (median = 20 fish per haul)
+- fixed values, not proportions
+
+
+
+
+
+## Compare
+
+Plot
+```{r}
+
+
+plot(out.10$length$iss$YEAR, out.10$length$iss$iss, type = "l", ylab = "ISS", xlab = "Year", col = "blue", ylim = c(0, 11000))
+lines(out.N$length$iss$YEAR, out.N$length$iss$iss, col = "black")
+lines(out.30$length$iss$YEAR, out.30$length$iss$iss, col = "red")
+legend("topright", legend = c(".N", "10", "30"), col = c("black", "blue", "red"), lty = c(1,1,1))
+
+
+
+
+```
+
+
+Stats
+```{r}
+# 10
+(out.10$length$iss$iss/out.N$length$iss$iss) %>% round(digits = 2) %>% 
+  plot(type = "l")
+(out.10$length$iss$iss/out.N$length$iss$iss) %>% round(digits = 2) %>% mean
+
+
+# 30
+(out.30$length$iss$iss/out.N$length$iss$iss) %>% round(digits = 2) %>% 
+  plot(type = "l")
+(out.30$length$iss$iss/out.N$length$iss$iss) %>% round(digits = 2) %>% mean
+
+
+```
+
+
+
+# Conclusion
+similar to last run. 
+
+
+
+
+
+
+
+

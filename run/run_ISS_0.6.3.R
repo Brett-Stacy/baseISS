@@ -1,8 +1,8 @@
-# Change sample size option - test with N=10, NULL, 30 and plot
+# Change sample size option - test with bound = NULL, and with N=10, NULL, 30 and plot
 # also measure time difference and compare.
 
 
-run_name = "haul_sample_size_change_V2.2"
+run_name = "haul_sample_size_change_V2.4"
 
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 library(tidytable)
@@ -21,7 +21,7 @@ freq_data = lfreq_data
 yrs = 1999
 post_strata = NULL
 minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30) # throw minimum sample size back in because we are back to testing with length
-new_length_N = list(type = "fixed", amount = samples) # naming convention to allow type = "proportion" in the future.
+new_length_N = list(type = "value", bound = NULL, amount = 10)
 boot.trip = T
 boot.haul = T
 boot.length = T
@@ -115,7 +115,7 @@ freq_data = lfreq_data
 yrs = 1999
 post_strata = NULL
 minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30) # throw minimum sample size back in because we are back to testing with length
-new_length_N = list(type = "fixed", amount = samples) # naming convention to allow type = "proportion" in the future.
+new_length_N = list(type = "value", bound = NULL, amount = 30)
 boot.trip = T
 boot.haul = T
 boot.length = T
