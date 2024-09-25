@@ -1,0 +1,170 @@
+---
+title: "Inspect Normality of Simulations"
+author: "Brett Stacy"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F)
+library(tidytable)
+library(ggplot2)
+library(ggpubr)
+```
+
+# Data Generated With:
+C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/run/run_ISS_0.7.0.R
+
+```{r}
+
+out = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/ouput_all_sims_V1_ISS_1000iters_output_2024-09-24.RDS")
+
+
+
+```
+
+
+# Introduction
+I ran 1000 iterations, saving the simulated output, in order to inspect the normality of the simulated proportions at length. This has the potential to verify/justify the normal variance approximation assumption. 
+
+
+
+
+## 2022, length 60
+
+Plot
+```{r}
+
+out$length$sim_props[YEAR==2022 & LENGTH==60,]$sim_FREQ %>% 
+  hist()
+out$length$sim_props[YEAR==2022 & LENGTH==60,]$sim_FREQ %>% 
+  shapiro.test()
+out$length$sim_props[YEAR==2022 & LENGTH==60,]$sim_FREQ %>% 
+  shapiro.test() -> temp
+temp$p.value
+```
+
+
+
+
+## 2022, length ALL 
+
+I DON'T THINK THE BELOW IS CORRECT. BASED ON THE KAHN ACADEMY VIDEO OF THE CLT I SHOULD BE TAKING THE MEAN OF EVERY SAMPLE OF THE DISTRIBUTION THEN TESTING THE NORMALITY OF ALL THOSE MEANS. 
+
+```{r}
+
+out$length$sim_props[YEAR==2022, ] %>% 
+  tidytable::filter(sim_FREQ %>% 
+                      unique() %>% 
+                      length() != 1, .by = LENGTH) %>% 
+  tidytable::summarise(p.val = shapiro.test(sim_FREQ)$p.value, .by = LENGTH) %>% 
+  tidytable::filter(p.val > 0.05)
+
+
+
+
+```
+
+
+## 2022, length ALL, take 2
+
+take the mean of the distributions and test them for normality. I'm still not sure if this is correct because I'm taking the mean of the probabilities, not the lengths. But the probabilities are what we are applying the assumption of normality to to justify the variance approximation right? 
+
+```{r}
+
+out$length$sim_props[YEAR==2022, ] %>% 
+  tidytable::filter(sim_FREQ > 0) %>% 
+  tidytable::summarise(mean.sim_FREQ = mean(sim_FREQ), .by = sim) %>% 
+  tidytable::summarise(p.val = shapiro.test(mean.sim_FREQ)$p.value)
+
+out$length$sim_props[YEAR==2022, ] %>% 
+  tidytable::filter(sim_FREQ > 0) %>% 
+  tidytable::summarise(mean.sim_FREQ = mean(sim_FREQ), .by = sim) %>% 
+  tidytable::select(mean.sim_FREQ) %>% 
+  unlist() -> temp
+
+  hist(temp)
+
+
+
+```
+
+# Conclusion
+not normally distributed. I don't think dealing with proportions is appropriate. See below simulation. 
+
+
+# simulated experiment
+
+make up some multinomial data and see if it is approximately normal. 
+
+```{r}
+
+# mean from samples
+n.samples = 10
+
+x = rmultinom(1000, n.samples, prob = c(.1, 0, .5, .3, 0, .1))
+tf = function(x) sum(x*1:6)/n.samples
+apply(x, 2, tf) -> temp1
+temp1 %>% shapiro.test()
+
+
+# mean from proportions
+tf2 = function(x) mean(x/sum(x))
+apply(x, 2, tf2) -> temp2
+# temp2 %>% shapiro.test()
+
+
+# plots
+hist(temp1)
+# hist(temp2)
+ggqqplot(temp1)
+
+
+```
+
+
+
+
+
+
+
+## with normal distribution
+
+```{r}
+# mean from samples
+iterations = 10
+n.samples = 100
+
+x = matrix(NA, nrow = n.samples, ncol = iterations)
+for (i in 1:iterations) {
+  x[,i] = rnorm(n.samples, 6, 2)
+}
+apply(x, 2, mean) -> temp1
+temp1 %>% shapiro.test()
+
+
+# plots
+# library(ggpubr)
+ggqqplot(temp1)
+```
+
+
+# Conclusion again
+give up on this. I don't fully understand what is theoretically meant to be normally distributed. Is the sampling distribution of the sample mean meant to be normally distributed? Wouldn't that mean that I have to calculate the mean for each length (np) then check if all those for all lengths and iterations are normally distributed? I don't know. Or perhaps I have to do the above for the variance?
+
+
+
+
+
+
+
+
+
+
+
+
+
+

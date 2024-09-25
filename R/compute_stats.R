@@ -35,6 +35,7 @@ compute_stats <- function(sim_props,
   # return
   list(iterations = iters,
        og_props = og_props,
+       # sim_props = sim_props,
        rss = .rss,
        iss = .iss,
        bias = .bias)
