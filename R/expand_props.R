@@ -8,7 +8,7 @@
 #' @param area_code area specific character code to apply the conditional expansion below.
 #' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length. In this function, this activates a switch to calculate SUM_FREQUENCY for og_props.
 #' @param expand.by.sampling.strata MAKE THIS GENERIC IN FUTURE. expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
-#' @param expand_using_weighting_factors MAKE THIS GENERIC IN FUTURE. expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.
+#' @param expansion_factors expansion weighting factors to apply to the proportions. If NULL, then no expansion factors are applied. Otherwise, the conditional options coded in expand_props.R are "haul_numbers" or "haul_numbers" and "month_numbers". Consider improving/generalizing this by calling it expansion_weighting_factors = list(type = c("weight", "number"), factors = c("haul", "area", "month", "gear", etc.) to give the user the option of what aspects (columns) of the data to expand by and do it by weight of fish or number of fish in those categories.
 #'
 #' @export
 #'
@@ -17,7 +17,7 @@ expand_props = function(freq_data,
                         area_code,
                         boot.length = FALSE,
                         expand.by.sampling.strata = FALSE,
-                        expand_using_weighting_factors = TRUE)
+                        expansion_factors = expansion_factors)
   {
 
 
@@ -56,11 +56,20 @@ expand_props = function(freq_data,
                "YAGMH_SFREQ","YAGM_SFREQ", "YG_SFREQ","Y_SFREQ","YAGM_TNUM","YG_TNUM","Y_TNUM","YAGMH_SNUM",
                "YAGM_SNUM","YG_SNUM","YG_SNUM","Y_SNUM","WEIGHT1","WEIGHT2","WEIGHT3","WEIGHT4")]     # get rid of some unneeded variables
 
-    if(base::isTRUE(expand_using_weighting_factors)){
-      y3$WEIGHTX<-y3$WEIGHT1*y3$WEIGHT2*y3$WEIGHT4   ## weight of individual length sample for single fishery model. # multiply individual observation weight at haul level by weight of the haul by the weight of the year/area/gear/month. So this should give the weight each observation has, scaled by the haul weight and month/gear/year/area weight
-    }else{
-      y3$WEIGHTX<-y3$WEIGHT1   ## do not apply weighting factors.
+
+    if(is.null(expansion_factors)){
+      y3$WEIGHTX<-y3$WEIGHT1
+    }else if(all(expansion_factors=="haul_numbers")){
+      y3$WEIGHTX<-y3$WEIGHT1*y3$WEIGHT2
+    }else if(all(expansion_factors==c("haul_numbers", "month_numbers"))){
+      y3$WEIGHTX<-y3$WEIGHT1*y3$WEIGHT2*y3$WEIGHT4
     }
+
+    # if(base::isTRUE(expand_using_weighting_factors)){
+    #   y3$WEIGHTX<-y3$WEIGHT1*y3$WEIGHT2*y3$WEIGHT4   ## weight of individual length sample for single fishery model. # multiply individual observation weight at haul level by weight of the haul by the weight of the year/area/gear/month. So this should give the weight each observation has, scaled by the haul weight and month/gear/year/area weight
+    # }else{
+    #   y3$WEIGHTX<-y3$WEIGHT1   ## do not apply weighting factors.
+    # }
     # y3$WEIGHTX_GEAR<-y3$WEIGHT1*y3$WEIGHT2*y3$WEIGHT3 # similar to previous but including gear weights
 
 
@@ -123,11 +132,19 @@ expand_props = function(freq_data,
                "YH_SFREQ","YAGM_TNUM","YG_TNUM","Y_TNUM","YAGMH_SNUM",
                "YAGM_SNUM","YG_SNUM","YG_SNUM","Y_SNUM","WEIGHT1","WEIGHT2","WEIGHT3","WEIGHT4")]     # get rid of some unneeded variables
 
-    if(base::isTRUE(expand_using_weighting_factors)){
-      y3$WEIGHTX<-y3$WEIGHT1*y3$WEIGHT2*y3$WEIGHT4   ## weight of individual length sample for single fishery model. # multiply individual observation weight at haul level by weight of the haul by the weight of the year/area/gear/month. So this should give the weight each observation has, scaled by the haul weight and month/gear/year/area weight
-    }else{
-      y3$WEIGHTX<-y3$WEIGHT1   ## do not apply weighting factors.
+    if(is.null(expansion_factors)){
+      y3$WEIGHTX<-y3$WEIGHT1
+    }else if(all(expansion_factors=="haul_numbers")){
+      y3$WEIGHTX<-y3$WEIGHT1*y3$WEIGHT2
+    }else if(all(expansion_factors==c("haul_numbers", "month_numbers"))){
+      y3$WEIGHTX<-y3$WEIGHT1*y3$WEIGHT2*y3$WEIGHT4
     }
+
+    # if(base::isTRUE(expand_using_weighting_factors)){
+    #   y3$WEIGHTX<-y3$WEIGHT1*y3$WEIGHT2*y3$WEIGHT4   ## weight of individual length sample for single fishery model. # multiply individual observation weight at haul level by weight of the haul by the weight of the year/area/gear/month. So this should give the weight each observation has, scaled by the haul weight and month/gear/year/area weight
+    # }else{
+    #   y3$WEIGHTX<-y3$WEIGHT1   ## do not apply weighting factors.
+    # }
     # y3$WEIGHTX_GEAR<-y3$WEIGHT1*y3$WEIGHT2*y3$WEIGHT3 # similar to previous but including gear weights
 
     if(!is.null(minimum_sample_size)){ # user-defined minimum sample size

@@ -10,7 +10,7 @@ expand_props(
   area_code,
   boot.length = FALSE,
   expand.by.sampling.strata = FALSE,
-  expand_using_weighting_factors = TRUE
+  expansion_factors = expansion_factors
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ expand_props(
 
 \item{expand.by.sampling.strata}{MAKE THIS GENERIC IN FUTURE. expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.}
 
-\item{expand_using_weighting_factors}{MAKE THIS GENERIC IN FUTURE. expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.}
+\item{expansion_factors}{expansion weighting factors to apply to the proportions. If NULL, then no expansion factors are applied. Otherwise, the conditional options coded in expand_props.R are "haul_numbers" or "haul_numbers" and "month_numbers". Consider improving/generalizing this by calling it expansion_weighting_factors = list(type = c("weight", "number"), factors = c("haul", "area", "month", "gear", etc.) to give the user the option of what aspects (columns) of the data to expand by and do it by weight of fish or number of fish in those categories.}
 }
 \description{
 This is intended to be a large function that consists of many conditional statements, each of which pertains to a unique species/area expansion method. The internals of the conditional statements can eventually turn into many species/area/length/age specific functions housed in another script. Takes length or age frequency data and expands it into fished population proportions at length or age using the weightings from the relevant data. The relevant data can be the og data or bootstrapped data.

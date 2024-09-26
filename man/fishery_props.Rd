@@ -13,7 +13,7 @@ fishery_props(
   boot.length = FALSE,
   boot.age = FALSE,
   expand.by.sampling.strata = FALSE,
-  expand_using_weighting_factors = TRUE
+  expansion_factors = expansion_factors
 )
 }
 \arguments{
@@ -33,7 +33,7 @@ fishery_props(
 
 \item{expand.by.sampling.strata}{expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.}
 
-\item{expand_using_weighting_factors}{expand using weighting factors? If TRUE, then then "WEIGHT2" and "WEIGHT4" are applied.}
+\item{expansion_factors}{expansion weighting factors to apply to the proportions. If NULL, then no expansion factors are applied. Otherwise, the conditional options coded in expand_props.R are "haul_numbers" or "haul_numbers" and "month_numbers". Consider improving/generalizing this by calling it expansion_weighting_factors = list(type = c("weight", "number"), factors = c("haul", "area", "month", "gear", etc.) to give the user the option of what aspects (columns) of the data to expand by and do it by weight of fish or number of fish in those categories.}
 }
 \value{
 List of a dataframe of annual population proportions-at-length .lpop.

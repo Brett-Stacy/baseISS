@@ -18,7 +18,7 @@ administrate_iss = function(freq_data) {
                            boot.length = FALSE, # overrides any global environment assignment
                            boot.age = FALSE,
                            expand.by.sampling.strata = FALSE, # overrides any global environment assignment
-                           expand_using_weighting_factors = expand_using_weighting_factors)
+                           expansion_factors = expansion_factors)
 
 
   # create a useful name based on length or age
@@ -38,7 +38,7 @@ administrate_iss = function(freq_data) {
                                            boot.length = boot.length, # set to the global environmental assignment
                                            boot.age = boot.age,
                                            expand.by.sampling.strata = expand.by.sampling.strata, # set to the global environmental assignment
-                                           expand_using_weighting_factors = expand_using_weighting_factors))
+                                           expansion_factors = expansion_factors))
 
 
   base::do.call(mapply, c(base::list, rr, SIMPLIFY = FALSE))[[.data_type]] %>% # reverse iterations[[type]] to type[[iterations]], i.e., to length[[1]]
