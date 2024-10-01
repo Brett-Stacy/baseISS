@@ -3,6 +3,8 @@
 #' @description
 #' Follows loosely srvy_comps.R from surveyISS package.
 #'
+#' @param species_code species number code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.
+#' @param area_code area character code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.
 #' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
 #' @param freq_data length or age frequency input data frame
 #' @param yrs any year filter >= (default = NULL)
@@ -17,7 +19,9 @@
 #'
 #' @export
 #'
-fishery_props <- function(length_based,
+fishery_props <- function(species_code,
+                          area_code,
+                          length_based = TRUE,
                           freq_data,
                           yrs = NULL,
                           boot.trip = FALSE,
@@ -109,6 +113,7 @@ fishery_props <- function(length_based,
   .freq %>%
       expand_props(species_code = species_code,
                    area_code = area_code,
+                   length_based = length_based,
                    boot.length = boot.length,
                    expand.by.sampling.strata = expand.by.sampling.strata,
                    expansion_factors = expansion_factors) -> .pop

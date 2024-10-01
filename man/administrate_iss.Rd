@@ -4,9 +4,23 @@
 \alias{administrate_iss}
 \title{Administrate ISS}
 \usage{
-administrate_iss(freq_data)
+administrate_iss(
+  species_code,
+  area_code,
+  length_based = TRUE,
+  iters = 1,
+  freq_data
+)
 }
 \arguments{
+\item{species_code}{species number code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.}
+
+\item{area_code}{area character code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.}
+
+\item{length_based}{Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.}
+
+\item{iters}{number of iterations}
+
 \item{freq_data}{length or age frequency input data frame}
 }
 \value{

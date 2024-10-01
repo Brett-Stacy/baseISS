@@ -1,16 +1,26 @@
 #' Administrate ISS
 #'
+#' @param species_code species number code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.
+#' @param area_code area character code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.
+#' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
+#' @param iters number of iterations
 #' @param freq_data length or age frequency input data frame
 #'
 #' @return Data frame of input sample size by year
 #'
 #' @export
 #'
-administrate_iss = function(freq_data) {
+administrate_iss = function(species_code,
+                            area_code,
+                            length_based = TRUE,
+                            iters = 1,
+                            freq_data) {
 
   ######## NEW (with age)
   # get original population proportions-at-length or -age values ----
-  og_props = fishery_props(length_based = length_based,
+  og_props = fishery_props(species_code = species_code,
+                           area_code = area_code,
+                           length_based = length_based,
                            freq_data = freq_data,
                            yrs = yrs,
                            boot.trip = FALSE, # overrides any global environment assignment
@@ -30,7 +40,9 @@ administrate_iss = function(freq_data) {
 
 
   # run resampling iterations ----
-  rr <- purrr::map(1:iters, ~fishery_props(length_based = length_based,
+  rr <- purrr::map(1:iters, ~fishery_props(species_code = species_code,
+                                           area_code = area_code,
+                                           length_based = length_based,
                                            freq_data = freq_data,
                                            yrs = yrs,
                                            boot.trip = boot.trip, # set to the global environmental assignment
@@ -53,7 +65,8 @@ administrate_iss = function(freq_data) {
   ## now get statistics ----
   compute_stats(sim_props = .sim_props,
                 og_props = .og_props,
-                freq_data = .freq_data)
+                freq_data = .freq_data,
+                iters = iters)
 
 
 }

@@ -6,6 +6,7 @@
 #' @param freq_data length or age frequency input data frame
 #' @param species_code species specific number code to apply the expansion for. Conditional statements below activate species-specific expansions.
 #' @param area_code area specific character code to apply the conditional expansion below.
+#' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
 #' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length. In this function, this activates a switch to calculate SUM_FREQUENCY for og_props.
 #' @param expand.by.sampling.strata MAKE THIS GENERIC IN FUTURE. expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #' @param expansion_factors expansion weighting factors to apply to the proportions. If NULL, then no expansion factors are applied. Otherwise, the conditional options coded in expand_props.R are "haul_numbers" or "haul_numbers" and "month_numbers". Consider improving/generalizing this by calling it expansion_weighting_factors = list(type = c("weight", "number"), factors = c("haul", "area", "month", "gear", etc.) to give the user the option of what aspects (columns) of the data to expand by and do it by weight of fish or number of fish in those categories.
@@ -15,6 +16,7 @@
 expand_props = function(freq_data,
                         species_code,
                         area_code,
+                        length_based = TRUE,
                         boot.length = FALSE,
                         expand.by.sampling.strata = FALSE,
                         expansion_factors = expansion_factors)

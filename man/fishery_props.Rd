@@ -5,7 +5,9 @@
 \title{Resample data and compute proportions-at-length or -age population expansion}
 \usage{
 fishery_props(
-  length_based,
+  species_code,
+  area_code,
+  length_based = TRUE,
   freq_data,
   yrs = NULL,
   boot.trip = FALSE,
@@ -17,6 +19,10 @@ fishery_props(
 )
 }
 \arguments{
+\item{species_code}{species number code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.}
+
+\item{area_code}{area character code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.}
+
 \item{length_based}{Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.}
 
 \item{freq_data}{length or age frequency input data frame}

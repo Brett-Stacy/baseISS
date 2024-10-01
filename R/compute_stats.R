@@ -6,6 +6,7 @@
 #' @param sim_props list of replicated abundance at length or age
 #' @param og_props original abundance at length or age (computed with data that has not been resampled)
 #' @param freq_data length or age frequency input data frame
+#' @param iters number of iterations
 #'
 #' @return list of dataframes for realized sample size by replicate (.rss for length or age composition),
 #' input sample size by year (.iss),
@@ -13,9 +14,10 @@
 #'
 #' @export
 #'
-compute_stats <- function(sim_props,
-                          og_props,
-                          freq_data){
+compute_stats <- function(sim_props = NULL,
+                          og_props = NULL,
+                          freq_data = NULL,
+                          iters = 1){
 
 
 

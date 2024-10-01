@@ -8,6 +8,7 @@ expand_props(
   freq_data,
   species_code,
   area_code,
+  length_based = TRUE,
   boot.length = FALSE,
   expand.by.sampling.strata = FALSE,
   expansion_factors = expansion_factors
@@ -19,6 +20,8 @@ expand_props(
 \item{species_code}{species specific number code to apply the expansion for. Conditional statements below activate species-specific expansions.}
 
 \item{area_code}{area specific character code to apply the conditional expansion below.}
+
+\item{length_based}{Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.}
 
 \item{boot.length}{Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length. In this function, this activates a switch to calculate SUM_FREQUENCY for og_props.}
 

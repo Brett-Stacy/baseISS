@@ -74,8 +74,11 @@ fishery_iss <- function(species_code,
 
     base::print("no post-stratification")
 
-    freq_data %>%
-      administrate_iss() -> out_stats
+    out_stats = administrate_iss(species_code = species_code,
+                                 area_code = area_code,
+                                 length_based = length_based,
+                                 iters = iters,
+                                 freq_data = freq_data)
 
   }
 
