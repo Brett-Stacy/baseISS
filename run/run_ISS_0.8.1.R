@@ -13,7 +13,7 @@ library(baseISS)
 # area_code = "EBS"
 # length_based = TRUE # TRUE for length
 # iters = 2
-freq_data = lfreq_data
+# freq_data = lfreq_data
 yrs = 1999
 post_strata = NULL
 minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30) # throw minimum sample size back in because we are back to testing with length
@@ -23,7 +23,6 @@ boot.haul = T
 boot.length = T
 boot.age = F
 expand.by.sampling.strata = TRUE
-# expand_using_weighting_factors = TRUE
 expansion_factors = c("haul_numbers", "month_numbers")
 
 
@@ -32,7 +31,7 @@ fishery_iss(species_code = "202",
             area_code = "EBS",
             length_based = TRUE,
             iters = 2,
-            freq_data = freq_data,
+            freq_data = lfreq_data,
             yrs = yrs,
             post_strata = post_strata,
             minimum_sample_size = minimum_sample_size,

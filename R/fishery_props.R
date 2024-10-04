@@ -7,7 +7,6 @@
 #' @param area_code area character code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.
 #' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
 #' @param freq_data length or age frequency input data frame
-#' @param yrs any year filter >= (default = NULL)
 #' @param boot.trip Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length or -age
 #' @param boot.haul Boolean. Resample hauls w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length or -age
 #' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
@@ -23,7 +22,6 @@ fishery_props <- function(species_code,
                           area_code,
                           length_based = TRUE,
                           freq_data,
-                          yrs = NULL,
                           boot.trip = FALSE,
                           boot.haul = FALSE,
                           boot.length = FALSE,
@@ -32,14 +30,10 @@ fishery_props <- function(species_code,
                           expansion_factors = expansion_factors)
 
   {
-  # globals ----
-  # year switch
-  if (is.null(yrs)) yrs <- 0 # when NULL, drop yrs to 0 so it picks up all possible years
 
 
-  # prep data ----
-  freq_data %>%
-      tidytable::filter(YEAR >= yrs) -> .freq # filters for only years requested and forces freq_data into a tidytable format
+  # rename to make below code work
+  .freq = freq_data
 
 
 

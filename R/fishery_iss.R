@@ -58,11 +58,21 @@ fishery_iss <- function(species_code,
 
 
   ### Necessary preliminaries
+  # globals ----
+  # year switch
+  if (is.null(yrs)) yrs <- 0 # when NULL, drop yrs to 0 so it picks up all possible years
+
+  # prep data ----
+  freq_data %>%
+      tidytable::filter(YEAR >= yrs) -> freq_data # filters for only years requested and forces freq_data into a tidytable format
+
   # uncount the data frame if it is compressed by count of length or age, i.e., flatten the data frame. This only impacts length-only data frames because age input data frames should always be flattened. This avoids uncounting it in every resampling iteration. Work with the SUM_FREQUENCY column name for now, may need to change this with alternative input data frames.
   if("SUM_FREQUENCY" %in% base::names(freq_data)){
     freq_data %>%
       tidytable::uncount(SUM_FREQUENCY) -> freq_data
   }
+
+
 
   ### Post-stratify if requested
   if(!is.null(post_strata)){ # post_stratify. output will be organized as a list with each entry corresponding to a post_strata name

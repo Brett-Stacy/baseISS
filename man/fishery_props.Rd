@@ -9,7 +9,6 @@ fishery_props(
   area_code,
   length_based = TRUE,
   freq_data,
-  yrs = NULL,
   boot.trip = FALSE,
   boot.haul = FALSE,
   boot.length = FALSE,
@@ -26,8 +25,6 @@ fishery_props(
 \item{length_based}{Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.}
 
 \item{freq_data}{length or age frequency input data frame}
-
-\item{yrs}{any year filter >= (default = NULL)}
 
 \item{boot.trip}{Boolean. Resample trips w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length or -age}
 
