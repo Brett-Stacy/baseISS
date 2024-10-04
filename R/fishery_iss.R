@@ -77,8 +77,12 @@ fishery_iss <- function(species_code,
   ### Post-stratify if requested
   if(!is.null(post_strata)){ # post_stratify. output will be organized as a list with each entry corresponding to a post_strata name
 
-    freq_data %>%
-      post_stratify(post_strata = post_strata) -> out_stats
+    out_stats = post_stratify(species_code = species_code,
+                              area_code = area_code,
+                              length_based = length_based,
+                              iters = iters,
+                              freq_data = freq_data,
+                              post_strata = post_strata)
 
   }else { # do not post-stratify
 

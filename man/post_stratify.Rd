@@ -4,10 +4,25 @@
 \alias{post_stratify}
 \title{Post-stratify ISS}
 \usage{
-post_stratify(freq_data, post_strata)
+post_stratify(
+  species_code,
+  area_code,
+  length_based = TRUE,
+  iters = 1,
+  freq_data,
+  post_strata
+)
 }
 \arguments{
-\item{freq_data}{length frequency input data frame}
+\item{species_code}{species number code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.}
+
+\item{area_code}{area character code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.}
+
+\item{length_based}{Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.}
+
+\item{iters}{number of iterations}
+
+\item{freq_data}{length or age frequency input data frame}
 
 \item{post_strata}{list(strata = character string, nested = Boolean) if NULL, then no post stratification. The first element of post_strata is a character string with name(s) of post strata type. Accepted types are "GEAR", etc. These must be column name(s) in the data frame where each row has an entry and there are no NAs. The second element in post_strata allows for nested post-strata (e.g., "GEAR", "SEX") that are in order of the desired nested hierarchy, then the final results will be a nested list in order of the listed post-strata as well. Perhaps there should be an error message for attempts with strata names that are not in freq_data or it does exist, but there are NAs in it.}
 }

@@ -14,8 +14,8 @@ library(baseISS)
 # length_based = TRUE # TRUE for length
 # iters = 2
 # freq_data = lfreq_data
-yrs = 1999
-post_strata = NULL
+# yrs = 1999
+# post_strata = list(strata = "GEAR", nested = FALSE)
 minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30) # throw minimum sample size back in because we are back to testing with length
 new_length_N = NULL
 boot.trip = T
@@ -32,8 +32,8 @@ fishery_iss(species_code = "202",
             length_based = TRUE,
             iters = 2,
             freq_data = lfreq_data,
-            yrs = yrs,
-            post_strata = post_strata,
+            yrs = 1999,
+            post_strata = list(strata = "GEAR", nested = FALSE),
             minimum_sample_size = minimum_sample_size,
             new_length_N = new_length_N,
             boot.trip = boot.trip,

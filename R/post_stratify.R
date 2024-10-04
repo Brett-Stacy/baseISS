@@ -3,14 +3,22 @@
 #' @description
 #' Apply user-requested post-stratification for one or up to two nested post-stratum
 #'
-#' @param freq_data length frequency input data frame
+#' @param species_code species number code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.
+#' @param area_code area character code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.
+#' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
+#' @param iters number of iterations
+#' @param freq_data length or age frequency input data frame
 #' @param post_strata list(strata = character string, nested = Boolean) if NULL, then no post stratification. The first element of post_strata is a character string with name(s) of post strata type. Accepted types are "GEAR", etc. These must be column name(s) in the data frame where each row has an entry and there are no NAs. The second element in post_strata allows for nested post-strata (e.g., "GEAR", "SEX") that are in order of the desired nested hierarchy, then the final results will be a nested list in order of the listed post-strata as well. Perhaps there should be an error message for attempts with strata names that are not in freq_data or it does exist, but there are NAs in it.
 #'
 #' @return list of input sample size by post-strata and year
 #'
 #' @export
 #'
-post_stratify = function(freq_data,
+post_stratify = function(species_code,
+                         area_code,
+                         length_based = TRUE,
+                         iters = 1,
+                         freq_data,
                          post_strata){
 
   if(base::length(post_strata$strata)==2 & base::isTRUE(post_strata$nested)){ # if there is more than one strata and nesting is desired
@@ -55,8 +63,14 @@ post_stratify = function(freq_data,
                             !!tidytable::sym(post_strata$strata[2])==names(out_stats[[1]][[names(out_stats[[post_strata$strata[1]]])[i]]][[1]][k])) -> .freq_data_strata
 
         # perform the ISS routine. Put all the original code below that did this without post-strata into a function called post_stratify().
-        .freq_data_strata %>%
-          administrate_iss() -> out_stats[[post_strata$strata[1]]][[i]][[1]][[k]]
+        out_stats[[post_strata$strata[1]]][[i]][[1]][[k]] = administrate_iss(species_code = species_code,
+                                                                             area_code = area_code,
+                                                                             length_based = length_based,
+                                                                             iters = iters,
+                                                                             freq_data = .freq_data_strata)
+
+        # .freq_data_strata %>%
+        #   administrate_iss() -> out_stats[[post_strata$strata[1]]][[i]][[1]][[k]]
 
       }
     }
@@ -100,8 +114,14 @@ post_stratify = function(freq_data,
         tidytable::filter(!!tidytable::sym(post_strata$strata) == names(out_stats[[post_strata$strata]])[i]) -> .freq_data_strata
 
       # perform the ISS routine. Put all the original code below that did this without post-strata into a function called post_stratify().
-      .freq_data_strata %>%
-        administrate_iss() -> out_stats[[post_strata$strata]][[i]]
+      out_stats[[post_strata$strata]][[i]] = administrate_iss(species_code = species_code,
+                                                              area_code = area_code,
+                                                              length_based = length_based,
+                                                              iters = iters,
+                                                              freq_data = .freq_data_strata)
+
+      # .freq_data_strata %>%
+      #   administrate_iss() -> out_stats[[post_strata$strata]][[i]]
     }
   }
   return(out_stats)
