@@ -39,7 +39,7 @@ fishery_iss <- function(species_code,
                         boot.length = TRUE,
                         boot.age = FALSE,
                         expand.by.sampling.strata = FALSE,
-                        expansion_factors = expansion_factors) # expansion must be the same for og props and resampled props for an apples to apples comparison
+                        expansion_factors = NULL) # expansion must be the same for og props and resampled props for an apples to apples comparison
   {
 
 
@@ -51,7 +51,7 @@ fishery_iss <- function(species_code,
     base::stop("Sex cannot yet be a column name in freq_data if it is not being post-stratified by. This arose because of my method for implementing WEIGHT1 in fishery_props.R to accomodate age data. This is also impacted when applying tidytable::distinct in boot_length() because WEIGHT1 is different between sexes. This should be addressed in the future, but note that this is the only column other than length that will impact weight1 calculation since all other columns will be the same for each age observation.")
   }
   if(!is.null(post_strata)){
-    if(post_strata$strata %in% c("SEX", "Sex", "sex") & !is.null(new_length_N)){
+    if(any(post_strata$strata %in% c("SEX", "Sex", "sex")) & !is.null(new_length_N)){
       base::stop("Sex cannot yet be a post-stratification at the same time as alternative length N values are resampled. This is because males and females are likely sampled at different rates and the new_length_N would need to be sex specific.")
     }
   }
@@ -92,7 +92,15 @@ fishery_iss <- function(species_code,
                                  area_code = area_code,
                                  length_based = length_based,
                                  iters = iters,
-                                 freq_data = freq_data)
+                                 freq_data = freq_data,
+                                 minimum_sample_size = minimum_sample_size,
+                                 new_length_N = new_length_N,
+                                 boot.trip = boot.trip,
+                                 boot.haul = boot.haul,
+                                 boot.length = boot.length,
+                                 boot.age = boot.age,
+                                 expand.by.sampling.strata = expand.by.sampling.strata,
+                                 expansion_factors = expansion_factors)
 
   }
 

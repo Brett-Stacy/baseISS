@@ -4,7 +4,13 @@
 \alias{compute_stats}
 \title{Compute fishery ISS statistics}
 \usage{
-compute_stats(sim_props = NULL, og_props = NULL, freq_data = NULL, iters = 1)
+compute_stats(
+  sim_props = NULL,
+  og_props = NULL,
+  freq_data = NULL,
+  iters = 1,
+  boot.length = NULL
+)
 }
 \arguments{
 \item{sim_props}{list of replicated abundance at length or age}
@@ -14,6 +20,8 @@ compute_stats(sim_props = NULL, og_props = NULL, freq_data = NULL, iters = 1)
 \item{freq_data}{length or age frequency input data frame}
 
 \item{iters}{number of iterations}
+
+\item{boot.length}{Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length}
 }
 \value{
 list of dataframes for realized sample size by replicate (.rss for length or age composition),

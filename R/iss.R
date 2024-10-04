@@ -6,13 +6,15 @@
 #'
 #' @param rss iterated length or age composition realized sample size
 #' @param freq_data length or age frequency input dataframe
+#' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
 #'
 #' @return iss
 #'
 #' @export
 #'
 iss <- function(rss,
-                freq_data) {
+                freq_data,
+                boot.length) {
 
   rss %>%
     tidytable::summarise(iss = psych::harmonic.mean(rss, na.rm = TRUE, zero = FALSE),

@@ -16,14 +16,14 @@ library(baseISS)
 # freq_data = lfreq_data
 # yrs = 1999
 # post_strata = list(strata = "GEAR", nested = FALSE)
-minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30) # throw minimum sample size back in because we are back to testing with length
-new_length_N = NULL
-boot.trip = T
-boot.haul = T
-boot.length = T
-boot.age = F
-expand.by.sampling.strata = TRUE
-expansion_factors = c("haul_numbers", "month_numbers")
+# minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30) # throw minimum sample size back in because we are back to testing with length
+# new_length_N = list(type = "value", bound = NULL, amount = 20)
+# boot.trip = T
+# boot.haul = T
+# boot.length = T
+# boot.age = F
+# expand.by.sampling.strata = TRUE
+# expansion_factors = c("haul_numbers", "month_numbers")
 
 
 tictoc::tic()
@@ -33,15 +33,15 @@ fishery_iss(species_code = "202",
             iters = 2,
             freq_data = lfreq_data,
             yrs = 1999,
-            post_strata = list(strata = "GEAR", nested = FALSE),
-            minimum_sample_size = minimum_sample_size,
-            new_length_N = new_length_N,
-            boot.trip = boot.trip,
-            boot.haul = boot.haul,
-            boot.length = boot.length,
-            boot.age = boot.age,
-            expand.by.sampling.strata = expand.by.sampling.strata,
-            expansion_factors = expansion_factors) -> .output
+            post_strata = list(strata = c("GEAR", "MONTH"), nested = TRUE),
+            minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30),
+            new_length_N = list(type = "value", bound = NULL, amount = 20),
+            boot.trip = TRUE,
+            boot.haul = TRUE,
+            boot.length = TRUE,
+            boot.age = FALSE,
+            expand.by.sampling.strata = TRUE,
+            expansion_factors = c("haul_numbers", "month_numbers")) -> .output
 tictoc::toc()
 .output
 

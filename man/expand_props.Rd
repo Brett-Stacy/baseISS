@@ -5,23 +5,26 @@
 \title{Expand species-specific sample level proportions-at-length or -age to population level}
 \usage{
 expand_props(
-  freq_data,
   species_code,
   area_code,
   length_based = TRUE,
+  freq_data,
+  minimum_sample_size = NULL,
   boot.length = FALSE,
   expand.by.sampling.strata = FALSE,
-  expansion_factors = expansion_factors
+  expansion_factors
 )
 }
 \arguments{
-\item{freq_data}{length or age frequency input data frame}
+\item{species_code}{species number code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.}
 
-\item{species_code}{species specific number code to apply the expansion for. Conditional statements below activate species-specific expansions.}
-
-\item{area_code}{area specific character code to apply the conditional expansion below.}
+\item{area_code}{area character code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.}
 
 \item{length_based}{Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.}
+
+\item{freq_data}{length or age frequency input data frame}
+
+\item{minimum_sample_size}{list(resolution = character string, size = integer). If NULL, then no minimum sample size. If not NULL, The sample size at the chosen resolution (must be column in freq_data, e.g., YAGM_SFREQ for EBS Pcod) for which to filter out data that does not meet the minimum sample size requested. Example: minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30). Note that this filters to keep only samples GREATER than 30 at the YAGM resolution.}
 
 \item{boot.length}{Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length. In this function, this activates a switch to calculate SUM_FREQUENCY for og_props.}
 

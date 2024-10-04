@@ -19,7 +19,7 @@ fishery_iss(
   boot.length = TRUE,
   boot.age = FALSE,
   expand.by.sampling.strata = FALSE,
-  expansion_factors = expansion_factors
+  expansion_factors = NULL
 )
 }
 \arguments{

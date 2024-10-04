@@ -3,23 +3,25 @@
 #' @description
 #' This is intended to be a large function that consists of many conditional statements, each of which pertains to a unique species/area expansion method. The internals of the conditional statements can eventually turn into many species/area/length/age specific functions housed in another script. Takes length or age frequency data and expands it into fished population proportions at length or age using the weightings from the relevant data. The relevant data can be the og data or bootstrapped data.
 #'
-#' @param freq_data length or age frequency input data frame
-#' @param species_code species specific number code to apply the expansion for. Conditional statements below activate species-specific expansions.
-#' @param area_code area specific character code to apply the conditional expansion below.
+#' @param species_code species number code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.
+#' @param area_code area character code. Used for specific expansion. This is not (yet) an input data filter, it is only for output naming convention and to condition on expansion method.
 #' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
+#' @param freq_data length or age frequency input data frame
+#' @param minimum_sample_size list(resolution = character string, size = integer). If NULL, then no minimum sample size. If not NULL, The sample size at the chosen resolution (must be column in freq_data, e.g., YAGM_SFREQ for EBS Pcod) for which to filter out data that does not meet the minimum sample size requested. Example: minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30). Note that this filters to keep only samples GREATER than 30 at the YAGM resolution.
 #' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length. In this function, this activates a switch to calculate SUM_FREQUENCY for og_props.
 #' @param expand.by.sampling.strata MAKE THIS GENERIC IN FUTURE. expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #' @param expansion_factors expansion weighting factors to apply to the proportions. If NULL, then no expansion factors are applied. Otherwise, the conditional options coded in expand_props.R are "haul_numbers" or "haul_numbers" and "month_numbers". Consider improving/generalizing this by calling it expansion_weighting_factors = list(type = c("weight", "number"), factors = c("haul", "area", "month", "gear", etc.) to give the user the option of what aspects (columns) of the data to expand by and do it by weight of fish or number of fish in those categories.
 #'
 #' @export
 #'
-expand_props = function(freq_data,
-                        species_code,
+expand_props = function(species_code,
                         area_code,
                         length_based = TRUE,
+                        freq_data,
+                        minimum_sample_size = NULL,
                         boot.length = FALSE,
                         expand.by.sampling.strata = FALSE,
-                        expansion_factors = expansion_factors)
+                        expansion_factors)
   {
 
 
