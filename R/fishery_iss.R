@@ -82,7 +82,15 @@ fishery_iss <- function(species_code,
                               length_based = length_based,
                               iters = iters,
                               freq_data = freq_data,
-                              post_strata = post_strata)
+                              post_strata = post_strata,
+                              minimum_sample_size = minimum_sample_size,
+                              new_length_N = new_length_N,
+                              boot.trip = boot.trip,
+                              boot.haul = boot.haul,
+                              boot.length = boot.length,
+                              boot.age = boot.age,
+                              expand.by.sampling.strata = expand.by.sampling.strata,
+                              expansion_factors = expansion_factors)
 
   }else { # do not post-stratify
 

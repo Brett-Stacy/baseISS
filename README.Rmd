@@ -45,7 +45,13 @@ The following conditions of an input data frame for any species must be met:
 
 ### Developing Functionality
 
-- subsampling
+- subsampling length - done.
+
+- custom max length control
+- plus group option
+- different length bin size control
+- different species
+- reboot_age.R
 
 
 

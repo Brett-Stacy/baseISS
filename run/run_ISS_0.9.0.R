@@ -1,4 +1,4 @@
-# Fix mistake. fix all instances where I mistakenly relied on global environment definition of function arguements.
+# Fix mistake. fix all instances where I mistakenly relied on global environment definition of function arguements. tested - works.
 
 rm(list = ls())
 run_name = "fix_mistake_arguement_definitions_V1"

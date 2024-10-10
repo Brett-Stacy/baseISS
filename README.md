@@ -61,7 +61,17 @@ standard calculation that is exactly the same for every species.
 
 ### Developing Functionality
 
-- subsampling
+- subsampling length - done.
+
+- custom max length control
+
+- plus group option
+
+- different length bin size control
+
+- different species
+
+- reboot_age.R
 
 ## Installation
 

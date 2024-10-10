@@ -1,0 +1,111 @@
+---
+title: "Inspect 3x3 V1"
+author: "Brett Stacy"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, warning = F, message = F, results = "hide", fig.width = 8.5, fig.height = 5, dpi = 600)
+library(tidytable)
+library(data.table)
+library(reshape2)
+library(ggplot2)
+library(knitr)
+opts_knit$set(eval.after = "fig.cap")
+```
+
+
+# Introduction
+3x3 grid: sample size 10, 20, 30 fixed X expansion none, haul only, haul+month. 
+
+## Data 
+```{r}
+out = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/3x3_grid_V1_ISS_200_iters_2024-10-09.RDS")
+
+out2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/3x3_grid_V2_ISS_200_iters_2024-10-10.RDS")
+
+
+
+year = out$samples_10$expansion_NULL$length$iss$YEAR
+
+samples_global = c(10, 20, 30)
+expansion_global = list(NULL, "haul_numbers", c("haul_numbers", "month_numbers"))
+expansion_names_global = c("NULL", "haul_numbers", c("haul_month_numbers"))
+
+```
+
+
+
+
+
+
+
+
+
+## Plot ISS
+```{r}
+
+df = tidytable(year = year,
+                N10_Enull = out$samples_10$expansion_NULL$length$iss$iss,
+                N10_Eh = out$samples_10$expansion_haul_numbers$length$iss$iss,
+                N10_Ehm = out$samples_10$expansion_haul_month_numbers$length$iss$iss,
+                N20_Enull = out$samples_20$expansion_NULL$length$iss$iss,
+                N20_Eh = out$samples_20$expansion_haul_numbers$length$iss$iss,
+                N20_Ehm = out$samples_20$expansion_haul_month_numbers$length$iss$iss,
+                N30_Enull = out$samples_30$expansion_NULL$length$iss$iss,
+                N30_Eh = out$samples_30$expansion_haul_numbers$length$iss$iss,
+                N30_Ehm = out$samples_30$expansion_haul_month_numbers$length$iss$iss) 
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+
+
+ggplot(data = df2, aes(x = year, y = ISS, group = scenario, colour = scenario)) +
+  geom_line() +
+  labs(x = "Year", y = "ISS") +
+  geom_point()
+
+
+
+```
+
+
+
+## Plot ISS V2
+```{r}
+
+df = tidytable(year = year,
+               N10_Enull = out$samples_10$expansion_NULL$length$iss$iss,
+               N20_Enull = out$samples_20$expansion_NULL$length$iss$iss,
+               N30_Enull = out$samples_30$expansion_NULL$length$iss$iss,
+               N10_Eh = out$samples_10$expansion_haul_numbers$length$iss$iss,
+               N20_Eh = out$samples_20$expansion_haul_numbers$length$iss$iss,
+               N30_Eh = out$samples_30$expansion_haul_numbers$length$iss$iss,
+               N10_Ehm = out$samples_10$expansion_haul_month_numbers$length$iss$iss,
+               N20_Ehm = out$samples_20$expansion_haul_month_numbers$length$iss$iss,
+               N30_Ehm = out$samples_30$expansion_haul_month_numbers$length$iss$iss,) 
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+
+
+ggplot(data = df2, aes(x = year, y = ISS, group = scenario, colour = scenario)) +
+  geom_line() +
+  labs(x = "Year", y = "ISS") +
+  geom_point()
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
