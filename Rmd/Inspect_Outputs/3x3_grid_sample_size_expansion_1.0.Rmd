@@ -18,7 +18,7 @@ opts_knit$set(eval.after = "fig.cap")
 
 
 # Introduction
-3x3 grid: sample size 10, 20, 30 fixed X expansion none, haul only, haul+month. 
+3x3 grid: sample size 10, 20, 30 fixed X expansion none, haul only, haul+month. For both with and without expand by sampling strata. 
 
 ## Data 
 ```{r}
@@ -45,7 +45,7 @@ expansion_names_global = c("NULL", "haul_numbers", c("haul_month_numbers"))
 
 
 ## Plot ISS
-```{r}
+```{r, eval=F}
 
 df = tidytable(year = year,
                 N10_Enull = out$samples_10$expansion_NULL$length$iss$iss,
@@ -77,15 +77,43 @@ ggplot(data = df2, aes(x = year, y = ISS, group = scenario, colour = scenario)) 
 ```{r}
 
 df = tidytable(year = year,
-               N10_Enull = out$samples_10$expansion_NULL$length$iss$iss,
-               N20_Enull = out$samples_20$expansion_NULL$length$iss$iss,
-               N30_Enull = out$samples_30$expansion_NULL$length$iss$iss,
-               N10_Eh = out$samples_10$expansion_haul_numbers$length$iss$iss,
-               N20_Eh = out$samples_20$expansion_haul_numbers$length$iss$iss,
-               N30_Eh = out$samples_30$expansion_haul_numbers$length$iss$iss,
-               N10_Ehm = out$samples_10$expansion_haul_month_numbers$length$iss$iss,
-               N20_Ehm = out$samples_20$expansion_haul_month_numbers$length$iss$iss,
-               N30_Ehm = out$samples_30$expansion_haul_month_numbers$length$iss$iss,) 
+               N10_Enone = out$samples_10$expansion_NULL$length$iss$iss,
+               N20_Enone = out$samples_20$expansion_NULL$length$iss$iss,
+               N30_Enone = out$samples_30$expansion_NULL$length$iss$iss,
+               N10_Emedium = out$samples_10$expansion_haul_numbers$length$iss$iss,
+               N20_Emedium = out$samples_20$expansion_haul_numbers$length$iss$iss,
+               N30_Emedium = out$samples_30$expansion_haul_numbers$length$iss$iss,
+               N10_Efull = out$samples_10$expansion_haul_month_numbers$length$iss$iss,
+               N20_Efull = out$samples_20$expansion_haul_month_numbers$length$iss$iss,
+               N30_Efull = out$samples_30$expansion_haul_month_numbers$length$iss$iss,) 
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+
+
+ggplot(data = df2, aes(x = year, y = ISS, group = scenario, colour = scenario)) +
+  geom_line() +
+  labs(x = "Year", y = "ISS") +
+  geom_point()
+
+
+
+```
+
+
+## Plot ISS V2.2
+```{r}
+
+df = tidytable(year = year,
+               N10_Enull = out2$samples_10$expansion_NULL$length$iss$iss,
+               N20_Enull = out2$samples_20$expansion_NULL$length$iss$iss,
+               N30_Enull = out2$samples_30$expansion_NULL$length$iss$iss,
+               N10_Eh = out2$samples_10$expansion_haul_numbers$length$iss$iss,
+               N20_Eh = out2$samples_20$expansion_haul_numbers$length$iss$iss,
+               N30_Eh = out2$samples_30$expansion_haul_numbers$length$iss$iss,
+               N10_Ehm = out2$samples_10$expansion_haul_month_numbers$length$iss$iss,
+               N20_Ehm = out2$samples_20$expansion_haul_month_numbers$length$iss$iss,
+               N30_Ehm = out2$samples_30$expansion_haul_month_numbers$length$iss$iss,) 
 
 df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
 

@@ -8,6 +8,7 @@
 #' @param length_based Boolean. If TRUE, then calculate length iss. if FALSE, then calculate age iss.
 #' @param freq_data length or age frequency input data frame
 #' @param minimum_sample_size list(resolution = character string, size = integer). If NULL, then no minimum sample size. If not NULL, The sample size at the chosen resolution (must be column in freq_data, e.g., YAGM_SFREQ for EBS Pcod) for which to filter out data that does not meet the minimum sample size requested. Example: minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30). Note that this filters to keep only samples GREATER than 30 at the YAGM resolution.
+#' @param max_length integer or "data_derived" (default). Provides the maximum length bin to record proportions-at-length. Integer values must be equal to or greater than the maximum length observed in the data (this will be changed once a plus-group option is coded in the future). "data_derived" forces the maximum length to be calculated from the data.
 #' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length. In this function, this activates a switch to calculate SUM_FREQUENCY for og_props.
 #' @param expand.by.sampling.strata MAKE THIS GENERIC IN FUTURE. expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #' @param expansion_factors expansion weighting factors to apply to the proportions. If NULL, then no expansion factors are applied. Otherwise, the conditional options coded in expand_props.R are "haul_numbers" or "haul_numbers" and "month_numbers". Consider improving/generalizing this by calling it expansion_weighting_factors = list(type = c("weight", "number"), factors = c("haul", "area", "month", "gear", etc.) to give the user the option of what aspects (columns) of the data to expand by and do it by weight of fish or number of fish in those categories.
@@ -19,6 +20,7 @@ expand_props = function(species_code,
                         length_based = TRUE,
                         freq_data,
                         minimum_sample_size = NULL,
+                        max_length,
                         boot.length = FALSE,
                         expand.by.sampling.strata = FALSE,
                         expansion_factors)
@@ -89,7 +91,13 @@ expand_props = function(species_code,
     y5$FREQ<-y5$WEIGHT/y5$TWEIGHT # RESULT! This is the preliminary proportions at length. They sum to 1 for every year. the FREQuency, or relative weight, between length bins to the total annual weight.
     y6<-y5[,-c("WEIGHT","TWEIGHT")] # saving a version with just FREQ
 
-    grid<-data.table(expand.grid(YEAR=unique(y5$YEAR),LENGTH=1:200)) # make a grid for every year, have a length bin by centemeter from 1 to max length
+    # implement user-defined maximum length bin for output grid:
+    if(is.numeric(max_length)){
+      grid<-data.table(expand.grid(YEAR=unique(y5$YEAR),LENGTH=1:max_length)) # make a grid for every year, have a length bin by centemeter from 1 to max length
+      if(max_length < max(y5$LENGTH)) stop("user-defined maximum length bin must be at least as large as the maximum length observed in the data. Plus-group functionality is not yet developed.")
+    }else if(max_length=="data_derived"){
+      grid<-data.table(expand.grid(YEAR=unique(y5$YEAR),LENGTH=1:max(y5$LENGTH))) # make a grid for every year, have a length bin by centemeter from 1 to max length
+    }
     y7<-merge(grid,y6,all.x=TRUE,by=c("YEAR","LENGTH")) # merge the grid with y6, which is the expanded frequency of proportions for each length bin observed for each year.
     y7[is.na(FREQ)]$FREQ <-0                                  # RESULT! ## this is the proportion at length for an aggregated-gear fishery. # The NAs are where there were no observations for that length bin in that year so call them zero. This is what must be input into the assessment model.
 

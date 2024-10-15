@@ -10,6 +10,7 @@ expand_props(
   length_based = TRUE,
   freq_data,
   minimum_sample_size = NULL,
+  max_length,
   boot.length = FALSE,
   expand.by.sampling.strata = FALSE,
   expansion_factors
@@ -25,6 +26,8 @@ expand_props(
 \item{freq_data}{length or age frequency input data frame}
 
 \item{minimum_sample_size}{list(resolution = character string, size = integer). If NULL, then no minimum sample size. If not NULL, The sample size at the chosen resolution (must be column in freq_data, e.g., YAGM_SFREQ for EBS Pcod) for which to filter out data that does not meet the minimum sample size requested. Example: minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30). Note that this filters to keep only samples GREATER than 30 at the YAGM resolution.}
+
+\item{max_length}{integer or "data_derived" (default). Provides the maximum length bin to record proportions-at-length. Integer values must be equal to or greater than the maximum length observed in the data (this will be changed once a plus-group option is coded in the future). "data_derived" forces the maximum length to be calculated from the data.}
 
 \item{boot.length}{Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length. In this function, this activates a switch to calculate SUM_FREQUENCY for og_props.}
 
