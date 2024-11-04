@@ -18,7 +18,7 @@ boot_length = function(length_DT,
     tidytable::mutate(YAGMH_SFREQ = base::sum(SUM_FREQUENCY), .by = c(YEAR, HAUL_JOIN)) %>%
     tidytable::left_join(length_DT %>%
                            tidytable::distinct(YEAR, HAUL_JOIN, .keep_all = TRUE) %>%
-                           tidytable::select(-LENGTH, -YAGMH_SFREQ))
+                           tidytable::select(-tidytable::any_of(c("LENGTH", "YAGMH_SFREQ"))))
 }
 # for testing
 # length_DT = .freq
