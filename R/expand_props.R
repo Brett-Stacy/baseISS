@@ -187,6 +187,71 @@ expand_props = function(species_code,
 
 
 
+
+
+    ########## Pollock (201) ##########
+    ##### Length
+  }else if(species_code==201 & area_code=="unknown" & base::isTRUE(length_based)){
+
+    print("Expansion for species 201 in area unknown")
+
+    # Add in SUM_FREQUENCY if it doesn't already exist (for og_props situation) ----
+    # uncount the data frame if it is compressed by count of length or age, i.e., flatten the data frame. This only impacts length-only data frames because age input data frames should always be flattened. This avoids uncounting it in every resampling iteration. Work with the SUM_FREQUENCY column name for now, may need to change this with alternative input data frames.
+    if(!("SUM_FREQUENCY" %in% base::names(freq_data)) & base::isTRUE(length_based) & base::isFALSE(boot.length)){ # applies only to og_props because boot.length==F only for og.
+      freq_data %>%
+        tidytable::summarise(SUM_FREQUENCY = n(base::unique(LENGTH)), .by = c(YEAR, HAUL_JOIN, LENGTH)) %>% # after this line is where I would incorporate a different sample size feature. would need to set YAGMH_SFREQ to requested sample size.
+        tidytable::mutate(YAGMH_SFREQ = base::sum(SUM_FREQUENCY), .by = c(YEAR, HAUL_JOIN)) %>%
+        tidytable::left_join(freq_data %>%
+                               tidytable::distinct(YEAR, HAUL_JOIN, .keep_all = TRUE) %>%
+                               tidytable::select(-LENGTH)) -> freq_data
+    }
+
+
+    # Add in sampling strata weighting functionality ----
+    if(isTRUE(expand.by.sampling.strata)){
+      print("expand by sampling strata activated")
+      freq_data %>%
+        expand_by_sampling_strata() -> freq_data
+    }
+
+
+    ### Expansion cobbled together from EBS Pcod weight1 for now (eventually enter real code) ----
+    # copied from above: y2$WEIGHT1<-y2$SUM_FREQUENCY/y2$YAGMH_SFREQ
+    freq_data %>%
+      tidytable::mutate(WEIGHT1 = SUM_FREQUENCY/YAGMH_SFREQ) -> freq_data
+
+    # copied from above: y3$WEIGHTX<-y3$WEIGHT1
+    y3 = freq_data
+    y3$WEIGHTX<-y3$WEIGHT1
+
+    y4<-y3[,list(WEIGHT=sum(WEIGHTX)),by=c("LENGTH","YEAR")]
+
+    y5<-y4[,list(TWEIGHT=sum(WEIGHT)),by=c("YEAR")] # TWEIGHT is I think the total weight summed across length bins for every year. sum(TWEIGHT) = 1.9. Shouldn't this sum to 1??
+    y5=merge(y4,y5) # merge the individual length weights with their respective year weights.
+    y5$FREQ<-y5$WEIGHT/y5$TWEIGHT # RESULT! This is the preliminary proportions at length. They sum to 1 for every year. the FREQuency, or relative weight, between length bins to the total annual weight.
+    y6<-y5[,-c("WEIGHT","TWEIGHT")] # saving a version with just FREQ
+
+    # implement user-defined maximum length bin for output grid:
+    if(is.numeric(max_length)){
+      grid<-data.table(expand.grid(YEAR=unique(y5$YEAR),LENGTH=1:max_length)) # make a grid for every year, have a length bin by centemeter from 1 to max length
+      if(max_length < max(y5$LENGTH)) stop("user-defined maximum length bin must be at least as large as the maximum length observed in the data. Plus-group functionality is not yet developed.")
+    }else if(max_length=="data_derived"){
+      grid<-data.table(expand.grid(YEAR=unique(y5$YEAR),LENGTH=1:max(y5$LENGTH))) # make a grid for every year, have a length bin by centemeter from 1 to max length
+    }
+    y7<-merge(grid,y6,all.x=TRUE,by=c("YEAR","LENGTH")) # merge the grid with y6, which is the expanded frequency of proportions for each length bin observed for each year.
+    y7[is.na(FREQ)]$FREQ <-0                                  # RESULT! ## this is the proportion at length for an aggregated-gear fishery. # The NAs are where there were no observations for that length bin in that year so call them zero. This is what must be input into the assessment model.
+
+
+
+    return(y7)
+
+
+
+
+
+
+
+
   }else if(species_code!=202 & area_code!="EBS"){
     stop(paste("Expansion for species", species_code, "in area", area_code, "under development", sep = " "))
 
