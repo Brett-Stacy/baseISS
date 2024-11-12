@@ -1,7 +1,7 @@
 
 
 
-# Need to connect to AKFIN with username and passoword to run below code.
+# Need to connect to AKFIN with username and passoword using C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/odbc_login.R to run below code.
 
 library(dplyr)
 
@@ -532,12 +532,57 @@ new_afreq_data1.1[YEAR==2022 & HAUL_JOIN=="H25648004533000000049", .(HAUL_JOIN, 
 
 
 
+#### Unmodified '202' download to test generic capability of baseISS
+lfreq_202 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/species_202_generic.sql')
+
+temp2=sql_run(akfin, lfreq_202)
+
+# save
+saveRDS(temp2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/species_202_generic.RDS")
 
 
 
 
 
 
+
+
+
+#### Unmodified all species download for 2022 to test generic capability of baseISS
+lfreq_2022 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/all_species_generic_2022.sql')
+
+temp2=sql_run(akfin, lfreq_2022)
+
+# save
+saveRDS(temp2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/all_species_generic_2022.RDS")
+
+
+
+
+
+#### Unmodified '201' -pollock download to test generic capability of baseISS
+lfreq_201 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/species_201_generic.sql')
+
+temp2=sql_run(akfin, lfreq_201)
+
+# save
+saveRDS(temp2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/species_201_generic.RDS")
+
+
+
+
+
+
+
+
+
+#### SPCOMP for extrapoleted_numbers column for getting 201 to work in expand_by_sampling_strata.R at YAGMH_SNUM
+spcomp = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/spcomp_generic.sql')
+
+temp2=sql_run(akfin, spcomp)
+
+# save
+saveRDS(temp2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/spcomp_generic_201.RDS")
 
 
 
