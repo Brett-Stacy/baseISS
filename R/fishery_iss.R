@@ -21,7 +21,6 @@
 #' @param boot.age Boolean. Resample ages w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-age
 #' @param expand.by.sampling.strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #' @param expansion_factors expansion weighting factors to apply to the proportions. If NULL, then no expansion factors are applied. Otherwise, the conditional options coded in expand_props.R are "haul_numbers" or "haul_numbers" and "month_numbers". Consider improving/generalizing this by calling it expansion_weighting_factors = list(type = c("weight", "number"), factors = c("haul", "area", "month", "gear", etc.) to give the user the option of what aspects (columns) of the data to expand by and do it by weight of fish or number of fish in those categories.
-#' @param save_args save input arguments in output to keep a record of parameter settings used to produce the output.
 #'
 #' @return Dataframe of input sample size by year
 #'
@@ -42,8 +41,7 @@ fishery_iss <- function(species_code,
                         boot.length = TRUE,
                         boot.age = FALSE,
                         expand.by.sampling.strata = FALSE,
-                        expansion_factors = NULL,
-                        save_args = TRUE)
+                        expansion_factors = NULL)
   {
 
 
@@ -126,10 +124,9 @@ fishery_iss <- function(species_code,
   out_stats = list(out_stats)
   names(out_stats) = .data_type
 
-  ### Include the function arguments in the output
-  if(isTRUE(save_args)){
-    out_stats$arguments = match.call()
-  }
+  ### Include the function arguments in the output as a default
+  out_stats$arguments = match.call()
+
 
 
   return(out_stats)

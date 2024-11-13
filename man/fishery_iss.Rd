@@ -20,8 +20,7 @@ fishery_iss(
   boot.length = TRUE,
   boot.age = FALSE,
   expand.by.sampling.strata = FALSE,
-  expansion_factors = NULL,
-  save_args = TRUE
+  expansion_factors = NULL
 )
 }
 \arguments{
@@ -56,8 +55,6 @@ fishery_iss(
 \item{expand.by.sampling.strata}{expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.}
 
 \item{expansion_factors}{expansion weighting factors to apply to the proportions. If NULL, then no expansion factors are applied. Otherwise, the conditional options coded in expand_props.R are "haul_numbers" or "haul_numbers" and "month_numbers". Consider improving/generalizing this by calling it expansion_weighting_factors = list(type = c("weight", "number"), factors = c("haul", "area", "month", "gear", etc.) to give the user the option of what aspects (columns) of the data to expand by and do it by weight of fish or number of fish in those categories.}
-
-\item{save_args}{save input arguments in output to keep a record of parameter settings used to produce the output.}
 }
 \value{
 Dataframe of input sample size by year
