@@ -5,7 +5,7 @@
 
 library(dplyr)
 
-## Functions ----
+# Functions ----
 
 sql_run <- function(database, query) {
   query = paste(query, collapse = "\n")
@@ -15,8 +15,10 @@ sql_run <- function(database, query) {
 
 
 
+# EBS Pcod ----
+## Length ----
+### Incorporate observer trip into y2 object ----
 
-#### Incorporate observer trip into y2 object ----
 # import some data from SQL Developer for trip_join
 # from ebs pcod:
 # lfreq = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/test.sql') # test.sql is a data frame of just haul_join and trip_join for ALL the observer data
@@ -38,7 +40,7 @@ sql_run <- function(database, query) {
 # # well that din't work because there are a bunch of trip_join values that are just "T"
 
 
-#### Take 2, manual trip join ----
+#### Take 2, manual trip join
 # let's try to make a unique trip join identifier using Jen's suggested combination of Cruise, Permit, and trip_seq
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_ebs_pcod_Brett.RDS")
 lfreq2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/test2.sql') # test2.sql includes Cruise, Permit, and trip_seq
@@ -65,7 +67,7 @@ saveRDS(new_lfreq_data2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHu
 
 
 
-#### Incorporate sampling strata column ----
+### Incorporate sampling strata column ----
 # for use in bootstrapping within strata
 lfreq_data_trip = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_ebs_pcod_Brett_TRIP.RDS")
 sampling_strata = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/sampling_strata.sql') # includes haul_join and sampling_strata
@@ -93,7 +95,7 @@ new_lfreq_data3[,.N, by=.(SAMPLING_STRATA_NAME, YEAR)] %>% print(n=100)
 
 
 
-#### Steve's EBS Pcod 2023 y2 object combined sex - add trip join ----
+### Steve's EBS Pcod 2023 y2 object combined sex - add trip join ----
 
 lfreq_data_steve = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve.RDS")
 # inspect this a bit
@@ -231,7 +233,7 @@ saveRDS(new_lfreq_data2.3, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Git
 
 
 
-#### Steve's EBS Pcod 2023 y2 object combined sex - add strata join ----
+### Steve's EBS Pcod 2023 y2 object combined sex - add strata join ----
 # REMEMBER: FOR THIS I WILL NEED TO MATCH UP "HAUL_JOIN" FROM THE PORT DATA WITH THAT FROM THE STRATA.SQL DOWNLOAD. THIS WILL NEED TO CONSIDER THE "P" PREFIX. Probably make a new .sql file that does not concat H or P, but
 
 lfreq_data_trip2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP.RDS")
@@ -336,7 +338,7 @@ new_lfreq_data3.2[YEAR==2010 & is.na(SAMPLING_STRATA_NAME), c(8, 38:42)] %>% pri
 
 
 
-#### Steve's EBS Pcod 2023 y2 object separate sex - join to above ----
+### Steve's EBS Pcod 2023 y2 object separate sex - join to above ----
 new_lfreq_data3.2 = readRDS("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 
 lfreq_data_steve_sex = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve.RDS") %>%
@@ -384,7 +386,7 @@ saveRDS(new_lfreq_data3.3, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Git
 
 
 
-#### Age V1
+## Age V1 ----
 
 # read in the latest data join
 new_lfreq_data3.3 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_sex_ebs_pcod_Steve_TRIP_STRATA.RDS")
@@ -503,7 +505,7 @@ saveRDS(new_afreq_data1.0, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Git
 
 
 
-#### Age V2
+## Age V2 ----
 # add columns: SUM_FREQUENCY, WEIGHT1, YAGMH_SFREQ, YAGM_SFREQ, YAG_SFREQ, YG_SFREQ, Y_SFREQ
 # Or don't add these columns here because the important ones (SUM_FREQUENCY, YAGMH_SFREQ, and WEIGHT1) have to be recalculated anyway in boot_age.R
 
@@ -531,7 +533,7 @@ new_afreq_data1.1[YEAR==2022 & HAUL_JOIN=="H25648004533000000049", .(HAUL_JOIN, 
 
 
 
-
+## EBS Pcod Generic Length Download ----
 #### Unmodified '202' download to test generic capability of baseISS
 lfreq_202 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/species_202_generic.sql')
 
@@ -547,8 +549,8 @@ saveRDS(temp2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/ba
 
 
 
-
-#### Unmodified all species download for 2022 to test generic capability of baseISS
+# Generic Length ----
+# Unmodified all species download for 2022 to test generic capability of baseISS
 lfreq_2022 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/all_species_generic_2022.sql')
 
 temp2=sql_run(akfin, lfreq_2022)
@@ -559,7 +561,7 @@ saveRDS(temp2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/ba
 
 
 
-
+# Pollock ----
 #### Unmodified '201' -pollock download to test generic capability of baseISS
 lfreq_201 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/species_201_generic.sql')
 
@@ -576,8 +578,8 @@ saveRDS(temp2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/ba
 
 
 
-#### SPCOMP for extrapoleted_numbers column for getting 201 to work in expand_by_sampling_strata.R at YAGMH_SNUM
-spcomp = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/spcomp_generic.sql')
+#### SPCOMP_MV for extrapoleted_numbers column for getting 201 to work in expand_by_sampling_strata.R at YAGMH_SNUM
+spcomp = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/species_201_generic_extrapolated_number.sql')
 
 temp2=sql_run(akfin, spcomp)
 
@@ -593,6 +595,42 @@ saveRDS(temp2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/ba
 
 
 
+#### SPCOMP_MV for extrapoleted_numbers version 2: just to_char(haul_join) and extrapolated numbers
+spcomp2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/species_201_generic_extrapolated_number_V2.sql')
+
+temp2=sql_run(akfin, spcomp2)
+
+# save
+saveRDS(temp2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/spcomp_generic_201_V2.RDS")
+
+
+
+
+
+
+
+#### HAUL_MV for trip_seq column for creating accurate trip_join column
+haul = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/generic_trip.sql')
+
+temp2=sql_run(akfin, haul)
+
+# save
+saveRDS(temp2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/haul_generic_201.RDS")
+
+
+
+
+
+
+
+
+#### Unmodified '201' but with things converted to character where needed
+lfreq_201_V2 = readLines('C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/sql_files/species_201_generic_V2.sql')
+
+temp2=sql_run(akfin, lfreq_201_V2)
+
+# save
+saveRDS(temp2, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/species_201_generic_V2.RDS")
 
 
 
