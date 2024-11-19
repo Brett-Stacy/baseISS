@@ -50,7 +50,7 @@ expand_props = function(species_code,
     if(isTRUE(expand.by.sampling.strata)){
       print("expand by sampling strata activated")
       freq_data %>%
-        expand_by_sampling_strata() -> freq_data
+        expand_by_sampling_strata_EBS_Pcod() -> freq_data
     }
 
 
@@ -132,7 +132,7 @@ expand_props = function(species_code,
       print("expand by sampling strata activated")
       print(paste0("boot.age = ", boot.age))
       freq_data %>%
-        expand_by_sampling_strata() -> freq_data
+        expand_by_sampling_strata_EBS_Pcod() -> freq_data
     }
 
 
@@ -211,7 +211,7 @@ expand_props = function(species_code,
     if(isTRUE(expand.by.sampling.strata)){
       print("expand by sampling strata activated")
       freq_data %>%
-        expand_by_sampling_strata() -> freq_data
+        expand_by_sampling_strata_generic() -> freq_data
     }
 
 
