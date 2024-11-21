@@ -24,7 +24,11 @@ expand_by_sampling_strata_EBS_Pcod = function(freq_data) {
 #' Expand by observer sampling strata for generic data download
 #'
 #' @description
+<<<<<<< HEAD
 #' expands the length frequency data considering observer sampling strata. The length samples are weighted proportional to the number of fish caught in each stratum. Uses EXTRAPOLATED_NUMBER instead of YAGMH_SNUM.
+=======
+#' expands the length frequency data considering observer sampling strata. The length samples are weighted proportional to the number of fish caught in each stratum.
+>>>>>>> 6bcc9da747d83e7a3e6770b4dd7549175a0c04de
 #'
 #' @param freq_data length or age frequency input data frame
 #'
