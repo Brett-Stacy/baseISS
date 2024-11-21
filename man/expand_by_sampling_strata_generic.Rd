@@ -13,5 +13,5 @@ expand_by_sampling_strata_generic(freq_data)
 length frequency data table with modified WEIGHT1 column incorporating sampling strata weighting
 }
 \description{
-expands the length frequency data considering observer sampling strata. The length samples are weighted proportional to the number of fish caught in each stratum.
+expands the length frequency data considering observer sampling strata. The length samples are weighted proportional to the number of fish caught in each stratum. Uses EXTRAPOLATED_NUMBER instead of YAGMH_SNUM.
 }

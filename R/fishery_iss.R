@@ -11,6 +11,8 @@
 #' @param iters number of iterations
 #' @param freq_data length or age frequency input data frame
 #' @param yrs any year filter >= (default = NULL)
+#' @param bin bin size (NULL = 1 cm), also can use custom length bins through defining vector of upper length bin limits, i.e., c(5, 10, 20, 35, 60), plus length group will automatically be populated and denoted with the largest defined bin + 1 (i.e., 61 for provided example)
+#' @param plus_len If set at a value other than NULL, computes length expansion with a plus-length group (default = FALSE)
 #' @param post_strata list(strata = character string, nested = Boolean) if NULL, then no post stratification. The first element of post_strata is a character string with name(s) of post strata type. Accepted types are "GEAR", etc. These must be column name(s) in the data frame where each row has an entry and there are no NAs. The second element in post_strata allows for nested post-strata (e.g., "GEAR", "SEX") that are in order of the desired nested hierarchy, then the final results will be a nested list in order of the listed post-strata as well. Perhaps there should be an error message for attempts with strata names that are not in freq_data or it does exist, but there are NAs in it.
 #' @param minimum_sample_size list(resolution = character string, size = integer). If NULL, then no minimum sample size. If not NULL, The sample size at the chosen resolution (must be column in freq_data, e.g., YAGM_SFREQ for EBS Pcod) for which to filter out data that does not meet the minimum sample size requested. Example: minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30). Note that this filters to keep only samples GREATER than 30 at the YAGM resolution.
 #' @param new_length_N list(type = character ("value", or "proportion"), bound = NULL or character ("minimum", or "maximum") amount = numeric). If NULL, then the number of length samples resampled in a haul equals the number actually sampled. If not NULL, then the haul-level number of samples is changed by type (acceptable entries are "fixed", or "proportion") at an amount (acceptable entries are an integer number or proportion). The amount can be less than or greater than the true N. Note that if it is either less than or greater than, the minimum of the two is chosen for N (this is still under consideration and may change in the future). The true N is taken to be... DOES THIS ONLY MATTER IF WE NEED A THRESHOLD TO DECIDE WHEN TO TAKE THE MAX?? The samples are still drawn with replacement. Warning: cannot do this if post_strata = "SEX"
@@ -32,6 +34,8 @@ fishery_iss <- function(species_code,
                         iters = 1,
                         freq_data,
                         yrs = NULL,
+                        bin = NULL,
+                        plus_len = NULL,
                         post_strata = NULL,
                         minimum_sample_size = NULL,
                         new_length_N = NULL,
@@ -68,6 +72,9 @@ fishery_iss <- function(species_code,
   freq_data %>%
       tidytable::filter(YEAR >= yrs) -> freq_data # filters for only years requested and forces freq_data into a tidytable format
 
+  # bin ----
+
+
   # uncount the data frame if it is compressed by count of length or age, i.e., flatten the data frame. This only impacts length-only data frames because age input data frames should always be flattened. This avoids uncounting it in every resampling iteration. Work with the SUM_FREQUENCY column name for now, may need to change this with alternative input data frames.
   if("SUM_FREQUENCY" %in% base::names(freq_data)){ # for EBS Pcod data curated with pre-processing steps by Steve B.
     freq_data %>%
@@ -87,6 +94,8 @@ fishery_iss <- function(species_code,
                               length_based = length_based,
                               iters = iters,
                               freq_data = freq_data,
+                              bin = bin,
+                              plus_len = plus_len,
                               post_strata = post_strata,
                               minimum_sample_size = minimum_sample_size,
                               new_length_N = new_length_N,
@@ -107,6 +116,8 @@ fishery_iss <- function(species_code,
                                  length_based = length_based,
                                  iters = iters,
                                  freq_data = freq_data,
+                                 bin = bin,
+                                 plus_len = plus_len,
                                  minimum_sample_size = minimum_sample_size,
                                  new_length_N = new_length_N,
                                  max_length = max_length,

@@ -11,6 +11,8 @@ fishery_iss(
   iters = 1,
   freq_data,
   yrs = NULL,
+  bin = NULL,
+  plus_len = NULL,
   post_strata = NULL,
   minimum_sample_size = NULL,
   new_length_N = NULL,
@@ -35,6 +37,10 @@ fishery_iss(
 \item{freq_data}{length or age frequency input data frame}
 
 \item{yrs}{any year filter >= (default = NULL)}
+
+\item{bin}{bin size (NULL = 1 cm), also can use custom length bins through defining vector of upper length bin limits, i.e., c(5, 10, 20, 35, 60), plus length group will automatically be populated and denoted with the largest defined bin + 1 (i.e., 61 for provided example)}
+
+\item{plus_len}{If set at a value other than NULL, computes length expansion with a plus-length group (default = FALSE)}
 
 \item{post_strata}{list(strata = character string, nested = Boolean) if NULL, then no post stratification. The first element of post_strata is a character string with name(s) of post strata type. Accepted types are "GEAR", etc. These must be column name(s) in the data frame where each row has an entry and there are no NAs. The second element in post_strata allows for nested post-strata (e.g., "GEAR", "SEX") that are in order of the desired nested hierarchy, then the final results will be a nested list in order of the listed post-strata as well. Perhaps there should be an error message for attempts with strata names that are not in freq_data or it does exist, but there are NAs in it.}
 

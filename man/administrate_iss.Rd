@@ -10,6 +10,8 @@ administrate_iss(
   length_based = TRUE,
   iters = 1,
   freq_data,
+  bin = NULL,
+  plus_len = NULL,
   minimum_sample_size = NULL,
   new_length_N = NULL,
   max_length,
@@ -31,6 +33,10 @@ administrate_iss(
 \item{iters}{number of iterations}
 
 \item{freq_data}{length or age frequency input data frame}
+
+\item{bin}{bin size (NULL = 1 cm), also can use custom length bins through defining vector of upper length bin limits, i.e., c(5, 10, 20, 35, 60), plus length group will automatically be populated and denoted with the largest defined bin + 1 (i.e., 61 for provided example)}
+
+\item{plus_len}{If set at a value, computes length expansion with a plus-length group (default = FALSE)}
 
 \item{minimum_sample_size}{list(resolution = character string, size = integer). If NULL, then no minimum sample size. If not NULL, The sample size at the chosen resolution (must be column in freq_data, e.g., YAGM_SFREQ for EBS Pcod) for which to filter out data that does not meet the minimum sample size requested. Example: minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30). Note that this filters to keep only samples GREATER than 30 at the YAGM resolution.}
 
