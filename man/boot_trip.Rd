@@ -2,16 +2,18 @@
 % Please edit documentation in R/boot_trip.R
 \name{boot_trip}
 \alias{boot_trip}
-\title{Resample trips w/replacement.}
+\title{Resample trips w/replacement, changing the number of trips if desired}
 \usage{
-boot_trip(freq_data)
+boot_trip(freq_data, new_trip_N = NULL)
 }
 \arguments{
 \item{freq_data}{length or age frequency input data frame}
+
+\item{new_trip_N}{user-defined sample size adjustment options defined in fishery_iss()}
 }
 \value{
-length frequency data table including resampled trips as TRIP_JOIN and associated data
+frequency data table including resampled trips as TRIP_JOIN and associated data
 }
 \description{
-Resample trips w/replacement.
+Resample trips w/replacement, changing the number of trips if desired
 }
