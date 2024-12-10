@@ -1,0 +1,422 @@
+---
+title: "Paper Plots V1"
+author: "Brett Stacy"
+date: "2024-11-25"
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, warning = F, message = F, results = "hide", fig.width = 8.5, fig.height = 5, dpi = 600)
+library(tidytable)
+library(data.table)
+library(reshape2)
+library(ggplot2)
+library(knitr)
+opts_knit$set(eval.after = "fig.cap")
+options(scipen = 5)
+```
+
+
+# Introduction
+Plots for paper:
+
+1. Time series of new ISS vs old. Accompanied by number of hauls, nominal sample size, and possibly RSS boxplots. RSS boxplots may help justify focusing in on 20 sample size meidan for later plots to get an apples to apples, granular test of impact of sample size and expansion complexity.
+
+2. ISS full, ISS without expansion, ISS without sampling strata, ISS without either. 
+
+3. 3x3 grid: sample size 10, 20, 30 fixed X expansion none, haul only, haul+month. With sampling strata.
+
+3.supp.1: same as above but without sampling strata. 
+3.supp.2: same as above but without bootstrapping trip. 
+3.supp.3: same as above but without either. 
+
+
+## Plot 1.1
+```{r}
+out_1.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_1.1_ISS_100iters_output_2024-11-25.RDS")
+
+out_2.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_2.1_ISS_100iters_output_2024-11-25.RDS")
+
+out_3.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_3.1_ISS_100iters_output_2024-11-26.RDS")
+
+out_4.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_4.1_ISS_100iters_output_2024-11-26.RDS")
+
+out_5.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_5.1_ISS_100iters_output_2024-11-26.RDS")
+
+out_6.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_6.1_ISS_100iters_output_2024-11-26.RDS")
+out_7.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_7.1_ISS_100iters_output_2024-11-26.RDS")
+out_8.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_8.1_ISS_100iters_output_2024-11-26.RDS")
+out_9.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_9.1_ISS_100iters_output_2024-12-04.RDS")
+out_10.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_10.1_ISS_100iters_output_2024-12-04.RDS")
+out_11.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_11.1_ISS_100iters_output_2024-12-04.RDS")
+
+assessment_2023_iss = tidytable(year = 1977:2023,
+                                iss = c(27,
+                                45,
+                                54,
+                                54,
+                                63,
+                                31,
+                                117,
+                                140,
+                                211,
+                                216,
+                                396,
+                                401,
+                                185,
+                                189,
+                                1565,
+                                1543,
+                                913,
+                                1435,
+                                1561,
+                                2020,
+                                2142,
+                                2046,
+                                2722,
+                                2960,
+                                3140,
+                                3446,
+                                4301,
+                                3608,
+                                3455,
+                                2694,
+                                2115,
+                                2502,
+                                2218,
+                                1975,
+                                2596,
+                                2776,
+                                3293,
+                                3604,
+                                3324,
+                                2821,
+                                2469,
+                                1899,
+                                1367,
+                                1048,
+                                859,
+                                1160,
+                                706))
+```
+
+
+### baseISS with assessment ISS
+
+```{r}
+par(mfrow = c(1,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
+plot(out_1.1$length$iss$YEAR, out_1.1$length$iss$iss, type = "l", ylab = "ISS", xlab = "year", cex.lab = 1.3, ylim = c(0, max(out_1.1$length$iss$iss)*1.1), col = "blue") 
+lines(assessment_2023_iss$year, assessment_2023_iss$iss, col = "black")
+legend("topleft", lty = c(1,1), col = c("black", "blue"), legend = c("2023 assessment", "baseISS"))
+
+
+
+
+```
+
+
+
+
+### All together 4 panel
+
+```{r, fig.height=8}
+df = data.frame(rss = out_1.1$length$rss$rss, year = as.factor(out_1.1$length$rss$YEAR))
+
+
+
+# par(mfrow = c(4,1), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
+par(mfrow = c(4,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
+plot(out_1.1$length$iss$YEAR, out_1.1$length$iss$iss, type = "l", ylab = "ISS", xaxt = "n") 
+lines(assessment_2023_iss$year, assessment_2023_iss$iss, col = "blue")
+legend("topleft", lty = c(1,1), col = c("black", "blue"), legend = c("2023 assessment", "baseISS"))
+
+
+plot(out_1.1$length$iss$YEAR, out_1.1$length$iss$nhls, type = "l", ylab = "number of hauls", xlab = "", col = "black", cex.lab = 1.3, xaxt = "n")
+
+plot(out_1.1$length$iss$YEAR, out_1.1$length$iss$nss, type = "l", ylab = "nominal sample size", xlab = "", cex.lab = 1.3, xaxt = "n") 
+
+
+
+
+plot(df$year, df$rss, ylim = c(0, 20000), ylab = "RSS", cex.lab = 1.3, xlab = "year")
+
+```
+
+
+
+### All together 3 panel
+
+```{r, fig.height=8}
+df = data.frame(rss = out_1.1$length$rss$rss, year = as.factor(out_1.1$length$rss$YEAR))
+
+
+
+# par(mfrow = c(4,1), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
+par(mfrow = c(3,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
+plot(out_1.1$length$iss$YEAR, out_1.1$length$iss$iss, type = "l", ylab = "ISS", xaxt = "n", ylim = c(0, 15000)) 
+lines(assessment_2023_iss$year, assessment_2023_iss$iss, col = "blue")
+lines(out_1.1$length$iss$YEAR, out_1.1$length$iss$nhls, col = "red")
+legend("topleft", lty = c(1,1,1), col = c("black", "blue", "red"), legend = c("2023 assessment", "baseISS", "number of hauls"))
+
+
+
+
+plot(out_1.1$length$iss$YEAR, out_1.1$length$iss$nss, type = "l", ylab = "nominal sample size", xlab = "", cex.lab = 1.3, xaxt = "n") 
+
+
+
+
+plot(df$year, df$rss, ylim = c(0, 20000), ylab = "RSS", cex.lab = 1.3, xlab = "year")
+
+```
+
+
+
+
+#### Inspect R-squared
+Fit models to number of hauls.
+
+```{r}
+# baseISS ~ # hauls
+fit1 = lm(out_1.1$length$iss$iss ~ out_1.1$length$iss$nhls)
+summary(fit1)
+
+# assessment ISS ~ # hauls
+fit2 = lm(assessment_2023_iss$iss ~ out_1.1$length$iss$nhls)
+summary(fit2)
+
+# baseISS ~ assessment ISS
+fit3 = lm(out_1.1$length$iss$iss ~ assessment_2023_iss$iss)
+summary(fit3)
+
+```
+
+
+
+
+
+
+## Plot 2.1 
+Deconstruct the contributors to baseISS
+
+
+### All together 1
+
+Subtracting things from baseISS
+
+```{r, fig.height=8}
+
+# par(mfrow = c(4,1), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
+par(mfrow = c(5,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
+plot(out_1.1$length$iss$YEAR, out_1.1$length$iss$iss, type = "l", ylab = "baseISS", xaxt = "n") 
+plot(out_2.1$length$iss$YEAR, out_2.1$length$iss$iss, type = "l", ylab = "baseISS - E", xaxt = "n") 
+plot(out_3.1$length$iss$YEAR, out_3.1$length$iss$iss, type = "l", ylab = "baseISS - SS", xaxt = "n") 
+plot(out_4.1$length$iss$YEAR, out_4.1$length$iss$iss, type = "l", ylab = "baseISS - (E,SS)", xaxt = "n") 
+plot(out_5.1$length$iss$YEAR, out_5.1$length$iss$iss, type = "l", ylab = "baseISS - (E,SS,Bs)", cex.lab = 1.3, xlab = "year") 
+```
+
+
+
+### All together 2
+
+Adding things to baseISS
+
+```{r, fig.height=6}
+par(mfrow = c(1,1))
+
+plot(out_5.1$length$iss$YEAR, out_5.1$length$iss$iss, type = "l", ylab = "ISS", cex.lab = 1.3, col = "black")
+lines(out_6.1$length$iss$YEAR, out_6.1$length$iss$iss, type = "l", col = "blue") 
+lines(out_7.1$length$iss$YEAR, out_7.1$length$iss$iss, type = "l", col = "orange") 
+lines(out_8.1$length$iss$YEAR, out_8.1$length$iss$iss, type = "l", col = "green") 
+lines(out_1.1$length$iss$YEAR, out_1.1$length$iss$iss, type = "l", col = "red") 
+
+
+
+legend("topleft", legend = c("-E,SS,Bs", "-SS,Bs", "-Bs", "-SS", "-0"), lty = c(1,1,1,1,1), col = c("black", "blue", "orange", "green", "red"))
+```
+
+
+
+#### sub range 1
+```{r, fig.height=6}
+sub_range = out_5.1$length$iss$YEAR %in% 1999:2023
+
+par(mfrow = c(1,1))
+plot(out_5.1$length$iss$YEAR[sub_range], out_5.1$length$iss$iss[sub_range], type = "l", ylab = "ISS", cex.lab = 1.3, col = "black", ylim = c(0, 25000))
+lines(out_6.1$length$iss$YEAR[sub_range], out_6.1$length$iss$iss[sub_range], type = "l", col = "blue") 
+lines(out_7.1$length$iss$YEAR[sub_range], out_7.1$length$iss$iss[sub_range], type = "l", col = "orange") 
+lines(out_8.1$length$iss$YEAR[sub_range], out_8.1$length$iss$iss[sub_range], type = "l", col = "green") 
+lines(out_1.1$length$iss$YEAR[sub_range], out_1.1$length$iss$iss[sub_range], type = "l", col = "red") 
+
+
+
+legend("topright", legend = c("boot length", "boot length and expand", "boot length, expand, sampling strata weighting", "boot length, expand, boot trip+haul", "full"), lty = c(1,1,1,1,1), col = c("black", "blue", "orange", "green", "red"))
+```
+
+
+
+#### reorder long
+```{r, fig.height=6}
+sub_range = out_5.1$length$iss$YEAR %in% 1977:2023
+
+par(mfrow = c(1,1))
+plot(out_5.1$length$iss$YEAR[sub_range], out_5.1$length$iss$iss[sub_range], type = "l", ylab = "ISS", cex.lab = 1.3, col = "black", ylim = c(0, 25000), xlab = "Year")
+lines(out_9.1$length$iss$YEAR[sub_range], out_9.1$length$iss$iss[sub_range], type = "l", col = "blue") 
+lines(out_4.1$length$iss$YEAR[sub_range], out_4.1$length$iss$iss[sub_range], type = "l", col = "orange") 
+lines(out_2.1$length$iss$YEAR[sub_range], out_2.1$length$iss$iss[sub_range], type = "l", col = "green")
+# lines(out_8.1$length$iss$YEAR[sub_range], out_8.1$length$iss$iss[sub_range], type = "l", col = "green") 
+lines(out_1.1$length$iss$YEAR[sub_range], out_1.1$length$iss$iss[sub_range], type = "l", col = "red")
+
+
+
+legend("topright", legend = c("boot length", "boot length, haul", "boot all", "boot all, sampling strata weighting", "full"), lty = c(1,1,1,1,1), col = c("black", "blue", "orange", "green", "red"))
+```
+
+
+#### reorder short
+```{r, fig.height=6}
+sub_range = out_5.1$length$iss$YEAR %in% 1998:2023
+
+par(mfrow = c(1,1))
+plot(out_5.1$length$iss$YEAR[sub_range], out_5.1$length$iss$iss[sub_range], type = "l", ylab = "ISS", cex.lab = 1.3, col = "black", ylim = c(0, 25000), xlab = "Year")
+lines(out_9.1$length$iss$YEAR[sub_range], out_9.1$length$iss$iss[sub_range], type = "l", col = "blue") 
+lines(out_4.1$length$iss$YEAR[sub_range], out_4.1$length$iss$iss[sub_range], type = "l", col = "orange") 
+lines(out_2.1$length$iss$YEAR[sub_range], out_2.1$length$iss$iss[sub_range], type = "l", col = "green")
+# lines(out_8.1$length$iss$YEAR[sub_range], out_8.1$length$iss$iss[sub_range], type = "l", col = "green") 
+lines(out_1.1$length$iss$YEAR[sub_range], out_1.1$length$iss$iss[sub_range], type = "l", col = "red")
+
+
+
+legend("topright", legend = c("boot length", "boot length, haul", "boot all", "boot all, sampling strata weighting", "full"), lty = c(1,1,1,1,1), col = c("black", "blue", "orange", "green", "red"))
+```
+
+
+
+
+#### reorder short 2
+```{r, fig.height=6}
+sub_range = out_5.1$length$iss$YEAR %in% 1998:2023
+
+par(mfrow = c(1,1))
+plot(out_10.1$length$iss$YEAR[sub_range], out_10.1$length$iss$iss[sub_range], type = "l", ylab = "ISS", cex.lab = 1.3, col = "black", ylim = c(0, 25000), xlab = "Year")
+lines(out_11.1$length$iss$YEAR[sub_range], out_11.1$length$iss$iss[sub_range], type = "l", col = "blue") 
+
+lines(out_1.1$length$iss$YEAR[sub_range], out_1.1$length$iss$iss[sub_range], type = "l", col = "red")
+
+
+
+legend("topright", legend = c("boot.length", "boot.length + boot.haul", "boot.length + boot.haul + boot.trip"), lty = c(1,1,1), col = c("black", "blue", "red"))
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Plot 3.1
+
+3x3 grid.
+
+### Data
+```{r}
+out_2.1.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_2.1.1_ISS_200_iters_2024-11-27.RDS")
+
+out_2.2.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_2.2.1_ISS_200_iters_2024-12-02.RDS")
+
+
+
+
+
+year = out_2.1.1$samples_10$expansion_NULL$length$iss$YEAR
+
+samples_global = c(10, 20, 30)
+expansion_global = list(NULL, "haul_numbers", c("haul_numbers", "month_numbers"))
+expansion_names_global = c("NULL", "haul_numbers", c("haul_month_numbers"))
+
+```
+
+
+
+
+
+
+
+
+
+### With sampling strata
+```{r}
+
+df = tidytable(year = year,
+               N10_Enone = out_2.1.1$samples_10$expansion_NULL$length$iss$iss,
+               N20_Enone = out_2.1.1$samples_20$expansion_NULL$length$iss$iss,
+               N30_Enone = out_2.1.1$samples_30$expansion_NULL$length$iss$iss,
+               N10_Emedium = out_2.1.1$samples_10$expansion_haul_numbers$length$iss$iss,
+               N20_Emedium = out_2.1.1$samples_20$expansion_haul_numbers$length$iss$iss,
+               N30_Emedium = out_2.1.1$samples_30$expansion_haul_numbers$length$iss$iss,
+               N10_Efull = out_2.1.1$samples_10$expansion_haul_month_numbers$length$iss$iss,
+               N20_Efull = out_2.1.1$samples_20$expansion_haul_month_numbers$length$iss$iss,
+               N30_Efull = out_2.1.1$samples_30$expansion_haul_month_numbers$length$iss$iss,) 
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+
+
+ggplot(data = df2, aes(x = year, y = ISS, group = scenario, colour = scenario)) +
+  geom_line() +
+  labs(x = "Year", y = "ISS") +
+  geom_point()
+
+
+
+```
+
+
+### Without sampling strata
+```{r}
+
+df = tidytable(year = year,
+               N10_Enone = out_2.2.1$samples_10$expansion_NULL$length$iss$iss,
+               N20_Enone = out_2.2.1$samples_20$expansion_NULL$length$iss$iss,
+               N30_Enone = out_2.2.1$samples_30$expansion_NULL$length$iss$iss,
+               N10_Emedium = out_2.2.1$samples_10$expansion_haul_numbers$length$iss$iss,
+               N20_Emedium = out_2.2.1$samples_20$expansion_haul_numbers$length$iss$iss,
+               N30_Emedium = out_2.2.1$samples_30$expansion_haul_numbers$length$iss$iss,
+               N10_Efull = out_2.2.1$samples_10$expansion_haul_month_numbers$length$iss$iss,
+               N20_Efull = out_2.2.1$samples_20$expansion_haul_month_numbers$length$iss$iss,
+               N30_Efull = out_2.2.1$samples_30$expansion_haul_month_numbers$length$iss$iss,) 
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+
+
+ggplot(data = df2, aes(x = year, y = ISS, group = scenario, colour = scenario)) +
+  geom_line() +
+  labs(x = "Year", y = "ISS") +
+  geom_point()
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
