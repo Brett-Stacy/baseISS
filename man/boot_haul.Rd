@@ -2,16 +2,18 @@
 % Please edit documentation in R/boot_haul.R
 \name{boot_haul}
 \alias{boot_haul}
-\title{Resample hauls w/replacement.}
+\title{Resample hauls w/replacement, changing the number of hauls if desired}
 \usage{
-boot_haul(freq_data)
+boot_haul(freq_data, new_haul_N = NULL)
 }
 \arguments{
 \item{freq_data}{length or age frequency input data frame. Can be the output object from boot_trip() if boot.trip == true}
+
+\item{new_haul_N}{user-defined sample size adjustment options defined in fishery_iss()}
 }
 \value{
-length frequency data table including resampled hauls as HAUL_JOIN and associated data
+frequency data table including resampled hauls as HAUL_JOIN and associated data
 }
 \description{
-Resample hauls w/replacement.
+Resample hauls w/replacement, changing the number of hauls if desired
 }

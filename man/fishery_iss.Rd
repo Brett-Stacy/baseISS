@@ -16,6 +16,7 @@ fishery_iss(
   post_strata = NULL,
   minimum_sample_size = NULL,
   new_trip_N = NULL,
+  new_haul_N = NULL,
   new_length_N = NULL,
   max_length = "data_derived",
   boot.trip = FALSE,
@@ -48,6 +49,8 @@ fishery_iss(
 \item{minimum_sample_size}{list(resolution = character string, size = integer). If NULL, then no minimum sample size. If not NULL, The sample size at the chosen resolution (must be column in freq_data, e.g., YAGM_SFREQ for EBS Pcod) for which to filter out data that does not meet the minimum sample size requested. Example: minimum_sample_size = list(resolution = "YAGM_SFREQ", size = 30). Note that this filters to keep only samples GREATER than 30 at the YAGM resolution.}
 
 \item{new_trip_N}{list(type = character ("value", or "proportion"), amount = numeric). If NULL, then the number of trips resampled equals the number actually sampled. If not NULL, then the number of trips is changed by type (acceptable entries are "value", or "proportion") at an amount (acceptable entries are a proportion). E.g., new_trip_N = list(type = "proportion", amount = .50). Only proportion is coded so far as this makes the most sense.}
+
+\item{new_haul_N}{list(type = character ("value", or "proportion"), amount = numeric). If NULL, then the number of hauls resampled equals the number actually sampled. If not NULL, then the number of hauls is changed by type (acceptable entries are "value", or "proportion") at an amount (acceptable entries are a proportion). E.g., new_haul_N = list(type = "proportion", amount = .50). Only proportion is coded so far as this makes the most sense.}
 
 \item{new_length_N}{list(type = character ("value", or "proportion"), bound = NULL or character ("minimum", or "maximum") amount = numeric). If NULL, then the number of length samples resampled in a haul equals the number actually sampled. If not NULL, then the haul-level number of samples is changed by type (acceptable entries are "value", or "proportion") at an amount (acceptable entries are an integer number or proportion). E.g., new_length_N = list(type = "value", bound = NULL, amount = 20). The amount can be less than or greater than the true N. Note that if it is either less than or greater than, the minimum of the two is chosen for N (this is still under consideration and may change in the future). The true N is taken to be... DOES THIS ONLY MATTER IF WE NEED A THRESHOLD TO DECIDE WHEN TO TAKE THE MAX?? The samples are still drawn with replacement. Warning: cannot do this if post_strata = "SEX"}
 
