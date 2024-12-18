@@ -18,6 +18,8 @@ paper_scenario_15.1 - Same as 1.1 except cut hauls in half.
 paper_scenario_16.1 - Same as 1.1 except 1.5x trips.
 paper_scenario_17.1 - Same as 1.1 except 1.5x hauls.
 paper_scenario_18.1 - 7x2 Grid. 25%, 50%, ..., 200% Trip/Haul
+paper_scenario_19.1 - 2x3 Grid. 50%, 150% Trip x none, haul_only, haul_YAGM weighting factors. YES sampling strata expansion. 
+paper_scenario_20.1 - 2x3 Grid. 50%, 150% Haul x none, haul_only, haul_YAGM weighting factors. YES sampling strata expansion. 
 
 
 
