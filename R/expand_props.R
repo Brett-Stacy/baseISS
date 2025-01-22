@@ -80,7 +80,7 @@ expand_props = function(species_code,
 
 
     if(!is.null(minimum_sample_size)){ # user-defined minimum sample size
-      y4<-y3[minimum_sample_size$resolution > minimum_sample_size$size][,list(WEIGHT=sum(WEIGHTX)),by=c("LENGTH","YEAR")]
+      y4<-y3[y3[[minimum_sample_size$resolution]] > minimum_sample_size$size][,list(WEIGHT=sum(WEIGHTX)),by=c("LENGTH","YEAR")]
     }else{
       y4<-y3[,list(WEIGHT=sum(WEIGHTX)),by=c("LENGTH","YEAR")]
     }
@@ -160,7 +160,7 @@ expand_props = function(species_code,
     # y3$WEIGHTX_GEAR<-y3$WEIGHT1*y3$WEIGHT2*y3$WEIGHT3 # similar to previous but including gear weights
 
     if(!is.null(minimum_sample_size)){ # user-defined minimum sample size
-      y4<-y3[minimum_sample_size$resolution > minimum_sample_size$size][,list(WEIGHT=sum(WEIGHTX)),by=c("AGE","YEAR")]
+      y4<-y3[y3[[minimum_sample_size$resolution]] > minimum_sample_size$size][,list(WEIGHT=sum(WEIGHTX)),by=c("AGE","YEAR")]
     }else{
       y4<-y3[,list(WEIGHT=sum(WEIGHTX)),by=c("AGE","YEAR")]
     }
