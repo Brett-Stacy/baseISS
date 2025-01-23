@@ -23,7 +23,8 @@ post_stratify(
   boot.length = TRUE,
   boot.age = FALSE,
   expand.by.sampling.strata = FALSE,
-  expansion_factors = NULL
+  expansion_factors = NULL,
+  save_data_frame = FALSE
 )
 }
 \arguments{
@@ -64,6 +65,8 @@ post_stratify(
 \item{expand.by.sampling.strata}{expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.}
 
 \item{expansion_factors}{expansion weighting factors to apply to the proportions. If NULL, then no expansion factors are applied. Otherwise, the conditional options coded in expand_props.R are "haul_numbers" or "haul_numbers" and "month_numbers". Consider improving/generalizing this by calling it expansion_weighting_factors = list(type = c("weight", "number"), factors = c("haul", "area", "month", "gear", etc.) to give the user the option of what aspects (columns) of the data to expand by and do it by weight of fish or number of fish in those categories.}
+
+\item{save_data_frame}{Boolean. Save freq_data data frame object that has been modified (e.g., filtered for minimum sample size) and used in ISS calculation? This may be useful for e.g. calculating haul or trip samples rates}
 }
 \value{
 list of input sample size by post-strata and year

@@ -9,7 +9,8 @@ compute_stats(
   og_props = NULL,
   freq_data = NULL,
   iters = 1,
-  boot.length = NULL
+  boot.length = NULL,
+  save_data_frame = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ compute_stats(
 \item{iters}{number of iterations}
 
 \item{boot.length}{Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length}
+
+\item{save_data_frame}{Boolean. Save freq_data data frame object that has been modified (e.g., filtered for minimum sample size) and used in ISS calculation? This may be useful for e.g. calculating haul or trip samples rates}
 }
 \value{
 list of dataframes for realized sample size by replicate (.rss for length or age composition),

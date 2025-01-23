@@ -22,6 +22,7 @@
 #' @param boot.age Boolean. Resample ages w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-age
 #' @param expand.by.sampling.strata expand by observer sampling strata? If TRUE, then an additional weighting factor is calculated and applied to WEIGHT1 based on the number of fish caught in each sampling stratum.
 #' @param expansion_factors expansion weighting factors to apply to the proportions. If NULL, then no expansion factors are applied. Otherwise, the conditional options coded in expand_props.R are "haul_numbers" or "haul_numbers" and "month_numbers". Consider improving/generalizing this by calling it expansion_weighting_factors = list(type = c("weight", "number"), factors = c("haul", "area", "month", "gear", etc.) to give the user the option of what aspects (columns) of the data to expand by and do it by weight of fish or number of fish in those categories.
+#' @param save_data_frame Boolean. Save freq_data data frame object that has been modified (e.g., filtered for minimum sample size) and used in ISS calculation? This may be useful for e.g. calculating haul or trip samples rates
 #'
 #' @return list of input sample size by post-strata and year
 #'
@@ -45,7 +46,8 @@ post_stratify = function(species_code,
                          boot.length = TRUE,
                          boot.age = FALSE,
                          expand.by.sampling.strata = FALSE,
-                         expansion_factors = NULL){
+                         expansion_factors = NULL,
+                         save_data_frame = FALSE){
 
   if(base::length(post_strata$strata)==2 & base::isTRUE(post_strata$nested)){ # if there is more than one strata and nesting is desired
 
@@ -104,7 +106,8 @@ post_stratify = function(species_code,
                                                                              boot.length = boot.length,
                                                                              boot.age = boot.age,
                                                                              expand.by.sampling.strata = expand.by.sampling.strata,
-                                                                             expansion_factors = expansion_factors)
+                                                                             expansion_factors = expansion_factors,
+                                                                             save_data_frame = save_data_frame)
 
       }
     }
@@ -165,7 +168,8 @@ post_stratify = function(species_code,
                                                               boot.length = boot.length,
                                                               boot.age = boot.age,
                                                               expand.by.sampling.strata = expand.by.sampling.strata,
-                                                              expansion_factors = expansion_factors)
+                                                              expansion_factors = expansion_factors,
+                                                              save_data_frame = save_data_frame)
 
     }
   }

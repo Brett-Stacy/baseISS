@@ -8,6 +8,7 @@
 #' @param freq_data length or age frequency input data frame
 #' @param iters number of iterations
 #' @param boot.length Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length
+#' @param save_data_frame Boolean. Save freq_data data frame object that has been modified (e.g., filtered for minimum sample size) and used in ISS calculation? This may be useful for e.g. calculating haul or trip samples rates
 #'
 #' @return list of dataframes for realized sample size by replicate (.rss for length or age composition),
 #' input sample size by year (.iss),
@@ -19,7 +20,8 @@ compute_stats <- function(sim_props = NULL,
                           og_props = NULL,
                           freq_data = NULL,
                           iters = 1,
-                          boot.length = NULL){
+                          boot.length = NULL,
+                          save_data_frame = FALSE){
 
 
 
@@ -37,13 +39,20 @@ compute_stats <- function(sim_props = NULL,
   .bias <- bias(sim_props = sim_props,
                 og_props = og_props)
 
+
+
   # return
-  list(iterations = iters,
+  out_stats = list(iterations = iters,
        og_props = og_props,
        # sim_props = sim_props,
+       freq_data_frame = if(isTRUE(save_data_frame)){
+         freq_data
+       }else{NULL}, # save freq_data data frame if requested
        rss = .rss,
        iss = .iss,
        bias = .bias)
+
+  return(out_stats)
 
 
 
