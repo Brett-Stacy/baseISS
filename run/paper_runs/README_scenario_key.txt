@@ -1,7 +1,7 @@
 paper_scenario_1.1 - ISS full to compare to assessment. expanded exactly like assessment.
 paper_scenario_1.2 - Same as 1.1 except with updated package functionality as at scenario 21.1.
-paper_scenario_1.3 - Same as 1.2 except with updated working minimum_sample_size
-paper_scenario_1.4 - Same as 1.3 except with save data frame functionality to facilitate samples/haul plot for paper
+paper_scenario_1.3 - Same as 1.2 except with updated working minimum_sample_size for expansion.
+paper_scenario_1.4 - Same as 1.3 except with minimum_sample size effecting nhls etc. and save data frame functionality to facilitate samples/haul plot for paper
 
 paper_scenario_2.1 - Same as 1.1 except NULL expansion.
 paper_scenario_3.1 - Same as 1.1 except NULL expand by sampling strata.

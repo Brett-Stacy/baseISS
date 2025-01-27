@@ -2,7 +2,7 @@
 
 rm(list = ls())
 run_name = "paper_scenario_1.4"
-iterations = 1
+iterations = 1000
 
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP_STRATA.RDS")
 library(tidytable)
