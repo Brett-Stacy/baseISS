@@ -42,18 +42,22 @@ out_1.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos
 
 out_1.2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_1.2_ISS_1iters_output_2025-01-10.RDS")
 
-out_2.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_2.1_ISS_100iters_output_2024-11-25.RDS")
+out_1.3 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_1.3_ISS_100iters_output_2025-01-22.RDS")
+
+out_1.4 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_1.4_ISS_1000iters_output_2025-01-23.RDS")
+
+out_2.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_2.2_ISS_500iters_output_2025-01-28.RDS")
 
 out_3.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_3.1_ISS_100iters_output_2024-11-26.RDS")
 
-out_4.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_4.1_ISS_100iters_output_2024-11-26.RDS")
+out_4.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_4.2_ISS_500iters_output_2025-01-28.RDS")
 
-out_5.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_5.1_ISS_100iters_output_2024-11-26.RDS")
+out_5.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_5.2_ISS_500iters_output_2025-01-27.RDS")
 
 out_6.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_6.1_ISS_100iters_output_2024-11-26.RDS")
 out_7.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_7.1_ISS_100iters_output_2024-11-26.RDS")
 out_8.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_8.1_ISS_100iters_output_2024-11-26.RDS")
-out_9.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_9.1_ISS_100iters_output_2024-12-04.RDS")
+out_9.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_9.2_ISS_500iters_output_2025-01-27.RDS")
 out_10.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_10.1_ISS_100iters_output_2024-12-04.RDS")
 out_11.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_11.1_ISS_100iters_output_2024-12-04.RDS")
 out_12.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_12.1_ISS_100iters_output_2024-12-10.RDS")
@@ -187,6 +191,34 @@ plot(df$year, df$rss, ylim = c(0, 20000), ylab = "RSS", cex.lab = 1.3)
 
 
 
+### * All together 2 panel 
+
+```{r, fig.height=6}
+df = data.frame(rss = out_1.4$length$rss$rss, year = as.factor(out_1.4$length$rss$YEAR))
+
+
+
+# par(mfrow = c(4,1), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
+# par(mfrow = c(3,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
+par(mfrow = c(2,1), mar = c(0,3.1,0,0), oma = c(2, 0, 2, .5), mgp = c(2, .6, 0))
+plot(out_1.4$length$iss$YEAR, out_1.4$length$iss$iss, type = "l", ylab = "ISS", xaxt = "n", ylim = c(0, 15000), cex.lab = 1.3) 
+lines(assessment_2023_iss$year, assessment_2023_iss$iss, col = "blue")
+lines(out_1.4$length$iss$YEAR, out_1.4$length$iss$nhls, col = "red")
+legend("topleft", lty = c(1,1,1), col = c("black", "blue", "red"), legend = c("ISSB", "ISSA", "number of hauls"))
+
+
+
+
+plot(out_1.4$length$iss$YEAR, out_1.4$length$iss$nss, type = "l", ylab = "Nominal Sample Size", xlab = "Year", cex.lab = 1.3) 
+
+
+
+
+
+```
+
+
+
 
 ### All together TRIPS TOO 4 panel
 
@@ -245,6 +277,190 @@ plot(df$year, df$rss, ylim = c(0, 20000), ylab = "RSS", cex.lab = 1.3)
 
 ```
 
+
+### All together TRIPS TOO 4 panel sample rate by HAUL on bottom
+
+```{r, fig.height=8}
+df = data.frame(rss = out_1.1$length$rss$rss, year = as.factor(out_1.1$length$rss$YEAR))
+
+
+
+# par(mfrow = c(4,1), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
+# par(mfrow = c(3,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
+par(mfrow = c(4,1), mar = c(0,3.1,0,0), oma = c(2, 0, 2, .5), mgp = c(2, .6, 0))
+plot(out_1.1$length$iss$YEAR, out_1.1$length$iss$iss, type = "l", ylab = "ISS", xaxt = "n", ylim = c(0, 15000)) 
+lines(assessment_2023_iss$year, assessment_2023_iss$iss, col = "blue")
+lines(out_1.1$length$iss$YEAR, out_1.1$length$iss$nhls, col = "red")
+# lines(out_1.2$length$iss$YEAR, out_1.2$length$iss$ntps, col = "green")
+legend("topleft", lty = c(1,1,1), col = c("black", "blue", "red"), legend = c("ISSB", "ISSA", "number of hauls"))
+
+
+
+
+plot(out_1.4$length$iss$YEAR, out_1.4$length$iss$ntps, type = "l", ylab = "number of trips", xlab = "", cex.lab = 1.3, xaxt = "n")
+plot(out_1.1$length$iss$YEAR, out_1.1$length$iss$nss, type = "l", ylab = "nominal sample size", xlab = "", cex.lab = 1.3, xaxt = "n")
+
+
+
+
+# plot(df$year, df$rss, ylim = c(0, 20000), ylab = "RSS", cex.lab = 1.3)
+out_1.4$length$freq_data_frame %>% 
+  tidytable::summarise(samples_per_haul = unique(YAGMH_SFREQ), .by = c(YEAR, HAUL_JOIN)) %>% 
+  tidytable::mutate(YEAR = as.factor(YEAR)) -> df.SpH
+
+df.SpH %>% 
+  tidytable::summarise(samples_per_haul_median = median(samples_per_haul), .by = c(YEAR)) %>% 
+  tidytable::mutate(YEAR = as.numeric(as.character(YEAR))) -> df.SpH.median
+
+# boxplot
+# plot(df.SpH$YEAR, df.SpH$samples_per_haul, ylab = "Samples per Haul", cex.lab = 1.3, ylim = c(0, 400))
+
+# median
+plot(df.SpH.median$YEAR, df.SpH.median$samples_per_haul_median, type = "l", ylab = "Haul sample rate", cex.lab = 1.3)
+
+
+```
+
+
+
+
+\newpage
+
+### 1999 and 2000 histograms
+```{r, fig.height=8, fig.width=9}
+# out_1.4$length$og_props %>% 
+#   tidytable::filter(YEAR %in% 1999:2000) %>% 
+#   tidytable::mutate(YEAR = as.factor(YEAR)) -> props.sub
+# 
+# ggplot(data = props.sub, aes(x = LENGTH, y = og_FREQ, colour = YEAR)) +
+#   geom_line() +
+#   geom_area(aes(fill = YEAR, group = YEAR), alpha = 0.5, position = "identity") +
+#   theme_classic() +
+#   theme(legend.position = c(0.8, 0.8)) +
+#   scale_x_continuous(limits = c(25, 110)) +
+#   labs(x = "Length", y = "Frequency")
+
+out_1.4$length$og_props %>% 
+  tidytable::filter(YEAR %in% 2003:2004) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p1 = ggplot(data = props.sub, aes(x = LENGTH, y = og_FREQ, colour = Year)) +
+  geom_line() +
+  geom_area(aes(fill = Year, group = Year), alpha = 0.5, position = "identity") +
+  theme_classic() +
+  scale_x_continuous(limits = c(22, 108),
+                     n.breaks = 9) +
+  labs(x = "Length (cm)", y = "Frequency", tag = "A") +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  scale_y_continuous(limits = c(0, .04), expand = c(0, 0))
+
+
+
+# now do RSS
+out_1.4$length$rss %>% 
+  tidytable::filter(YEAR %in% 2003:2004) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+# violin plot
+p2 = ggplot(props.sub, aes(x = rss, y = Year, fill = Year)) +
+  geom_violin() +
+  theme_classic() +
+  stat_summary(fun.y = median, geom = "point", color = "black") +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Year", tag = "B")
+  
+
+p1 / p2
+```
+
+\newpage
+
+#### * Histograms
+
+\newpage
+
+```{r, fig.height=8, fig.width=9}
+# 
+# 
+# ggplot(props.sub, aes(rss, fill = YEAR)) +
+#   geom_histogram(binwidth = 500)
+# 
+# ggplot(props.sub, aes(rss, colour = YEAR)) +
+#   geom_histogram(aes(fill = YEAR, group = YEAR), alpha = 0.5)
+# 
+
+ 
+p3 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity") +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "B") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_1.4$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 300), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000))
+
+
+p1 / p3
+
+# +
+#   scale_x_continuous(limits = c(22, 108)) +
+#   labs(x = "Length", y = "Frequency")
+
+```
+
+The comparison shows that fish in 2003 were less similar in length compared to 2004. 2003 corresponds to a higher ISS even though the sample rate was the same and the number of hauls and nominal sample size were comparable. More of the fish sampled in 2003 were required for characterizing the underlying multinomial sampling distribution compared to 2004 because more lengths were represented at a higher rate in 2003 (shorter, wider distribution). This is reflected in the RSS (ref figure).
+
+### Simulate Multinomials
+```{r}
+
+
+# rmultinom(1, size = 20, prob = out_1.4$length$og_props[YEAR==2003, c(og_FREQ)])[,1] %>% 
+#   hist()
+
+multinom_var = function(n, p) n*p*(1-p)
+
+multinom_var(30, c(.3,.35)) %>% sum()
+multinom_var(60, c(.3,.35)) %>% sum()
+
+```
+
+
+
+
+### Plot new number of hauls vs old
+
+```{r, eval=F}
+
+plot(out_1.1$length$iss$YEAR, out_1.1$length$iss$nhls, col = "red")
+lines(out_1.4$length$iss$YEAR, out_1.4$length$iss$nhls, col = "blue")
+
+plot(out_1.1$length$iss$YEAR, out_1.1$length$iss$nss, col = "red")
+lines(out_1.4$length$iss$YEAR, out_1.4$length$iss$nss, col = "blue")
+
+plot(out_1.2$length$iss$YEAR, out_1.2$length$iss$ntps, col = "red")
+lines(out_1.4$length$iss$YEAR, out_1.4$length$iss$ntps, col = "blue")
+
+out_1.2$length$iss$ntps-out_1.4$length$iss$ntps
+
+
+```
+
+
+
+### 
 
 
 
@@ -330,11 +546,11 @@ legend("topright", legend = c("boot length", "boot length and expand", "boot len
 
 
 
-#### reorder long
+#### * reorder long
 
 \newpage
 
-```{r, fig.height=6}
+```{r, fig.height=5.5}
 sub_range = out_5.1$length$iss$YEAR %in% 1977:2023
 
 par(mfrow = c(1,1))
@@ -343,14 +559,69 @@ lines(out_9.1$length$iss$YEAR[sub_range], out_9.1$length$iss$iss[sub_range], typ
 lines(out_4.1$length$iss$YEAR[sub_range], out_4.1$length$iss$iss[sub_range], type = "l", col = "orange") 
 lines(out_2.1$length$iss$YEAR[sub_range], out_2.1$length$iss$iss[sub_range], type = "l", col = "green")
 # lines(out_8.1$length$iss$YEAR[sub_range], out_8.1$length$iss$iss[sub_range], type = "l", col = "green") 
-lines(out_1.1$length$iss$YEAR[sub_range], out_1.1$length$iss$iss[sub_range], type = "l", col = "red")
+lines(out_1.4$length$iss$YEAR[sub_range], out_1.4$length$iss$iss[sub_range], type = "l", col = "red")
 
 
 
-legend("topleft", legend = c("boot length", "boot length + boot haul", "boot all", "boot all + sampling strata weighting", "full"), lty = c(1,1,1,1,1), col = c("black", "blue", "orange", "green", "red"))
+legend("topleft", legend = c("boot length", "boot length + boot haul", "boot all", "boot all + sampling strata weighting", "full"), lty = c(1,1,1,1,1), col = c("black", "blue", "orange", "green", "red"), bty = "n")
 ```
 
 \newpage
+
+
+
+##### * Inspect 2000, 2001 for expansion drop
+```{r}
+out_1.4$length$freq_data_frame %>% 
+  tidytable::filter(YEAR %in% 2000:2001) %>% 
+  tidytable::summarise(YAGMH = unique(YAGMH_SNUM), .by = YEAR) %>% 
+  tidytable::mutate(YEAR = as.factor(YEAR)) -> temp1
+
+
+ggplot(data = temp1, aes(x = YAGMH, colour = YEAR)) +
+  geom_histogram(aes(fill = YEAR, group = YEAR), alpha = 0.5, position = "identity") +
+  theme_classic()
+
+
+
+out_1.4$length$freq_data_frame %>% 
+  tidytable::filter(YEAR %in% 2000:2001) %>% 
+  tidytable::summarise(YAGM = unique(YAGM_SNUM), .by = YEAR) %>% 
+  tidytable::mutate(YEAR = as.factor(YEAR)) -> temp2
+
+
+ggplot(data = temp2, aes(x = YAGM, colour = YEAR)) +
+  geom_histogram(aes(fill = YEAR, group = YEAR), alpha = 0.5, position = "identity") +
+  theme_classic()
+
+
+
+# inspect huge weighted YAGM over 30,000,000
+out_1.4$length$freq_data_frame %>% 
+  tidytable::filter(YAGM_SNUM>10000000, YEAR%in%2000:2001) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> temp3
+
+temp3 %>% 
+  ggplot(aes(x = LENGTH, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity") +
+  theme_classic() +
+  scale_x_continuous(limits = c(30, 115))
+
+
+# maybe gear is responsible: check big AGM category to see if many more fish were caught with trawl net in 2000?
+
+
+
+
+# wait, it should be the combined weight right? so which WEIGHT is that from the expansion? Is it saved in the output?
+
+
+
+```
+
+
+
+
 
 #### reorder short
 
@@ -454,7 +725,8 @@ legend("topright", legend = c("Full", "1.5 Trip", "1.5 Haul"), lty = c(1,1,1), c
 ### Trip Change
 ```{r}
 
-out_18.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_18.1_ISS_200_iters_2024-12-12.RDS")
+# out_18.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_18.1_ISS_200_iters_2024-12-12.RDS")
+out_18.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_18.2_ISS_200_iters_2025-02-01.RDS")
 
 year = out_18.1$proportion_0.25$type_trip$length$iss$YEAR
 proportion_global = c(0.25, 0.50, 0.75, 1.25, 1.50, 1.75, 2.00)
@@ -465,13 +737,14 @@ df = tidytable(year = year,
                N_0.25 = out_18.1$proportion_0.25$type_trip$length$iss$iss,
                N_0.50 = out_18.1$proportion_0.5$type_trip$length$iss$iss,
                N_0.75 = out_18.1$proportion_0.75$type_trip$length$iss$iss,
-               N_1.00 = out_1.1$length$iss$iss,
+               N_1.00 = out_1.4$length$iss$iss,
                N_1.25 = out_18.1$proportion_1.25$type_trip$length$iss$iss,
                N_1.50 = out_18.1$proportion_1.5$type_trip$length$iss$iss,
                N_1.75 = out_18.1$proportion_1.75$type_trip$length$iss$iss,
                N_2.00 = out_18.1$proportion_2$type_trip$length$iss$iss) 
 
 df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+df2.trip = df2
 
 
 
@@ -505,7 +778,8 @@ abline(h = c(-.1,.1), lty = "dashed")
 ### Haul Change
 ```{r}
 
-out_18.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_18.1_ISS_200_iters_2024-12-12.RDS")
+# out_18.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_18.1_ISS_200_iters_2024-12-12.RDS")
+out_18.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_18.2_ISS_200_iters_2025-02-01.RDS")
 
 year = out_18.1$proportion_0.25$type_trip$length$iss$YEAR
 proportion_global = c(0.25, 0.50, 0.75, 1.25, 1.50, 1.75, 2.00)
@@ -516,13 +790,14 @@ df = tidytable(year = year,
                N_0.25 = out_18.1$proportion_0.25$type_haul$length$iss$iss,
                N_0.50 = out_18.1$proportion_0.5$type_haul$length$iss$iss,
                N_0.75 = out_18.1$proportion_0.75$type_haul$length$iss$iss,
-               N_1.00 = out_1.1$length$iss$iss,
+               N_1.00 = out_1.4$length$iss$iss,
                N_1.25 = out_18.1$proportion_1.25$type_haul$length$iss$iss,
                N_1.50 = out_18.1$proportion_1.5$type_haul$length$iss$iss,
                N_1.75 = out_18.1$proportion_1.75$type_haul$length$iss$iss,
                N_2.00 = out_18.1$proportion_2$type_haul$length$iss$iss) 
 
 df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+df2.haul = df2
 
 
 
@@ -553,7 +828,7 @@ abline(h = c(-.1,.1), lty = "dashed")
 ```
 
 
-### Boxplots Together 1977-2023
+### * Boxplots Together 1977-2023
 ```{r, fig.width=8}
 
 df3.1 %>% 
@@ -563,12 +838,14 @@ df3.1 %>%
 df4 %>% 
   ggplot(aes(x = scenario, y = ISS.error*100)) +
   geom_boxplot(aes(fill = type)) +
-  labs(x = "Scenario", y = "ISSB % Error") +
+  labs(x = "Proportional Change", y = "ISSB % Difference") +
   theme_classic() +
   theme(legend.position = c(0.5, 0.9)) +
   geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
   geom_hline(yintercept = 10, linetype = "dashed", color = "black") +
-  scale_y_continuous(breaks = seq(-100, 120, by = 10), limits = c(-100, 120))
+  scale_y_continuous(breaks = seq(-100, 120, by = 10), limits = c(-100, 120)) +
+  scale_x_discrete(labels = c("0.25", "0.50", "0.75", "1.00", "1.25", "1.50", "1.75", "2.00"))
+
 
 
 # Stats
@@ -602,6 +879,42 @@ df4 %>%
 ```
 
 
+
+#### Boxplots Together 1999-2023 TAKE TWO. fix mistake? NO ITS THE SAME AS ABOVE
+```{r}
+df2.trip %>% 
+  tidytable::filter(year %in% 1999:2023) -> df2.trip
+df2.trip %>% 
+  tidytable::mutate(ISS.diff = (df2.trip$ISS[df2.trip$scenario=="N_1.00"]) - ISS,
+                    ISS.error = (ISS - df2.trip$ISS[df2.trip$scenario=="N_1.00"])/df2.trip$ISS[df2.trip$scenario=="N_1.00"],
+                    type = "trip",
+                    .by = scenario) -> df3.1.trip
+df2.haul %>% 
+  tidytable::filter(year %in% 1999:2023) -> df2.haul
+df2.haul %>% 
+  tidytable::mutate(ISS.diff = (df2.haul$ISS[df2.haul$scenario=="N_1.00"]) - ISS,
+                    ISS.error = (ISS - df2.haul$ISS[df2.haul$scenario=="N_1.00"])/df2.haul$ISS[df2.haul$scenario=="N_1.00"],
+                    type = "haul",
+                    .by = scenario) -> df3.2.haul
+df3.1.trip %>% 
+  tidytable::bind_rows(df3.2.haul) -> df4.2
+
+
+
+df4.2 %>% 
+  ggplot(aes(x = scenario, y = ISS.error*100)) +
+  geom_boxplot(aes(fill = type)) +
+  labs(x = "Scenario", y = "ISSB % Error") +
+  theme_classic() +
+  theme(legend.position = c(0.5, 0.9)) +
+  geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 10, linetype = "dashed", color = "black") +
+  scale_y_continuous(breaks = seq(-100, 120, by = 10), limits = c(-100, 120))
+
+
+```
+
+
 ### Boxplots samples
 
 ### Validate N=20 assumption
@@ -612,6 +925,8 @@ out_22.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repo
 
 plot(out_22.1$samples_20$expansion_haul_month_numbers$length$iss$iss, ylim = c(0, 13000))
 lines(out_1.1$length$iss$iss[out_1.1$length$iss$YEAR %in% 1999:2023], col = "blue")
+
+
 
 
 ```
@@ -686,10 +1001,11 @@ df3.2 %>%
 
 
 
-### Samples VS Expantion. Boxplots Together 1999-2023
+### * Samples VS Expantion. Boxplots Together 1999-2023
 ```{r, fig.width=8}
 
-out_22.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_22.1_ISS_200_iters_2024-12-25.RDS")
+# out_22.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_22.1_ISS_200_iters_2024-12-25.RDS")
+out_22.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_22.2_ISS_500_iters_2025-02-01.RDS")
 
 year = out_22.1$samples_1$expansion_NULL$length$iss$YEAR
 samples_global = c(1, 5, 10, 15, 20, 25, 30, 35)
@@ -752,12 +1068,13 @@ df3.1 %>%
 df4 %>% 
   ggplot(aes(x = scenario, y = ISS.error*100)) +
   geom_boxplot(aes(fill = type)) +
-  labs(x = "Scenario", y = "ISSB % Error") +
+  labs(x = "Samples per Haul", y = "ISSB % Difference") +
   theme_classic() +
   theme(legend.position = c(0.5, 0.2)) +
   geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
   geom_hline(yintercept = 10, linetype = "dashed", color = "black") +
-  scale_y_continuous(breaks = seq(-100, 120, by = 10))
+  scale_y_continuous(breaks = seq(-100, 120, by = 10)) +
+  scale_x_discrete(labels = c("1", "5", "10", "15", "20", "25", "30", "35"))
 
 
 # Stats
@@ -1904,6 +2221,8 @@ p1 + p2 + p3 + plot_layout(ncol = 1)
 ```
 
 
+## * 3 Panel
+
 ```{r, fig.height=12, fig.width=10}
 p1 = df4.2.b %>% 
   tidytable::mutate(scenario = str_sub(scenario, start = 2, end = -1)) %>%
@@ -2008,7 +2327,7 @@ expansion_names_global = c("NULL", "haul_numbers", c("haul_month_numbers"))
 
 
 
-### With sampling strata
+### * With sampling strata
 ```{r, fig.width=9, fig.height=5}
 df = tidytable(year = year,
                N10_Enone = out_2.1.1$samples_10$expansion_NULL$length$iss$iss,

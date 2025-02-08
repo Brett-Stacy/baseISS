@@ -19,8 +19,10 @@ This data was saved from my version of the EBS Pcod expansion.
 
 ```{r}
 
-y2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
-y7 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y7_ebs_pcod_Brett.RDS")
+# y2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y2_ebs_pcod_Brett.RDS")
+# y7 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/y7_ebs_pcod_Brett.RDS")
+y2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_ebs_pcod_Brett.RDS")
+y7 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y7_ebs_pcod_Brett.RDS")
 
 library(tidyverse)
 library(data.table)
@@ -105,9 +107,17 @@ ggplot(data=df, aes(x=bin, y=freq, fill=type)) +
 
 Use
 ```{r}
-ggplot(data=df, aes(x=bin, y=freq, colour=type)) + 
+df.temp = df
+df.temp$type[df.temp$type=="Nom"] = "Nominal"
+df.temp$type[df.temp$type=="Exp"] = "Expanded"
+df.temp %>% 
+  tidytable::rename("Composition" = type) -> df.temp
+
+ggplot(data=df.temp, aes(x=bin, y=freq, colour=Composition)) + 
   geom_line() +
-  geom_area(aes(fill=type, group=type), alpha = 0.5, position = "identity")
+  geom_area(aes(fill=Composition, group=Composition), alpha = 0.5, position = "identity") +
+  scale_x_continuous(limits = c(20, 110)) +
+  labs(x = "Length (cm)", y = "Frequency")
 
 ```
 
