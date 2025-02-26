@@ -1,5 +1,5 @@
 ---
-title: "Paper Plots V1"
+title: "Paper Plots V2"
 author: "Brett Stacy"
 date: "2024-11-25"
 output: pdf_document
@@ -93,6 +93,104 @@ assessment_2023_iss = tidytable(year = 1977:2023,
                                 859,
                                 1160,
                                 706))
+
+
+
+
+# survey vs observer length measurements
+obs_numbers = tidytable(year = 1982:2023,
+                        survey = c(10863,
+                        13143,
+                        12133,
+                        17150,
+                        15872,
+                        9483,
+                        6950,
+                        4246,
+                        5428,
+                        7069,
+                        10129,
+                        10500,
+                        12931,
+                        9820,
+                        9348,
+                        9591,
+                        9574,
+                        11183,
+                        12170,
+                        19078,
+                        12365,
+                        11835,
+                        10986,
+                        11753,
+                        12530,
+                        13441,
+                        15328,
+                        23737,
+                        21223,
+                        25150,
+                        30177,
+                        19902,
+                        29204,
+                        19880,
+                        19507,
+                        15020,
+                        8806,
+                        23408,
+                        0,
+                        17397,
+                        16677,
+                        19943),
+                        fishery = c(9658,
+                                    33200,
+                                    45635,
+                                    66940,
+                                    58257,
+                                    129226,
+                                    111065,
+                                    58625,
+                                    39698,
+                                    347227,
+                                    344923,
+                                    248967,
+                                    359147,
+                                    344794,
+                                    445217,
+                                    474908,
+                                    438746,
+                                    186233,
+                                    199708,
+                                    210419,
+                                    230802,
+                                    288854,
+                                    237487,
+                                    228664,
+                                    179782,
+                                    140663,
+                                    164860,
+                                    147875,
+                                    131514,
+                                    172269,
+                                    192273,
+                                    211962,
+                                    234476,
+                                    213888,
+                                    182980,
+                                    157482,
+                                    124004,
+                                    86800,
+                                    65301,
+                                    55858,
+                                    73025,
+                                    42942))
+
+
+obs_numbers %>% 
+  tidytable::summarise(sum(survey), sum(fishery))
+
+
+
+
 ```
 
 
@@ -110,15 +208,19 @@ par(mfrow = c(2,1), mar = c(0,3.1,0,0), oma = c(2, 0, 2, .5), mgp = c(2, .6, 0))
 plot(out_1.4$length$iss$YEAR, out_1.4$length$iss$iss, type = "l", ylab = "ISS", xaxt = "n", ylim = c(0, 15000), cex.lab = 1.3) 
 lines(assessment_2023_iss$year, assessment_2023_iss$iss, col = "blue")
 lines(out_1.4$length$iss$YEAR, out_1.4$length$iss$nhls, col = "red")
-legend("topleft", lty = c(1,1,1), col = c("black", "blue", "red"), legend = c("ISSB", "ISSA", "number of hauls"))
-
+legend(1977, 11000, lty = c(1,1,1), col = c("black", "blue", "red"), legend = c("ISSB", "ISSA", "number of hauls"), bty = "n")
+text(1977, 14000, "A")
 
 
 
 plot(out_1.4$length$iss$YEAR, out_1.4$length$iss$nss, type = "l", ylab = "Nominal Sample Size", xlab = "Year", cex.lab = 1.3) 
+text(1977, 420000, "B")
 
 
 
+# averages
+out_1.4$length$iss$iss %>% mean()
+assessment_2023_iss$iss %>% mean()
 
 
 ```
@@ -200,6 +302,14 @@ lines(out_1.4$length$iss$YEAR[sub_range], out_1.4$length$iss$iss[sub_range], typ
 
 
 legend("topleft", legend = c("boot length", "boot length + haul", "boot all", "boot all + sampling strata weighting", "full"), lty = c(1,1,1,1,1), col = c("black", "blue", "orange", "green", "red"), bty = "n")
+
+
+
+
+# not accounting for correlations exceed hauls?
+sum((out_5.2$length$iss$iss[sub_range]-out_1.4$length$iss$nhls) < 0)
+
+
 ```
 
 \newpage
@@ -338,9 +448,9 @@ df4 %>% filter(type=="haul", scenario=="N_2.00") %>% pull(ISS.error) %>% median
 ### DATA: Samples VS Haul 
 ```{r, fig.width=8}
 
-out_24.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_24.2_ISS_200_iters_2025-02-03.RDS")
+out_24.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_24.3_ISS_500_iters_2025-02-11.RDS")
 
-year = out_24.1$samples_1$trip_0.25$length$iss$YEAR
+year = out_24.1$samples_1$trip_0.5$length$iss$YEAR
 
 
 df = tidytable(year = year,
@@ -422,9 +532,9 @@ df4 -> df4.1.b
 ### DATA: Samples VS Trip
 ```{r, fig.width=8}
 
-out_23.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_23.1_ISS_200_iters_2024-12-31.RDS")
+out_23.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_23.2_ISS_500_iters_2025-02-09.RDS")
 
-year = out_23.1$samples_1$trip_0.25$length$iss$YEAR
+year = out_23.1$samples_1$trip_0.5$length$iss$YEAR
 
 
 df = tidytable(year = year,
@@ -511,9 +621,11 @@ df4 -> df4.2.b
 ### DATA: Samples VS Trip/Haul
 ```{r, fig.width=8}
 
-out_25.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_25.1_ISS_200_iters_2025-01-03.RDS")
+# out_25.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_25.1_ISS_200_iters_2025-01-03.RDS")
+out_25.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_25.3.TAS_ISS_500_iters_2025-02-12.RDS")
 
-year = out_25.1$samples_1$haul_0.5_trip_0.5$length$iss$YEAR
+# year = out_25.1$samples_1$haul_0.5_trip_0.5$length$iss$YEAR
+year = out_25.1$samples_1$haul_0.5_trip_0.75$length$iss$YEAR
 
 
 df = tidytable(year = year,
@@ -866,7 +978,7 @@ CONSIDER MOVING THESE TO SUPPLEMENTARY MATERIAL AND TOTALLY FOCUSING ON 1999-202
 ```{r}
 
 
-out_18.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_18.2_ISS_200_iters_2025-02-01.RDS")
+out_18.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_18.3.TAS_ISS_500_iters_2025-02-10.RDS")
 
 year = out_18.1$proportion_0.25$type_trip$length$iss$YEAR
 

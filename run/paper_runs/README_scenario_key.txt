@@ -28,12 +28,18 @@ paper_scenario_16.1 - Same as 1.1 except 1.5x trips.
 paper_scenario_17.1 - Same as 1.1 except 1.5x hauls.
 paper_scenario_18.1 - 7x2 Grid. 25%, 50%, ..., 200% Trip/Haul
 paper_scenario_18.2 - Same as 18.1 except with new version (as at scenario 25.1) and 200 iters
+paper_scenario_18.3 - Same as 18.2 except 500 iters and run with TAS computer.
 paper_scenario_19.1 - 2x3 Grid. 50%, 150% Trip x none, haul_only, haul_YAGM weighting factors. YES sampling strata expansion.
 paper_scenario_20.1 - 2x3 Grid. 50%, 150% Haul x none, haul_only, haul_YAGM weighting factors. YES sampling strata expansion.
 paper_scenario_21.1 - 8 Vector of alternative length samples per haul: 1, 5, 10, 15, 20, 25, 30, 35. YES sampling strata expansion.
 paper_scenario_22.1 - 8x3 Grid. Same as 2.1.1 except more Sample lengths
-paper_scenario_22.2 - Same as 22.2 except with new version (as at scenario 25.1) and 500 iters
+paper_scenario_22.2 - Same as 22.1 except with new version (as at scenario 25.1) and 500 iters
 paper_scenario_23.1 - 7x8 Grid. Trip x samples.
+paper_scenario_23.2 - Same as 23.1 except with new version (as at scenario 25.1) and 500 iters
 paper_scenario_24.1 - 7x8 Grid. Haul x samples.
 paper_scenario_24.2 - Same as 24.1 except with new version (as at scenario 25.1) and 200 iters
+paper_scenario_24.3 - Same as 24.2 except 500 iters and only scenarios c(0.50, 0.75, 1.25)
 paper_scenario_25.1 - 6x8 Grid. Haul/Trip x samples. .5/.5, .5/.75, .75/.5, .75/.75, 1.25/.5, 1.25/.75
+paper_scenario_25.2.TAS - Same as 25.1 except with new version (as at scenario 25.1) and 500 iters. Run on TAS computer.
+paper_scenario_25.3.TAS - Same as 25.2.TAS except 500 iters and only the scenarios used in the paper.
+
