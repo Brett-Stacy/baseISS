@@ -15,13 +15,48 @@ generic_sample_change_length_N = function(flex.vec,
   {
 
   # value
-  if(new_length_N$type=="value"){
-    flex.vec[base::sample.int(length(flex.vec),
-                              size = ifelse(is.null(new_length_N$bound), new_length_N$amount,
-                                            ifelse(new_length_N$bound=="minimum", min(length(flex.vec), new_length_N$amount),
-                                                   max(length(flex.vec), new_length_N$amount))),
-                              replace = TRUE)] -> .new_sample
+  if(new_length_N$type=="value" & new_length_N$replace==TRUE){
+    if(is.null(new_length_N$bound)){
+      flex.vec[base::sample.int(length(flex.vec),
+                                size = new_length_N$amount,
+                                replace = TRUE)] -> .new_sample
+    }else if(new_length_N=="minimum"){
+      flex.vec[base::sample.int(length(flex.vec),
+                                size = min(length(flex.vec), new_length_N$amount),
+                                replace = TRUE)] -> .new_sample
+    }else if(new_length_N=="maximum"){
+      flex.vec[base::sample.int(length(flex.vec),
+                                size = max(length(flex.vec), new_length_N$amount),
+                                replace = TRUE)] -> .new_sample
+    }
+
+  }else if(new_length_N$type=="value" & new_length_N$replace==FALSE){
+    if(is.null(new_length_N$bound)){
+      flex.vec[base::sample.int(length(flex.vec),
+                                size = new_length_N$amount,
+                                replace = FALSE)] -> .new_sample
+    }else if(new_length_N=="minimum"){
+      flex.vec[base::sample.int(length(flex.vec),
+                                size = min(length(flex.vec), new_length_N$amount),
+                                replace = FALSE)] -> .new_sample
+    }else if(new_length_N=="maximum"){
+      flex.vec[base::sample.int(length(flex.vec),
+                                size = max(length(flex.vec), new_length_N$amount),
+                                replace = FALSE)] -> .new_sample
+    }
   }
+
+
+
+  # value
+  # ## OLD
+  # if(new_length_N$type=="value"){
+  #   flex.vec[base::sample.int(length(flex.vec),
+  #                             size = ifelse(is.null(new_length_N$bound), new_length_N$amount,
+  #                                           ifelse(new_length_N$bound=="minimum", min(length(flex.vec), new_length_N$amount),
+  #                                                  max(length(flex.vec), new_length_N$amount))),
+  #                             replace = TRUE)] -> .new_sample
+  # }
 
   # proportion
   if(new_length_N$type=="proportion"){
