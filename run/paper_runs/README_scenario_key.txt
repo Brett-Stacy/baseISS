@@ -44,4 +44,11 @@ paper_scenario_25.2.TAS - Same as 25.1 except with new version (as at scenario 2
 paper_scenario_25.3.TAS - Same as 25.2.TAS except 500 iters and only the scenarios used in the paper.
 
 paper_scenario_26.1 - Same as 1.4 (base) except min(20, # samples) with replacement
-paper_scenario_27.1 - Same as 26.1 (base) except min(20, # samples) without replacement
+paper_scenario_27.1 - Same as 26.1 except without replacement
+paper_scenario_28.1 - Same as 27.1 except only for hauls
+paper_scenario_29.1 - Same as 18.3 except reductions to 0.1:0.9 1977:2023. base ISSB otherwise.
+paper_scenario_30.1 - Same as 2.1.2 except no change to sampling rate
+paper_scenario_31.1 - Same as 27.1 except for 1, 5, 10, 15, 20 sampling rate and w/ & w/o port samples - like 28.1
+
+
+

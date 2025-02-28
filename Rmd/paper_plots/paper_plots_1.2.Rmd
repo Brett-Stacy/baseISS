@@ -42,7 +42,10 @@ out_4.2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos
 out_2.2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_2.2_ISS_500iters_output_2025-01-28.RDS")
 
 
-
+# save out_1.4 for Steve to plug into the assessment
+out_1.4$length$iss %>% 
+  select(YEAR, iss) %>% 
+  write.csv(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Fishery ISS Paper/issb_v1_from_Brett_Stacy.csv", row.names = F)
 
 
 assessment_2023_iss = tidytable(year = 1977:2023,

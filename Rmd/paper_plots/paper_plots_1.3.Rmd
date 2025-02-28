@@ -327,6 +327,9 @@ sum((out_5.2$length$iss$iss[sub_range]-out_1.4$length$iss$nhls) < 0)
 
 ### Min 20
 ```{r, fig.width=9, fig.height=5}
+
+## min(20, #samples) port and haul 1999-2023
+# with replacement
 out_26.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_26.1_ISS_500iters_output_2025-02-27.RDS")
 
 
@@ -344,11 +347,41 @@ df %>%
 
 
 
+# without replacement - THIS HAS MUCH SMALLER PERCENT DIFFERENCE! So use this in paper. 
+out_27.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_27.1_ISS_500iters_output_2025-02-28.RDS")
+
+
+year = out_27.1$length$iss$YEAR
+
+df = tidytable(year = year,
+               iss.base = out_1.4$length$iss$iss,
+               iss.20.min = out_27.1$length$iss$iss)
+
 df %>% 
   tidytable::mutate(ISS.error = (iss.20.min - iss.base)/iss.base) %>% 
-  filter(year%in%2023) %>% 
+  filter(year%in%1999:2023) %>% 
   select(ISS.error) %>% 
   boxplot()
+
+
+
+# without replacement - Hauls only 
+out_28.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_28.1_ISS_500iters_output_2025-02-28.RDS")
+
+
+year = out_28.1$length$iss$YEAR
+
+df = tidytable(year = year,
+               iss.base = out_1.4$length$iss$iss,
+               iss.20.min = out_28.1$length$iss$iss)
+
+df %>% 
+  tidytable::mutate(ISS.error = (iss.20.min - iss.base)/iss.base) %>% 
+  filter(year%in%1999:2023) %>% 
+  select(ISS.error) %>% 
+  boxplot()
+
+
 
 
 

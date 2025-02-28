@@ -20,11 +20,11 @@ generic_sample_change_length_N = function(flex.vec,
       flex.vec[base::sample.int(length(flex.vec),
                                 size = new_length_N$amount,
                                 replace = TRUE)] -> .new_sample
-    }else if(new_length_N=="minimum"){
+    }else if(new_length_N$bound=="minimum"){
       flex.vec[base::sample.int(length(flex.vec),
                                 size = min(length(flex.vec), new_length_N$amount),
                                 replace = TRUE)] -> .new_sample
-    }else if(new_length_N=="maximum"){
+    }else if(new_length_N$bound=="maximum"){
       flex.vec[base::sample.int(length(flex.vec),
                                 size = max(length(flex.vec), new_length_N$amount),
                                 replace = TRUE)] -> .new_sample
@@ -35,11 +35,11 @@ generic_sample_change_length_N = function(flex.vec,
       flex.vec[base::sample.int(length(flex.vec),
                                 size = new_length_N$amount,
                                 replace = FALSE)] -> .new_sample
-    }else if(new_length_N=="minimum"){
+    }else if(new_length_N$bound=="minimum"){
       flex.vec[base::sample.int(length(flex.vec),
                                 size = min(length(flex.vec), new_length_N$amount),
                                 replace = FALSE)] -> .new_sample
-    }else if(new_length_N=="maximum"){
+    }else if(new_length_N$bound=="maximum"){
       flex.vec[base::sample.int(length(flex.vec),
                                 size = max(length(flex.vec), new_length_N$amount),
                                 replace = FALSE)] -> .new_sample

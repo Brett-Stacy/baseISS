@@ -152,11 +152,12 @@ fishery_iss <- function(species_code,
   ### Include the function arguments in the output as a default
   out_stats$arguments = match.call()
 
-
-  ### Combine post strata by user-defined measurement (weight or numbers) if requested
-  if(!is.null(combine.post.strata) & post_strata$nested==FALSE){
-    out_stats = combine_post_strata(out_stats)
-  }
+  # DEV
+  # ### Combine post strata by user-defined measurement (weight or numbers) if requested. Keep nested out of this for now, too complicated. Also,
+  # if(!is.null(combine.post.strata) & post_strata$nested==FALSE){
+  #   out_stats = combine_post_strata(freq_data = freq_data,
+  #                                   out_stats = out_stats)
+  # }
 
 
 

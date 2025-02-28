@@ -1,7 +1,7 @@
 
 
 rm(list = ls())
-run_name = "paper_scenario_27.1"
+run_name = "paper_scenario_28.1"
 iterations = 500
 
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP_STRATA.RDS")
@@ -16,7 +16,7 @@ fishery_iss(species_code = "202",
             area_code = "EBS",
             length_based = TRUE,
             iters = iterations,
-            freq_data = lfreq_data,
+            freq_data = lfreq_data %>% tidytable::filter(substr(HAUL_JOIN, 1, 1)=="H"),
             yrs = NULL,
             bin = NULL,
             plus_len = NULL,
