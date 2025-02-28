@@ -43,3 +43,5 @@ paper_scenario_25.1 - 6x8 Grid. Haul/Trip x samples. .5/.5, .5/.75, .75/.5, .75/
 paper_scenario_25.2.TAS - Same as 25.1 except with new version (as at scenario 25.1) and 500 iters. Run on TAS computer.
 paper_scenario_25.3.TAS - Same as 25.2.TAS except 500 iters and only the scenarios used in the paper.
 
+paper_scenario_26.1 - Same as 1.4 (base) except min(20, # samples) with replacement
+paper_scenario_27.1 - Same as 26.1 (base) except min(20, # samples) without replacement
