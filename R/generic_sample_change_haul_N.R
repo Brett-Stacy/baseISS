@@ -21,7 +21,7 @@ generic_sample_change_haul_N = function(flex.vec,
   if(new_haul_N$type=="proportion"){
     flex.vec[base::sample.int(length(flex.vec),
                               size = round(new_haul_N$amount*vec_length),
-                              replace = TRUE)] -> .new_sample
+                              replace = new_haul_N$replace)] -> .new_sample
   }
 
   # value

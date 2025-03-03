@@ -21,7 +21,7 @@ generic_sample_change_trip_N = function(flex.vec,
   if(new_trip_N$type=="proportion"){
     flex.vec[base::sample.int(length(flex.vec),
                               size = round(new_trip_N$amount*vec_length),
-                              replace = TRUE)] -> .new_sample
+                              replace = new_trip_N$replace)] -> .new_sample
   }
 
   # value
