@@ -16,7 +16,9 @@ Imports:
     magrittr,
     psych,
     purrr,
-    tidytable
+    tidytable,
+    DBI,
+    odbc
 Depends: 
     data.table,
     R (>= 3.5.0)
