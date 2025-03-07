@@ -6,6 +6,8 @@ paper_scenario_1.4 - Same as 1.3 except with minimum_sample size effecting nhls 
 paper_scenario_2.1 - Same as 1.1 except NULL expansion.
 paper_scenario_2.2 - Same as 2.1 except with new version (as at scenario 25.1) and 500 iters
 paper_scenario_3.1 - Same as 1.1 except NULL expand by sampling strata.
+paper_scenario_3.2 - Same as 1.4 except NULL expand by sampling strata (like 3.1 but with new version)
+
 paper_scenario_4.1 - Same as 1.1 except NULL expansion and NULL expand by sampling strata.
 paper_scenario_4.2 - Same as 4.1 except with new version (as at scenario 25.1) and 500 iters
 paper_scenario_5.1 - Same as 1.1 except NULL expansion and NULL expand by sampling strata and NULL boot.trip and NULL boot.haul.
@@ -49,6 +51,14 @@ paper_scenario_28.1 - Same as 27.1 except only for hauls
 paper_scenario_29.1 - Same as 18.3 except reductions to 0.1:0.9 1977:2023. base ISSB otherwise.
 paper_scenario_30.1 - Same as 2.1.2 except no change to sampling rate
 paper_scenario_31.1 - Same as 27.1 except for 1, 5, 10, 15, 20 sampling rate and w/ & w/o port samples - like 28.1
+paper_scenario_32.1 - Same as 31.1 except w/ haul only and only ==20
+paper_scenario_33.1 - Same as 29.1 except with replace = FALSE
 
+paper_scenario_34.1 - Same as 1.4 (base) except no port samples
+paper_scenario_35.1 - Same as 31.1 except reduce only port samples - I DON'T KNOW IF THIS IS POSSIBLE BECAUSE I WOULD HAVE TO CHANGE THE CODE TO CONDITION ON CHANGING SAMPLE SIZE ONLY WHEN PORT JOINS ARE SELECTED IN THE BOOTSTRAPPING.
+paper_scenario_36.1 - Same as 31.1 except only include port samples and run a non-reduction scenario. Does ISSB change much when port samples reduced? - NOT WORKING BECAUE OF YEAR PROBLEM WHEN TRYING TO PLOT RESULTS. BACKBURNER FOR NOW.
 
+paper_scenario_37.1 - Same as 1.4 except yes expansion, no SS, yes boot length, no other boot
+paper_scenario_37.2 - Same as 37.1 except boot haul instead of length
+paper_scenario_37.3 - Same as 37.1 except boot trips instead of length or hauls
 
