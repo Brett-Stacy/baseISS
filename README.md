@@ -38,7 +38,7 @@ standard calculation that is exactly the same for every species.
 
 4.  Age data flattened, no “sum_frequency” column.
 
-5.  For EBS Pcod, age data has only been used when there exists alredy
+5.  For EBS Pcod, age data has only been used when there exists already
     pre-processed length data associated with it. I.e., I matched the y2
     length data object recieved from Steve with age data I downloaded
     when testing the baseISS functionality on age data. This was
@@ -63,13 +63,13 @@ standard calculation that is exactly the same for every species.
 
 - subsampling length - done.
 
-- custom max length control
+- custom max length control - done.
 
-- plus group option
+- plus group option - done.
 
-- different length bin size control
+- different length bin size control - done.
 
-- different species
+- different species - tested with Pollock only.
 
 - reboot_age.R
 

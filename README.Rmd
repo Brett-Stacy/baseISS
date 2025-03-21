@@ -35,7 +35,7 @@ The following conditions of an input data frame for any species must be met:
 
 4. Age data flattened, no "sum_frequency" column. 
 
-5. For EBS Pcod, age data has only been used when there exists alredy pre-processed length data associated with it. I.e., I matched the y2 length data object recieved from Steve with age data I downloaded when testing the baseISS functionality on age data. This was necessary becasue I needed quantities like YAGM_SNUM to perform the weighted expansion. 
+5. For EBS Pcod, age data has only been used when there exists already pre-processed length data associated with it. I.e., I matched the y2 length data object recieved from Steve with age data I downloaded when testing the baseISS functionality on age data. This was necessary becasue I needed quantities like YAGM_SNUM to perform the weighted expansion. 
 
 ### Current Functionality
 
@@ -47,10 +47,10 @@ The following conditions of an input data frame for any species must be met:
 
 - subsampling length - done.
 
-- custom max length control
-- plus group option
-- different length bin size control
-- different species
+- custom max length control - done.
+- plus group option - done.
+- different length bin size control - done.
+- different species - tested with Pollock only.
 - reboot_age.R
 
 
