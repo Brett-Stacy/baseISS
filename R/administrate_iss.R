@@ -126,6 +126,7 @@ administrate_iss = function(species_code,
                 freq_data = .freq_data,
                 iters = iters,
                 boot.length = boot.length,
+                boot.age = boot.age,
                 save_data_frame = save_data_frame)
 
 
