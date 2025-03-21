@@ -21,14 +21,14 @@ iss <- function(rss,
                          .by = c(YEAR)) -> .iss
 
   # add nominal sample size (nss) and number of hauls (nhls). Conditional on length or age.
-  if(base::isTRUE(boot.length)){
+  if(base::isTRUE(boot.length) | isFALSE(boot.age)){ # if boot.length is false but so is boot.age, then execute this conditional anyway because I need it to execute when only booting haul or trip.
     .iss %>%
       tidytable::left_join(freq_data %>%
                              tidytable::summarise(SUM_FREQUENCY = n(base::unique(LENGTH)), .by = c(YEAR, HAUL_JOIN, LENGTH)) %>%
                              tidytable::summarise(nss = sum(SUM_FREQUENCY), nhls = length(unique(HAUL_JOIN)), .by = YEAR)) %>%
       tidytable::left_join(freq_data %>%
                              tidytable::summarise(ntps = length(unique(TRIP_JOIN)), .by = YEAR)) -> iss_out
-  }else{
+  }else if(isTRUE(boot.age)){
     .iss %>%
       tidytable::left_join(freq_data %>%
                              tidytable::summarise(SUM_FREQUENCY = n(base::unique(AGE)), .by = c(YEAR, HAUL_JOIN, AGE)) %>%
