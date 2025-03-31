@@ -1,4 +1,4 @@
-#' Combine post-stratified ISS results
+#' Combine post-stratified ISS results. Under Development.
 #'
 #' @description
 #' Combine the post-stratified ISS results by post-strata fish weight or numbers as weighted average. Includes evidence somewhere (DECIDE BEST PLACE) that states it was combined by post_strata and reports what the strata were and the method used to combine them.
