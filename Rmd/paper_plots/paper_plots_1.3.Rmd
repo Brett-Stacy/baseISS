@@ -33,7 +33,7 @@ Plots for paper:
 
 out_1.4 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_1.4_ISS_1000iters_output_2025-01-23.RDS")
 
-out_3.2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_1.4_ISS_500iters_output_2025-03-06.RDS") ### mislabeled
+out_3.2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_3.2_ISS_500iters_output_2025-03-07.RDS") ### mislabeled
 
 out_5.2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_5.2_ISS_500iters_output_2025-01-27.RDS")
 
@@ -209,6 +209,38 @@ df = data.frame(rss = out_1.4$length$rss$rss, year = as.factor(out_1.4$length$rs
 
 # par(mfrow = c(4,1), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
 # par(mfrow = c(3,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
+par(mfrow = c(2,1), mar = c(0,3.1,0,0), oma = c(3, 0, 2, .5), mgp = c(2, .6, 0))
+plot(out_1.4$length$iss$YEAR, out_1.4$length$iss$iss, type = "l", ylab = "ISS", xaxt = "n", ylim = c(0, 15000), cex.lab = 1.3) 
+lines(assessment_2023_iss$year, assessment_2023_iss$iss, col = "blue")
+lines(out_1.4$length$iss$YEAR, out_1.4$length$iss$nhls, col = "red")
+legend(1977, 11000, lty = c(1,1,1,1), col = c("black", "blue", "red"), legend = c("ISSB", "ISSA", "number of hauls"), bty = "n")
+text(1977, 14000, "A")
+
+
+
+plot(out_1.4$length$iss$YEAR, out_1.4$length$iss$nss, type = "l", ylab = "Nominal Sample Size", xlab = "Year", cex.lab = 1.3) 
+text(1977, 420000, "B")
+mtext("Year", side = 1, line = 2, cex = 2)
+
+
+# averages
+out_1.4$length$iss$iss %>% mean()
+assessment_2023_iss$iss %>% mean()
+
+
+```
+
+
+
+### * Time series 2 panel no-SS
+
+```{r, fig.height=6}
+df = data.frame(rss = out_1.4$length$rss$rss, year = as.factor(out_1.4$length$rss$YEAR))
+
+
+
+# par(mfrow = c(4,1), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
+# par(mfrow = c(3,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
 par(mfrow = c(2,1), mar = c(0,3.1,0,0), oma = c(2, 0, 2, .5), mgp = c(2, .6, 0))
 plot(out_1.4$length$iss$YEAR, out_1.4$length$iss$iss, type = "l", ylab = "ISS", xaxt = "n", ylim = c(0, 15000), cex.lab = 1.3) 
 lines(assessment_2023_iss$year, assessment_2023_iss$iss, col = "blue")
@@ -234,12 +266,39 @@ assessment_2023_iss$iss %>% mean()
 
 
 
+
+## histogram test, which are similar? 
+provide a counter example to 2003:2004
+
+```{r}
+
+out_1.4$length$og_props %>% 
+  tidytable::filter(YEAR %in% 1997:1998) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p1 = ggplot(data = props.sub, aes(x = LENGTH, y = og_FREQ, colour = Year)) +
+  geom_line() +
+  geom_area(aes(fill = Year, group = Year), alpha = 0.5, position = "identity") +
+  theme_classic() +
+  scale_x_continuous(limits = c(22, 108),
+                     n.breaks = 9) +
+  labs(x = "Length (cm)", y = "Frequency", tag = "A") +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  scale_y_continuous(limits = c(0, .04), expand = c(0, 0))
+
+p1
+
+
+```
+
+
+
 \newpage
 
 ### * 2003 and 2004 histograms
 ```{r, fig.height=8, fig.width=9}
-
-
 out_1.4$length$og_props %>% 
   tidytable::filter(YEAR %in% 2003:2004) %>% 
   tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
@@ -264,31 +323,526 @@ out_1.4$length$rss %>%
   tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
 
 p3 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
-  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity") +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
   theme_classic() +
   theme(legend.position = c(0.8, 0.8),
         plot.tag.position = c(0.1, 0.95),
         plot.tag = element_text(size = 14, face = "bold")) +
-  labs(x = "RSS", y = "Count", tag = "B") + 
+  labs(x = "RSS", y = "Count", tag = "F") + 
   geom_point(data = props.sub %>% 
                tidytable::left_join(out_1.4$length$iss %>% 
                                       tidytable::select(YEAR, iss)) %>% 
                tidytable::summarise(x = unique(iss), .by = Year) %>% 
                # tidytable::summarise(x = median(rss), .by = Year) %>% 
                tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
-  scale_y_continuous(limits = c(0, 300), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 75), expand = c(0, 0)) +
   # scale_x_continuous(n.breaks = 8)
   scale_x_continuous(breaks = seq(0, 35000, by = 2500),
-                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000))
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))
+
+
+
+
+
+# now do RSS with boot_length only.
+out_5.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 2003:2004) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.2 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "B") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_5.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 110), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))
+
+
+
+# now do RSS with boot_length and boot_haul.
+out_9.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 2003:2004) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.3 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "C") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_9.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 75), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))
+
+
+
+# now do RSS with boot all.
+out_4.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 2003:2004) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.4 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "D") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_4.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 30), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))
+
+
+
+# now do RSS with boot all + SS
+out_2.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 2003:2004) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.5 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "E") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_2.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 30), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))
+
+
 
 
 p1 / p3
+p1 / p3 / p3.2
+```
 
+
+```{r, fig.height=10}
+p1 / p3.2 / p3.3 / p3.4 / p3.5 / p3
 
 
 ```
 
 The comparison shows that fish in 2003 were less similar in length compared to 2004. 2003 corresponds to a higher ISS even though the sample rate was the same and the number of hauls and nominal sample size were comparable. More of the fish sampled in 2003 were required for characterizing the underlying multinomial sampling distribution compared to 2004 because more lengths were represented at a higher rate in 2003 (shorter, wider distribution). This is reflected in the RSS (ref figure).
+
+
+
+
+### with another year
+
+
+
+\newpage
+
+#### histograms
+```{r, fig.height=10}
+out_1.4$length$og_props %>% 
+  tidytable::filter(YEAR %in% 2021:2022) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p1 = ggplot(data = props.sub, aes(x = LENGTH, y = og_FREQ, colour = Year)) +
+  geom_line() +
+  geom_area(aes(fill = Year, group = Year), alpha = 0.5, position = "identity") +
+  theme_classic() +
+  scale_x_continuous(limits = c(22, 108),
+                     n.breaks = 9) +
+  labs(x = "Length (cm)", y = "Frequency", tag = "A") +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  scale_y_continuous(limits = c(0, .04), expand = c(0, 0))
+
+
+
+# now do RSS
+out_1.4$length$rss %>% 
+  tidytable::filter(YEAR %in% 2021:2022) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "F") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_1.4$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 75), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))
+
+
+
+
+
+# now do RSS with boot_length only.
+out_5.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 2021:2022) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.2 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "B") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_5.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 110), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))
+
+
+
+# now do RSS with boot_length and boot_haul.
+out_9.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 2021:2022) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.3 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "C") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_9.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 75), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))
+
+
+
+# now do RSS with boot all.
+out_4.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 2021:2022) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.4 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "D") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_4.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 30), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))
+
+
+
+# now do RSS with boot all + SS
+out_2.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 2021:2022) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.5 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "E") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_2.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 30), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))
+
+
+
+
+# p1 / p3
+# p1 / p3 / p3.2
+
+p1 / p3.2 / p3.3 / p3.4 / p3.5 / p3
+
+
+```
+
+
+
+
+
+### with another year
+
+
+
+\newpage
+
+#### histograms
+```{r, fig.height=10}
+out_1.4$length$og_props %>% 
+  tidytable::filter(YEAR %in% 1997:1998) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p1 = ggplot(data = props.sub, aes(x = LENGTH, y = og_FREQ, colour = Year)) +
+  geom_line() +
+  geom_area(aes(fill = Year, group = Year), alpha = 0.5, position = "identity") +
+  theme_classic() +
+  scale_x_continuous(limits = c(22, 108),
+                     n.breaks = 9) +
+  labs(x = "Length (cm)", y = "Frequency", tag = "A") +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  scale_y_continuous(limits = c(0, .04), expand = c(0, 0))
+
+
+
+# now do RSS
+out_1.4$length$rss %>% 
+  tidytable::filter(YEAR %in% 1997:1998) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 20) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "F") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_1.4$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 75), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 3000, by = 250),
+                     limits = c(0, 3000),
+                     expand = c(0, 0))
+
+
+
+
+
+# now do RSS with boot_length only.
+out_5.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 1997:1998) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.2 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 10) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "B") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_5.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 110), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 3000, by = 250),
+                     limits = c(0, 3000),
+                     expand = c(0, 0))
+
+
+
+# now do RSS with boot_length and boot_haul.
+out_9.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 1997:1998) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.3 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 10) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "C") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_9.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 75), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 3000, by = 250),
+                     limits = c(0, 3000),
+                     expand = c(0, 0))
+
+
+
+# now do RSS with boot all.
+out_4.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 1997:1998) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.4 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 10) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "D") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_4.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 30), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 3000, by = 250),
+                     limits = c(0, 3000),
+                     expand = c(0, 0))
+
+
+
+# now do RSS with boot all + SS
+out_2.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 1997:1998) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.5 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 10) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "E") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_2.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 30), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 3000, by = 250),
+                     limits = c(0, 3000),
+                     expand = c(0, 0))
+
+
+
+
+# p1 / p3
+# p1 / p3 / p3.2
+
+p1 / p3.2 / p3.3 / p3.4 / p3.5 / p3
+
+
+```
+
+
+
+# For presentation
+```{r, fig.height=10}
+out_1.4$length$og_props %>% 
+  tidytable::filter(YEAR %in% 1997) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+ggplot(data = props.sub, aes(x = LENGTH, y = og_FREQ, colour = Year)) +
+  geom_line() +
+  geom_area(aes(fill = Year, group = Year), alpha = 0.5, position = "identity") +
+  theme_classic() +
+  scale_x_continuous(limits = c(22, 108),
+                     n.breaks = 9) +
+  labs(x = "Length Bin-b (cm)", y = "Proportion (P)", tag = "") +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  scale_y_continuous(limits = c(0, .032), expand = c(0, 0)) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))
+
+
+
+
+
+out_1.4$length$iss$nss[out_1.4$length$iss$YEAR==1997]
+```
+
 
 
 ### * Time seris components
@@ -479,17 +1033,27 @@ ggplot(data = df2, aes(x = year, y = ISS, group = scenario, colour = scenario)) 
   theme_classic() +
   theme(legend.position = c(0.84, 0.8),
         axis.title.x = element_blank())
+```
 
+\newpage
+
+```{r, fig.width=9, fig.height=5}
 # 1999:2023
 df2 %>% 
-  filter(year%in%1999:2023) -> df2
-ggplot(data = df2, aes(x = year, y = ISS, group = scenario, colour = scenario)) +
+  filter(year%in%1999:2023) %>% 
+ggplot(aes(x = year, y = ISS, group = scenario, colour = scenario)) +
   geom_line() +
-  labs(x = "", y = "ISSB") +
+  geom_point() +
+  scale_shape_manual(values = c(1,2,3)) +
+  labs(x = "Year", y = "ISSB", color = "Expansion Complexity") +
+  scale_color_manual(labels = c("None", "Medium: haul only", "Full: haul, area, gear, month"), values = c("blue", "red", "black")) +
   geom_point() + 
-  theme_classic() +
-  theme(legend.position = c(0.84, 0.8),
-        axis.title.x = element_blank())
+  theme_classic() + 
+  theme(legend.position = c(0.7, 0.9),
+        axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14))
 ```
 
 
@@ -1272,7 +1836,7 @@ df4 -> df4.c
 
 \newpage
 
-```{r, fig.height=8}
+```{r, fig.height=6}
 ### plots
 
 p1 = df4.a %>%
@@ -1289,6 +1853,25 @@ p1 = df4.a %>%
                              title.position = "top", 
                              title.hjust = 0.5,
                              label.position = "bottom"))  +
+  geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "solid", color = "black") +
+  # geom_hline(yintercept = 10, linetype = "dashed", color = "black") +
+  scale_y_continuous(breaks = seq(-100, 120, by = 10), limits = c(-80, 10))
+
+
+## for presentation
+df4.a %>%
+  filter(type=="relative_N") %>% 
+  ggplot(aes(x = scenario, y = ISS.error)) +
+  geom_boxplot(aes(fill = type)) +
+  labs(x = "Adjusted Samples Per Haul", y = "ISSB % Difference", tag = "") +
+  theme_classic() +
+  theme(legend.position = c(3, 0.15),
+        axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14)) + 
+  guides(fill = guide_legend(title = "relative to baseline")) +
   geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
   geom_hline(yintercept = 0, linetype = "solid", color = "black") +
   # geom_hline(yintercept = 10, linetype = "dashed", color = "black") +
@@ -1426,6 +2009,7 @@ df4 %>%
 ### NEW Haul and TRIP Decrease w/o replacement
 ```{r}
 out_29.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_33.1.TAS_ISS_500_iters_2025-03-04.RDS")
+
 
 year = out_29.1$proportion_0.1$type_trip$length$iss$YEAR
 
@@ -1592,6 +2176,124 @@ df4.2 %>%
 
 ```
 
+
+
+
+
+
+# * Steve's data
+
+
+```{r}
+
+a.out = read.csv("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Fishery ISS Paper/from Steve B/Derived_quants.csv")
+p.out = read.csv("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Fishery ISS Paper/from Steve B/parameters.csv")
+
+
+a.out %>% glimpse()
+
+SSB.names = paste0("SSB_", 1977:2038)
+SPRratio.names = paste0("SPRratio_", 1977:2038)
+Bratio.names = paste0("Bratio_", 1977:2038)
+
+
+SSB = a.out %>% 
+  tidytable::filter(MODEL2 == "OM tuned", Label%in%SSB.names) %>% 
+  tidytable::bind_rows(a.out %>% 
+                         tidytable::filter(MODEL2 == "Fiss tuned", Label%in%SSB.names)) %>% 
+  tidytable::mutate(Year = as.numeric(substr(Label, 5, 8)))
+SPRratio = a.out %>% 
+  tidytable::filter(MODEL2 == "OM tuned", Label%in%SPRratio.names) %>% 
+  tidytable::bind_rows(a.out %>% 
+                         tidytable::filter(MODEL2 == "Fiss tuned", Label%in%SPRratio.names)) %>% 
+  tidytable::mutate(Year = as.numeric(substr(Label, 10, 13)))
+Bratio = a.out %>% 
+  tidytable::filter(MODEL2 == "OM tuned", Label%in%Bratio.names) %>% 
+  tidytable::bind_rows(a.out %>% 
+                         tidytable::filter(MODEL2 == "Fiss tuned", Label%in%Bratio.names)) %>% 
+  tidytable::mutate(Year = as.numeric(substr(Label, 8, 11)))
+
+
+
+
+SSB %>% 
+  tidytable::rename(Model_run = MODEL2) %>% 
+  ggplot(aes(x = Year, y = Value, ymin = LO, ymax = HI, fill = Model_run, linetype = Model_run)) +
+  geom_line() +
+  geom_ribbon(alpha = 0.5) +
+  xlab("Year") + 
+  ylab("SSB") +
+  theme_classic() +
+  theme(legend.position = c(0.5, 0.85), 
+        legend.direction = "vertical", 
+        legend.box = "vertical") +
+  geom_vline(xintercept = 2023, linetype = "dashed", color = "black") +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=14,face="bold"))
+
+
+
+SPRratio %>% 
+  ggplot(aes(x = Year, y = Value, ymin = LO, ymax = HI, fill = MODEL2, linetype = MODEL2)) +
+  geom_line() +
+  geom_ribbon(alpha = 0.5) +
+  xlab("Year") + 
+  ylab("SPRratio") +
+  theme_classic() +
+  theme(legend.position = c(0.5, 0.3), 
+        legend.direction = "vertical", 
+        legend.box = "vertical") +
+  geom_vline(xintercept = 2023, linetype = "dashed", color = "black")
+Bratio %>% 
+  ggplot(aes(x = Year, y = Value, ymin = LO, ymax = HI, fill = MODEL2, linetype = MODEL2)) +
+  geom_line() +
+  geom_ribbon(alpha = 0.5) +
+  xlab("Year") + 
+  ylab("Bratio") +
+  theme_classic() +
+  theme(legend.position = c(0.5, 0.85), 
+        legend.direction = "vertical", 
+        legend.box = "vertical") +
+  geom_vline(xintercept = 2023, linetype = "dashed", color = "black")
+
+
+
+
+
+
+
+
+# Tables of parameters
+
+p.out %>% 
+  tidytable::filter(Label%in%c("VonBert_K_Fem_GP_1", "L_at_Amax_Fem_GP_1", "SR_LN(R0)"),
+                    MODEL2%in%c("OM tuned", "Fiss tuned")) %>% 
+  tidytable::mutate(StdDev = Parm_StDev) %>% 
+  tidytable::select(-Parm_StDev) %>% 
+  tidytable::bind_rows(a.out %>% 
+                         tidytable::filter(Label%in%c("SSB_2023", "SSB_2038", "Bratio_2023", "Bratio_2038", "SPRratio_2023", "SPRratio_2038"),
+                                           MODEL2%in%c("OM tuned", "Fiss tuned"))) %>% 
+  tidytable::select(-X, -MODEL, -HI, -LO) -> p.table
+
+
+require(xtable)
+age <- sample(c('30-50', '50-70', '70+'), 200, replace=T)
+sex <- sample(c('Male', 'Female'), 200, replace=T)
+val <- table(age, sex)
+val <- rbind(val, formatC(prop.table(val)*100, format='f', digits=1))
+val <- structure(val, dim=c(3, 4))
+val <- rbind(c('n', '%'), val)
+rownames(val) <- c('', sort(unique(age)))
+val <- xtable(val)
+
+
+addtorow <- list()
+addtorow$pos <- list(0)
+addtorow$command <- paste0(paste0('& \\multicolumn{2}{c}{', sort(unique(sex)), '}', collapse=''), '\\\\')
+
+print(val, add.to.row=addtorow, include.colnames=F)
+
+```
 
 
 

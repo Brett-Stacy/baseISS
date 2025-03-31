@@ -1,0 +1,1253 @@
+---
+title: "Paper Plots V5"
+author: "Brett Stacy"
+output: pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, warning = F, message = F, results = "hide", fig.width = 8.5, fig.height = 5, dpi = 600)
+library(tidytable)
+library(data.table)
+library(reshape2)
+library(ggplot2)
+library(knitr)
+library(stringr)
+library(patchwork)
+library(viridis)
+library(ggpattern)
+opts_knit$set(eval.after = "fig.cap")
+options(scipen = 5)
+```
+
+
+# Introduction
+Plots for paper:
+
+
+
+## Data
+```{r}
+
+
+out_1.4.old = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_1.4_ISS_1000iters_output_2025-01-23.RDS")
+
+
+out_1.5 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_1.5_ISS_1000iters_output_2025-03-24.RDS")
+
+# out_3.2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_3.2_ISS_500iters_output_2025-03-07.RDS") ### mislabeled
+
+out_5.2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_41.1_ISS_500iters_output_2025-03-24.RDS")
+
+out_9.2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_42.1_ISS_500iters_output_2025-03-24.RDS")
+
+out_4.2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_43.1_ISS_500iters_output_2025-03-24.RDS")
+# 
+# out_31.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_31.1.TAS_ISS_500_iters_2025-03-02.RDS")
+# 
+# out_39.5 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_39.5_ISS_500_iters_2025-03-21.RDS")
+# 
+
+out_37.2 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_37.2_ISS_500iters_output_2025-03-26.RDS")
+out_37.3 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_37.3_ISS_500iters_output_2025-03-26.RDS")
+
+# save out_1.5 for Steve to plug into the assessment
+out_1.5$length$iss %>% 
+  select(YEAR, iss) %>% 
+  write.csv(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Fishery ISS Paper/issb_v1_from_Brett_Stacy.csv", row.names = F)
+
+
+assessment_2023_iss = tidytable(year = 1977:2023,
+                                iss = c(27,
+                                45,
+                                54,
+                                54,
+                                63,
+                                31,
+                                117,
+                                140,
+                                211,
+                                216,
+                                396,
+                                401,
+                                185,
+                                189,
+                                1565,
+                                1543,
+                                913,
+                                1435,
+                                1561,
+                                2020,
+                                2142,
+                                2046,
+                                2722,
+                                2960,
+                                3140,
+                                3446,
+                                4301,
+                                3608,
+                                3455,
+                                2694,
+                                2115,
+                                2502,
+                                2218,
+                                1975,
+                                2596,
+                                2776,
+                                3293,
+                                3604,
+                                3324,
+                                2821,
+                                2469,
+                                1899,
+                                1367,
+                                1048,
+                                859,
+                                1160,
+                                706))
+
+
+
+
+# survey vs observer length measurements
+obs_numbers = tidytable(year = 1982:2023,
+                        survey = c(10863,
+                        13143,
+                        12133,
+                        17150,
+                        15872,
+                        9483,
+                        6950,
+                        4246,
+                        5428,
+                        7069,
+                        10129,
+                        10500,
+                        12931,
+                        9820,
+                        9348,
+                        9591,
+                        9574,
+                        11183,
+                        12170,
+                        19078,
+                        12365,
+                        11835,
+                        10986,
+                        11753,
+                        12530,
+                        13441,
+                        15328,
+                        23737,
+                        21223,
+                        25150,
+                        30177,
+                        19902,
+                        29204,
+                        19880,
+                        19507,
+                        15020,
+                        8806,
+                        23408,
+                        0,
+                        17397,
+                        16677,
+                        19943),
+                        fishery = c(9658,
+                                    33200,
+                                    45635,
+                                    66940,
+                                    58257,
+                                    129226,
+                                    111065,
+                                    58625,
+                                    39698,
+                                    347227,
+                                    344923,
+                                    248967,
+                                    359147,
+                                    344794,
+                                    445217,
+                                    474908,
+                                    438746,
+                                    186233,
+                                    199708,
+                                    210419,
+                                    230802,
+                                    288854,
+                                    237487,
+                                    228664,
+                                    179782,
+                                    140663,
+                                    164860,
+                                    147875,
+                                    131514,
+                                    172269,
+                                    192273,
+                                    211962,
+                                    234476,
+                                    213888,
+                                    182980,
+                                    157482,
+                                    124004,
+                                    86800,
+                                    65301,
+                                    55858,
+                                    73025,
+                                    42942))
+
+
+obs_numbers %>% 
+  tidytable::summarise(sum(survey), sum(fishery))
+
+obs_numbers %>% 
+  tidytable::summarise(mean(survey), mean(fishery))
+
+
+
+
+```
+
+
+## ISSB Results 
+### * Time series 2 panel 
+
+```{r, fig.height=6}
+df = data.frame(rss = out_1.5$length$rss$rss, year = as.factor(out_1.5$length$rss$YEAR))
+
+
+
+# par(mfrow = c(4,1), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
+# par(mfrow = c(3,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
+par(mfrow = c(2,1), mar = c(0,3.1,0,0), oma = c(3, 0, 2, .5), mgp = c(2, .6, 0))
+plot(out_1.5$length$iss$YEAR, out_1.5$length$iss$iss, type = "o", pch = 19, ylab = "ISS", xaxt = "n", ylim = c(0, 15000), cex.lab = 1.3) 
+lines(assessment_2023_iss$year, assessment_2023_iss$iss, col = "blue", type = "o", pch = 3)
+lines(out_1.5$length$iss$YEAR, out_1.5$length$iss$nhls, col = "orange", type = "o", pch = 5)
+legend(1977, 11000, lty = c(1,1,1), col = c("black", "blue", "orange"), pch = c(19, 3, 5), legend = c("ISSB", "ISSA", "number of hauls"), bty = "n")
+text(1977, 14000, "A")
+
+
+
+plot(out_1.5$length$iss$YEAR, out_1.5$length$iss$nss, type = "l", ylab = "Nominal Sample Size", xlab = "Year", cex.lab = 1.3) 
+text(1977, 420000, "B")
+mtext("Year", side = 1, line = 2, cex = 1.5)
+
+
+
+
+# compare with and without SS
+par(mfrow = c(1,1))
+plot(out_1.5$length$iss$YEAR, out_1.5$length$iss$iss, type = "o", pch = 19, ylab = "ISSB", ylim = c(0, 15000), cex.lab = 1.3) 
+lines(out_1.4.old$length$iss$YEAR, out_1.4.old$length$iss$iss, col = "blue", type = "o", pch = 5)
+legend(1977, 11000, lty = c(1,1), col = c("black", "blue"), pch = c(19, 5), legend = c("Not including sampling strata weighting", "Including sampling strata weighting"), bty = "n")
+
+
+
+
+
+# averages
+out_1.5$length$iss$iss %>% mean()
+assessment_2023_iss$iss %>% mean()
+
+
+```
+
+
+
+
+
+
+### * Time seris components
+
+\newpage
+
+```{r, fig.height=5.5}
+sub_range = out_5.2$length$iss$YEAR %in% 1977:2023
+
+par(mfrow = c(1,1))
+plot(out_5.2$length$iss$YEAR[sub_range], out_5.2$length$iss$iss[sub_range], ylab = "ISSB", cex.lab = 1.3, col = "cyan", ylim = c(0, 25000), xlab = "Year", lwd = 2, type = "o", pch= 18)
+lines(out_9.2$length$iss$YEAR[sub_range], out_9.2$length$iss$iss[sub_range], type = "o", pch = 15, col = "orange3", lwd = 2)
+lines(out_4.2$length$iss$YEAR[sub_range], out_4.2$length$iss$iss[sub_range], type = "o", pch = 17, col = "magenta", lwd = 2)
+lines(out_1.5$length$iss$YEAR[sub_range], out_1.5$length$iss$iss[sub_range], type = "o", pch = 19, col = "black", lwd = 2, lty = 1)
+
+
+
+# legend("topleft", title = "Component Case", legend = c("1", "2", "3", "4", "full"), lty = c(1,1,1,1,1), col = c("black", "blue", "orange", "green", "red"), bty = "n")
+legend("topleft", title = "Component Case", legend = c("1", "2", "3", "full"), lty = c(1,1,1,1), pch = c(18, 15, 17, 19), col = c("cyan", "orange3", "magenta", "black"), bty = "n", lwd = rep(2, 4))
+
+
+
+
+# not accounting for correlations exceed hauls?
+sum((out_5.2$length$iss$iss[sub_range]-out_1.5$length$iss$nhls) < 0)
+
+
+```
+
+\newpage
+
+
+#### * TOGETHER
+
+\newpage
+
+```{r, fig.height=8}
+df = data.frame(rss = out_1.5$length$rss$rss, year = as.factor(out_1.5$length$rss$YEAR))
+
+
+
+# par(mfrow = c(4,1), mar = c(0,0,0,0), oma = c(2, 4, 2, .5), mgp = c(2, .6, 0))
+# par(mfrow = c(3,1), mar = c(1.5, 3.1, 0, .5), mgp = c(2, .6, 0))
+par(mfrow = c(3,1), mar = c(0,3.1,0,0), oma = c(3, 0, 2, .5), mgp = c(2, .6, 0))
+plot(out_1.5$length$iss$YEAR, out_1.5$length$iss$iss, type = "o", pch = 19, ylab = "ISS", xaxt = "n", ylim = c(0, 15000), cex.lab = 1.5, cex.axis = 1.3)
+lines(assessment_2023_iss$year, assessment_2023_iss$iss, col = "blue", type = "o", pch = 3)
+lines(out_1.5$length$iss$YEAR, out_1.5$length$iss$nhls, col = "orange", type = "o", 5)
+legend(1977, 11000, lty = c(1,1,1), col = c("black", "blue", "orange"), pch = c(19, 3, 5), legend = c("ISSB", "ISSA", "number of hauls"), bty = "n", cex = 1.5)
+text(1977, 14000, "A", cex = 1.5)
+
+
+
+plot(out_1.5$length$iss$YEAR, out_1.5$length$iss$nss, type = "l", ylab = "Nominal Sample Size", xaxt = "n", cex.lab = 1.5, cex.axis = 1.3)
+text(1977, 420000, "B", cex = 1.5)
+
+
+plot(out_5.2$length$iss$YEAR[sub_range], out_5.2$length$iss$iss[sub_range], ylab = "ISSB", cex.lab = 1.5, col = "cyan", ylim = c(0, 27000), xlab = "", xaxt = "n", lwd = 1.5, type = "o", pch= 18, cex.axis = 1.3)
+axis(side = 1, at = seq(1980, 2020, by = 5), cex.axis = 1.3)
+lines(out_9.2$length$iss$YEAR[sub_range], out_9.2$length$iss$iss[sub_range], type = "o", pch = 15, col = "orange3", lwd = 1.5)
+lines(out_4.2$length$iss$YEAR[sub_range], out_4.2$length$iss$iss[sub_range], type = "o", pch = 17, col = "magenta", lwd = 1.5)
+lines(out_1.5$length$iss$YEAR[sub_range], out_1.5$length$iss$iss[sub_range], type = "o", pch = 19, col = "black", lwd = 1.5, lty = 1)
+legend(1977, 20000, title = "Scenario", legend = c("1", "2", "3", "Full"), lty = c(1,1,1,1), pch = c(18, 15, 17, 19), col = c("cyan", "orange3", "magenta", "black"), bty = "n", lwd = rep(1.5, 4), cex = 1.5)
+text(1977, 23000, "C", cex = 1.5)
+
+
+# mtext("Year", side = 1, line = 2, cex = 1.3)
+
+
+
+
+```
+
+
+
+\newpage
+
+
+
+
+
+
+# * 2003 & 2004 Histograms
+
+
+\newpage
+
+
+```{r, fig.height=10}
+out_1.5$length$og_props %>% 
+  tidytable::filter(YEAR %in% 2003:2004) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p1 = ggplot(data = props.sub, aes(x = LENGTH, y = og_FREQ, colour = Year)) +
+  geom_line() +
+  geom_area(aes(fill = Year, group = Year), alpha = 0.5, position = "identity") +
+  # geom_area_pattern(aes(pattern = Year, y = og_FREQ, x = LENGTH), alpha = 0.5, position = "identity") +
+  theme_classic() +
+  scale_x_continuous(limits = c(22, 108),
+                     n.breaks = 9) +
+  labs(x = "Length (cm)", y = "Frequency", tag = "A") +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  scale_y_continuous(limits = c(0, .04), expand = c(0, 0)) +
+  scale_color_viridis_d() +
+  scale_fill_viridis_d()
+
+
+
+# now do RSS
+out_1.5$length$rss %>% 
+  tidytable::filter(YEAR %in% 2003:2004) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "E") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_1.5$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(6,6)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 75), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))+
+  scale_color_viridis_d() +
+  scale_fill_viridis_d()
+
+
+
+
+
+
+# now do RSS with boot_length only.
+out_5.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 2003:2004) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.2 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "B") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_5.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 110), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))+
+  scale_color_viridis_d() +
+  scale_fill_viridis_d()
+
+
+
+
+# now do RSS with boot_length and boot_haul.
+out_9.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 2003:2004) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.3 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "C") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_9.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(6,6)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 75), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))+
+  scale_color_viridis_d() +
+  scale_fill_viridis_d()
+
+
+
+
+# now do RSS with boot all.
+out_4.2$length$rss %>% 
+  tidytable::filter(YEAR %in% 2003:2004) %>% 
+  tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+
+p3.4 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+  geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.8),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  labs(x = "RSS", y = "Count", tag = "D") + 
+  geom_point(data = props.sub %>% 
+               tidytable::left_join(out_4.2$length$iss %>% 
+                                      tidytable::select(YEAR, iss)) %>% 
+               tidytable::summarise(x = unique(iss), .by = Year) %>% 
+               # tidytable::summarise(x = median(rss), .by = Year) %>% 
+               tidytable::mutate(y = c(2,2)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+  scale_y_continuous(limits = c(0, 30), expand = c(0, 0)) +
+  # scale_x_continuous(n.breaks = 8)
+  scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+                     labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+                     limits = c(0, 35000),
+                     expand = c(0, 0))+
+  scale_color_viridis_d() +
+  scale_fill_viridis_d()
+
+
+
+
+# # now do RSS with boot all + SS
+# out_2.2$length$rss %>% 
+#   tidytable::filter(YEAR %in% 2003:2004) %>% 
+#   tidytable::mutate(Year = as.factor(YEAR)) -> props.sub
+# 
+# p3.5 = ggplot(data = props.sub, aes(x = rss, colour = Year)) +
+#   geom_histogram(aes(fill = Year, group = Year), alpha = 0.5, position = "identity", binwidth = 200) +
+#   theme_classic() +
+#   theme(legend.position = c(0.8, 0.8),
+#         plot.tag.position = c(0.1, 0.95),
+#         plot.tag = element_text(size = 14, face = "bold")) +
+#   labs(x = "RSS", y = "Count", tag = "E") + 
+#   geom_point(data = props.sub %>% 
+#                tidytable::left_join(out_2.2$length$iss %>% 
+#                                       tidytable::select(YEAR, iss)) %>% 
+#                tidytable::summarise(x = unique(iss), .by = Year) %>% 
+#                # tidytable::summarise(x = median(rss), .by = Year) %>% 
+#                tidytable::mutate(y = c(9,9)), aes(x,y, fill = Year), shape = 25, size = 4, color = "black") +
+#   scale_y_continuous(limits = c(0, 30), expand = c(0, 0)) +
+#   # scale_x_continuous(n.breaks = 8)
+#   scale_x_continuous(breaks = seq(0, 35000, by = 2500),
+#                      labels = c(0, "", 5000, "", 10000, "", 15000, "", 20000, "", 25000, "", 30000, "", 35000),
+#                      limits = c(0, 35000),
+#                      expand = c(0, 0))
+# 
+# 
+
+# 
+# p1 / p3
+# p1 / p3 / p3.2
+
+p1 / p3.2 / p3.3 / p3.4 / p3
+
+
+```
+
+The comparison shows that fish in 2003 were less similar in length compared to 2004. 2003 corresponds to a higher ISS even though the sample rate was the same and the number of hauls and nominal sample size were comparable. More of the fish sampled in 2003 were required for characterizing the underlying multinomial sampling distribution compared to 2004 because more lengths were represented at a higher rate in 2003 (shorter, wider distribution). This is reflected in the RSS (ref figure).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# * Time series Expansion NEW
+```{r, fig.width=9, fig.height=5}
+out_2.1.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_44.1_ISS_500_iters_2025-03-25.RDS")
+
+
+
+year = out_2.1.1$expansion_NULL$length$iss$YEAR
+
+
+
+
+df = tidytable(year = year,
+               none = out_2.1.1$expansion_NULL$length$iss$iss,
+               medium = out_2.1.1$expansion_haul_numbers$length$iss$iss,
+               full = out_2.1.1$expansion_haul_month_numbers$length$iss$iss) 
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+# 
+# # all years
+# ggplot(data = df2, aes(x = year, y = ISS, group = scenario, colour = scenario)) +
+#   geom_line() +
+#   labs(x = "", y = "ISSB") +
+#   geom_point() + 
+#   theme_classic() +
+#   theme(legend.position = c(0.84, 0.8),
+#         axis.title.x = element_blank())
+
+
+
+# 1999:2023
+df2 %>% 
+  filter(year%in%1999:2023) %>% 
+ggplot(aes(x = year, y = ISS, group = scenario, colour = scenario)) +
+  geom_line() +
+  geom_point() +
+  scale_shape_manual(values = c(1,2,3)) +
+  labs(x = "Year", y = "ISSB", color = "Expansion Complexity") +
+  scale_color_manual(labels = c("None", "Medium: haul only", "Full: haul, area, gear, month"), values = c("blue", "red", "black")) +
+  geom_point() + 
+  theme_classic() + 
+  theme(legend.position = c(0.7, 0.9),
+        axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14))
+```
+
+
+
+
+
+
+\newpage
+
+
+
+
+# * Reduce Samples
+
+
+```{r}
+# out_31.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_31.1.TAS_ISS_500_iters_2025-03-02.RDS")
+out_31.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_47.1_ISS_500_iters_2025-03-30.RDS")
+
+year = out_31.1$samples_1$data_H_P$length$iss$YEAR
+
+
+### H_P ###################
+df = tidytable(year = year,
+               N1_HP = out_31.1$samples_1$data_H_P$length$iss$iss,
+               N5_HP = out_31.1$samples_5$data_H_P$length$iss$iss,
+               N10_HP = out_31.1$samples_10$data_H_P$length$iss$iss,
+               N15_HP = out_31.1$samples_15$data_H_P$length$iss$iss,
+               N20_HP = out_31.1$samples_20$data_H_P$length$iss$iss,
+               
+               NN_HP = out_1.5$length$iss$iss[out_1.5$length$iss$YEAR%in%1999:2023])
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+scenario_names = c("N1_HP", "N5_HP", "N10_HP", "N15_HP", "N20_HP", "NN_HP")
+
+
+## 1
+df2 %>% 
+  tidytable::mutate(ISS.error = 100*(ISS - df2$ISS[df2$scenario=="N20_HP"])/df2$ISS[df2$scenario=="N20_HP"],
+                    type = "relative_20",
+                    .by = scenario) -> df3.1
+## 2
+df2 %>% 
+  tidytable::mutate(ISS.error = 100*(ISS - df2$ISS[df2$scenario=="NN_HP"])/df2$ISS[df2$scenario=="NN_HP"],
+                    type = "relative_N",
+                    .by = scenario) -> df3.2
+
+
+df3.1 %>% 
+  tidytable::bind_rows(df3.2) %>%
+  tidytable::filter(scenario!="NN_HP") %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 2, end = -4)) %>%
+  tidytable::mutate(scenario = forcats::fct_inorder(scenario)) -> df4
+df4 -> df4.a
+
+
+
+
+### H ###################
+df = tidytable(year = year,
+               N1_H = out_31.1$samples_1$data_H$length$iss$iss,
+               N5_H = out_31.1$samples_5$data_H$length$iss$iss,
+               N10_H = out_31.1$samples_10$data_H$length$iss$iss,
+               N15_H = out_31.1$samples_15$data_H$length$iss$iss,
+               N20_H = out_31.1$samples_20$data_H$length$iss$iss,
+               
+               NN_H = out_1.5$length$iss$iss[out_1.5$length$iss$YEAR%in%1999:2023])
+
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+scenario_names = c("N1_H", "N5_H", "N10_H", "N15_H", "N20_H", "NN_H")
+
+
+## 1
+df2 %>% 
+  tidytable::mutate(ISS.error = 100*(ISS - df2$ISS[df2$scenario=="N20_H"])/df2$ISS[df2$scenario=="N20_H"],
+                    type = "relative_20",
+                    .by = scenario) -> df3.1
+## 2
+df2 %>% 
+  tidytable::mutate(ISS.error = 100*(ISS - df2$ISS[df2$scenario=="NN_H"])/df2$ISS[df2$scenario=="NN_H"],
+                    type = "relative_N",
+                    .by = scenario) -> df3.2
+
+
+df3.1 %>% 
+  tidytable::bind_rows(df3.2) %>%
+  tidytable::filter(scenario!="NN_H") %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 2, end = -3)) %>%
+  tidytable::mutate(scenario = forcats::fct_inorder(scenario)) -> df4
+df4 -> df4.b
+
+
+
+
+
+
+```
+
+\newpage
+
+```{r, fig.height=7}
+### plots
+
+p1 = df4.a %>%
+  ggplot(aes(x = scenario, y = ISS.error)) +
+  geom_boxplot(aes(fill = type)) +
+  labs(x = "", y = "ISSB % Difference", tag = "A") +
+  theme_classic() +
+  theme(legend.position = c(0.7, 0.15), 
+        legend.direction = "horizontal", 
+        legend.box = "horizontal",
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) + 
+  guides(fill = guide_legend(title = "haul and port data",
+                             title.position = "top", 
+                             title.hjust = 0.5,
+                             label.position = "bottom"))  +
+  geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "solid", color = "black") +
+  # geom_hline(yintercept = 10, linetype = "dashed", color = "black") +
+  scale_y_continuous(breaks = seq(-100, 120, by = 10), limits = c(-80, 10))
+
+
+## for presentation
+p.p = df4.a %>%
+  filter(type=="relative_N") %>% 
+  ggplot(aes(x = scenario, y = ISS.error)) +
+  geom_boxplot(aes(fill = type)) +
+  labs(x = "Adjusted Samples Per Haul", y = "ISSB % Difference", tag = "") +
+  theme_classic() +
+  theme(legend.position = c(3, 0.15),
+        axis.title = element_text(size = 14),
+        axis.text = element_text(size = 12),
+        legend.text = element_text(size = 12),
+        legend.title = element_text(size = 14)) + 
+  guides(fill = guide_legend(title = "relative to baseline")) +
+  geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "solid", color = "black") +
+  # geom_hline(yintercept = 10, linetype = "dashed", color = "black") +
+  scale_y_continuous(breaks = seq(-100, 120, by = 10), limits = c(-80, 10))
+
+
+p2 = df4.b %>%
+  ggplot(aes(x = scenario, y = ISS.error)) +
+  geom_boxplot(aes(fill = type)) +
+  labs(x = "Samples per Haul", y = "ISSB % Difference", tag = "B") +
+  theme_classic() +
+  theme(legend.position = c(0.7, 0.15), 
+        legend.direction = "horizontal", 
+        legend.box = "horizontal",
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) + 
+  guides(fill = guide_legend(title = "haul only data",
+                             title.position = "top", 
+                             title.hjust = 0.5,
+                             label.position = "bottom"))  +
+  geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "solid", color = "black") +
+  # geom_hline(yintercept = 10, linetype = "dashed", color = "black") +
+  scale_y_continuous(breaks = seq(-100, 120, by = 10), limits = c(-80, 10))
+
+
+
+
+p1 + plot_spacer() + p2 + plot_layout(ncol = 1,
+                           heights = c(6, -.5, 6))
+
+
+
+
+
+```
+
+\newpage
+
+for above. "the median percent difference in ISSB increased with increasing sample size using the full data set (A) and only the haul data (B) over the period 1999-2023. There was no appreciable change in the percent difference when only using the haul data. There was also very little difference comparing the percent difference relative to the baseline ISSB or relative to applying the sample reduction routine at a sampling rate of 20. This verifies that the results are comparable for the following scenarios: comparisons to the baseline or comparisons to just using hauls with a sampling rate that never exceeds 20. The most conservative scenario is assuming a future sampling where high sampling rates from port samples are not available and the haul sampling rate is allowed to be below 20 but not exceed it. Comparisons relative to this scenario are the most relevant, conservative, scenario available to evaluate the impact of reducing observer haul sampling rate on composition data precision for future years. If the sampling rate behavior continues on average at least as good as it has done for the period 1999:2023 (which it is scheduled to do), we can expect the loss of precision not to exceed these values. (Assuming fishing trip and haul characteristics are comparable on average, also likely expected). 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+
+
+
+
+# * Samples VS Expantion. intra-relative
+
+Make sure to say in the paper: Methods: Unlike changing the number of hauls or trips (static quality of the data), the stock assessor has discression over changing the expansion method. IF they change it, they will change it for past and present data, not change it based on blocks of time or something like that. SO, these scenarios demonstrate what we can expect to see in near future years IF we decrease the sample size, ASSUMING the expansion complexity will change. For example, IF the expansion complexity will change, what will be the expected loss of precision if we reduce the sample size from 20 to 10. REMEMBER, these scenarios are relative to the N=20 case for each expansion complexity case. 
+
+
+```{r, fig.width=8}
+
+out_22.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_38.2_ISS_500_iters_2025-03-20.RDS")
+
+year = out_22.1$samples_1$expansion_NULL$length$iss$YEAR
+
+
+df = tidytable(year = year,
+               N1_Enone = out_22.1$samples_1$expansion_NULL$length$iss$iss,
+               N5_Enone = out_22.1$samples_5$expansion_NULL$length$iss$iss,
+               N10_Enone = out_22.1$samples_10$expansion_NULL$length$iss$iss,
+               N15_Enone = out_22.1$samples_15$expansion_NULL$length$iss$iss,
+               N20_Enone = out_22.1$samples_20$expansion_NULL$length$iss$iss,
+               N1_Emedium = out_22.1$samples_1$expansion_haul_numbers$length$iss$iss,
+               N5_Emedium = out_22.1$samples_5$expansion_haul_numbers$length$iss$iss,
+               N10_Emedium = out_22.1$samples_10$expansion_haul_numbers$length$iss$iss,
+               N15_Emedium = out_22.1$samples_15$expansion_haul_numbers$length$iss$iss,
+               N20_Emedium = out_22.1$samples_20$expansion_haul_numbers$length$iss$iss,
+               N1_Efull = out_22.1$samples_1$expansion_haul_month_numbers$length$iss$iss,
+               N5_Efull = out_22.1$samples_5$expansion_haul_month_numbers$length$iss$iss,
+               N10_Efull = out_22.1$samples_10$expansion_haul_month_numbers$length$iss$iss,
+               N15_Efull = out_22.1$samples_15$expansion_haul_month_numbers$length$iss$iss,
+               N20_Efull = out_22.1$samples_20$expansion_haul_month_numbers$length$iss$iss) 
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+df2[grep("Enone", scenario)] %>% 
+  tidytable::mutate(ISS.error = (ISS - df2$ISS[df2$scenario=="N20_Enone"])/df2$ISS[df2$scenario=="N20_Enone"],
+                    type = "Enone",
+                    .by = scenario) %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 1, end = -7)) -> df3.1
+
+df2[grep("Emedium", scenario)] %>% 
+  tidytable::mutate(ISS.error = (ISS - df2$ISS[df2$scenario=="N20_Emedium"])/df2$ISS[df2$scenario=="N20_Emedium"],
+                    type = "Emedium",
+                    .by = scenario) %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 1, end = -9)) -> df3.2
+
+df2[grep("Efull", scenario)] %>% 
+  tidytable::mutate(ISS.error = (ISS - df2$ISS[df2$scenario=="N20_Efull"])/df2$ISS[df2$scenario=="N20_Efull"],
+                    type = "Efull",
+                    .by = scenario) %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 1, end = -7)) -> df3.3
+
+df3.1 %>% 
+  tidytable::bind_rows(df3.2) %>% 
+  tidytable::bind_rows(df3.3) %>% 
+  tidytable::mutate(scenario = forcats::fct_inorder(scenario)) -> df4
+df4 -> df4.0
+
+
+df4 %>% 
+  ggplot(aes(x = scenario, y = ISS.error*100)) +
+  geom_boxplot(aes(fill = type)) +
+  labs(x = "Samples per Haul", y = "ISSB % Difference") +
+  theme_classic() +
+  theme(legend.position = c(0.5, 0.2)) +
+  geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "solid", color = "black") +
+  scale_y_continuous(breaks = seq(-100, 120, by = 10)) +
+  scale_x_discrete(labels = c("1", "5", "10", "15", "20")) +
+  scale_color_viridis_d() +
+  scale_fill_viridis_d()
+
+
+# Stats
+df4 %>% filter(type=="trip", scenario=="N_0.25") %>% pull(ISS.error) %>% median
+df4 %>% filter(type=="trip", scenario=="N_2.00") %>% pull(ISS.error) %>% median
+df4 %>% filter(type=="haul", scenario=="N_0.25") %>% pull(ISS.error) %>% median
+df4 %>% filter(type=="haul", scenario=="N_2.00") %>% pull(ISS.error) %>% median
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+# * Haul and TRIP Decrease w/o replacement
+```{r}
+out_29.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_45.1_ISS_500_iters_2025-03-26.RDS")
+out_48.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_48.1_ISS_500_iters_2025-03-27.RDS")
+relative.trip = out_48.1$proportion_1$type_trip$length$iss$iss
+relative.haul = out_48.1$proportion_1$type_haul$length$iss$iss
+
+
+year = out_29.1$proportion_0.1$type_trip$length$iss$YEAR
+
+
+# Trip
+df = tidytable(year = year,
+               N_0.1 = out_29.1$proportion_0.1$type_trip$length$iss$iss,
+               N_0.2 = out_29.1$proportion_0.2$type_trip$length$iss$iss,
+               N_0.3 = out_29.1$proportion_0.3$type_trip$length$iss$iss,
+               N_0.4 = out_29.1$proportion_0.4$type_trip$length$iss$iss,
+               N_0.5 = out_29.1$proportion_0.5$type_trip$length$iss$iss,
+               N_0.6 = out_29.1$proportion_0.6$type_trip$length$iss$iss,
+               N_0.7 = out_29.1$proportion_0.7$type_trip$length$iss$iss,
+               N_0.8 = out_29.1$proportion_0.8$type_trip$length$iss$iss,
+               N_0.9 = out_29.1$proportion_0.9$type_trip$length$iss$iss)
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+# 
+# df2 %>% 
+#   tidytable::mutate(ISS.error = (ISS - out_1.5$length$iss$iss)/out_1.5$length$iss$iss,
+#                     type = "trip",
+#                     .by = scenario) -> df3.1
+df2 %>% 
+  tidytable::mutate(ISS.error = (ISS - relative.trip)/relative.trip,
+                    type = "trip",
+                    .by = scenario) -> df3.1
+
+# Haul
+df = tidytable(year = year,
+               N_0.1 = out_29.1$proportion_0.1$type_haul$length$iss$iss,
+               N_0.2 = out_29.1$proportion_0.2$type_haul$length$iss$iss,
+               N_0.3 = out_29.1$proportion_0.3$type_haul$length$iss$iss,
+               N_0.4 = out_29.1$proportion_0.4$type_haul$length$iss$iss,
+               N_0.5 = out_29.1$proportion_0.5$type_haul$length$iss$iss,
+               N_0.6 = out_29.1$proportion_0.6$type_haul$length$iss$iss,
+               N_0.7 = out_29.1$proportion_0.7$type_haul$length$iss$iss,
+               N_0.8 = out_29.1$proportion_0.8$type_haul$length$iss$iss,
+               N_0.9 = out_29.1$proportion_0.9$type_haul$length$iss$iss)
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+# 
+# df2 %>% 
+#   tidytable::mutate(ISS.error = (ISS - out_1.5$length$iss$iss)/out_1.5$length$iss$iss,
+#                     type = "haul",
+#                     .by = scenario) -> df3.2
+df2 %>% 
+  tidytable::mutate(ISS.error = (ISS - relative.haul)/relative.haul,
+                    type = "haul",
+                    .by = scenario) -> df3.2
+
+df3.1 %>% 
+  tidytable::bind_rows(df3.2) -> df4
+
+
+df4 %>% 
+  ggplot(aes(x = scenario, y = ISS.error*100)) +
+  geom_boxplot(aes(fill = type)) +
+  labs(x = "Proportional Change", y = "ISSB % Difference") +
+  theme_classic() +
+  theme(legend.position = c(0.8, 0.2)) +
+  geom_hline(yintercept = 0, linetype = "solid", color = "black") +
+  geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
+  scale_y_continuous(breaks = seq(-100, 20, by = 10), limits = c(-100, 20)) +
+  scale_x_discrete(labels = c("0.1", "0.2", "0.3", "0.4", "0.5", "0.6", "0.7", "0.8", "0.9"))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Samples VS Haul/Trip
+
+### DATA: Samples VS Haul. Replace=TRUE, including 1.0
+```{r, fig.width=8}
+
+out_24.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_40.3_ISS_500_iters_2025-03-25.RDS")
+
+year = out_24.1$samples_1$haul_0.25$length$iss$YEAR
+
+
+df = tidytable(year = year,
+               N1_H0.25 = out_24.1$samples_1$haul_0.25$length$iss$iss,
+               N5_H0.25 = out_24.1$samples_5$haul_0.25$length$iss$iss,
+               N10_H0.25 = out_24.1$samples_10$haul_0.25$length$iss$iss,
+               N15_H0.25 = out_24.1$samples_15$haul_0.25$length$iss$iss,
+               N20_H0.25 = out_24.1$samples_20$haul_0.25$length$iss$iss,
+               N1_H0.5 = out_24.1$samples_1$haul_0.5$length$iss$iss,
+               N5_H0.5 = out_24.1$samples_5$haul_0.5$length$iss$iss,
+               N10_H0.5 = out_24.1$samples_10$haul_0.5$length$iss$iss,
+               N15_H0.5 = out_24.1$samples_15$haul_0.5$length$iss$iss,
+               N20_H0.5 = out_24.1$samples_20$haul_0.5$length$iss$iss,
+               N1_H0.75 = out_24.1$samples_1$haul_0.75$length$iss$iss,
+               N5_H0.75 = out_24.1$samples_5$haul_0.75$length$iss$iss,
+               N10_H0.75 = out_24.1$samples_10$haul_0.75$length$iss$iss,
+               N15_H0.75 = out_24.1$samples_15$haul_0.75$length$iss$iss,
+               N20_H0.75 = out_24.1$samples_20$haul_0.75$length$iss$iss,
+               N1_H1.0 = out_24.1$samples_1$haul_1$length$iss$iss,
+               N5_H1.0 = out_24.1$samples_5$haul_1$length$iss$iss,
+               N10_H1.0 = out_24.1$samples_10$haul_1$length$iss$iss,
+               N15_H1.0 = out_24.1$samples_15$haul_1$length$iss$iss,
+               N20_H1.0 = out_24.1$samples_20$haul_1$length$iss$iss) 
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+df2[grep("H0.25", scenario)] %>% 
+  tidytable::mutate(ISS.error = (ISS - df2$ISS[df2$scenario=="N20_H1.0"])/df2$ISS[df2$scenario=="N20_H1.0"],
+                    type = "0.25",
+                    .by = scenario) %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 1, end = -7)) -> df3.1
+
+df2[grep("H0.5", scenario)] %>% 
+  tidytable::mutate(ISS.error = (ISS - df2$ISS[df2$scenario=="N20_H1.0"])/df2$ISS[df2$scenario=="N20_H1.0"],
+                    type = "0.5",
+                    .by = scenario) %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 1, end = -6)) -> df3.2
+
+df2[grep("H0.75", scenario)] %>% 
+  tidytable::mutate(ISS.error = (ISS - df2$ISS[df2$scenario=="N20_H1.0"])/df2$ISS[df2$scenario=="N20_H1.0"],
+                    type = "0.75",
+                    .by = scenario) %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 1, end = -7)) -> df3.3
+
+df2[grep("H1.0", scenario)] %>% 
+  tidytable::mutate(ISS.error = (ISS - df2$ISS[df2$scenario=="N20_H1.0"])/df2$ISS[df2$scenario=="N20_H1.0"],
+                    type = "1.0",
+                    .by = scenario) %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 1, end = -6)) -> df3.4
+
+
+
+
+
+df3.1 %>% 
+  tidytable::bind_rows(df3.2) %>% 
+  tidytable::bind_rows(df3.3) %>% 
+  tidytable::bind_rows(df3.4) %>% 
+  tidytable::mutate(scenario = forcats::fct_inorder(scenario)) -> df4
+df4 -> df4.1.b
+
+
+
+```
+
+
+
+
+
+### DATA: Samples VS Trip. Replace=TRUE, including 1.0
+```{r, fig.width=8}
+
+out_23.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_39.7_ISS_500_iters_2025-03-25.RDS")
+# out_23.1 = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/outputs/paper_output/paper_scenario_39.8_ISS_500_iters_2025-03-27.RDS")
+
+year = out_23.1$samples_1$trip_0.25$length$iss$YEAR
+
+
+df = tidytable(year = year,
+               N1_T0.25 = out_23.1$samples_1$trip_0.25$length$iss$iss,
+               N5_T0.25 = out_23.1$samples_5$trip_0.25$length$iss$iss,
+               N10_T0.25 = out_23.1$samples_10$trip_0.25$length$iss$iss,
+               N15_T0.25 = out_23.1$samples_15$trip_0.25$length$iss$iss,
+               N20_T0.25 = out_23.1$samples_20$trip_0.25$length$iss$iss,
+               N1_T0.5 = out_23.1$samples_1$trip_0.5$length$iss$iss,
+               N5_T0.5 = out_23.1$samples_5$trip_0.5$length$iss$iss,
+               N10_T0.5 = out_23.1$samples_10$trip_0.5$length$iss$iss,
+               N15_T0.5 = out_23.1$samples_15$trip_0.5$length$iss$iss,
+               N20_T0.5 = out_23.1$samples_20$trip_0.5$length$iss$iss,
+               N1_T0.75 = out_23.1$samples_1$trip_0.75$length$iss$iss,
+               N5_T0.75 = out_23.1$samples_5$trip_0.75$length$iss$iss,
+               N10_T0.75 = out_23.1$samples_10$trip_0.75$length$iss$iss,
+               N15_T0.75 = out_23.1$samples_15$trip_0.75$length$iss$iss,
+               N20_T0.75 = out_23.1$samples_20$trip_0.75$length$iss$iss,
+               N1_T1.0 = out_23.1$samples_1$trip_1$length$iss$iss,
+               N5_T1.0 = out_23.1$samples_5$trip_1$length$iss$iss,
+               N10_T1.0 = out_23.1$samples_10$trip_1$length$iss$iss,
+               N15_T1.0 = out_23.1$samples_15$trip_1$length$iss$iss,
+               N20_T1.0 = out_23.1$samples_20$trip_1$length$iss$iss) 
+
+df2 = melt.data.table(df, id.vars = "year", variable.name = "scenario", value.name = "ISS")
+
+df2[grep("T0.25", scenario)] %>% 
+  tidytable::mutate(ISS.error = (ISS - df2$ISS[df2$scenario=="N20_T1.0"])/df2$ISS[df2$scenario=="N20_T1.0"],
+                    type = "0.25",
+                    .by = scenario) %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 1, end = -7)) -> df3.1
+
+df2[grep("T0.5", scenario)] %>% 
+  tidytable::mutate(ISS.error = (ISS - df2$ISS[df2$scenario=="N20_T1.0"])/df2$ISS[df2$scenario=="N20_T1.0"],
+                    type = "0.5",
+                    .by = scenario) %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 1, end = -6)) -> df3.2
+
+df2[grep("T0.75", scenario)] %>% 
+  tidytable::mutate(ISS.error = (ISS - df2$ISS[df2$scenario=="N20_T1.0"])/df2$ISS[df2$scenario=="N20_T1.0"],
+                    type = "0.75",
+                    .by = scenario) %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 1, end = -7)) -> df3.3
+
+df2[grep("T1.0", scenario)] %>% 
+  tidytable::mutate(ISS.error = (ISS - df2$ISS[df2$scenario=="N20_T1.0"])/df2$ISS[df2$scenario=="N20_T1.0"],
+                    type = "1.0",
+                    .by = scenario) %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 1, end = -6)) -> df3.4
+
+
+
+
+
+df3.1 %>% 
+  tidytable::bind_rows(df3.2) %>% 
+  tidytable::bind_rows(df3.3) %>% 
+  tidytable::bind_rows(df3.4) %>%
+  tidytable::mutate(scenario = forcats::fct_inorder(scenario)) -> df4
+df4 -> df4.1.a
+
+
+
+```
+
+
+
+
+### * 2 Panel: Sample Size VS Trip, Haul
+
+```{r, fig.height=12, fig.width=10}
+p1 = df4.1.a %>%
+  tidytable::mutate(scenario = str_sub(scenario, start = 2, end = -1)) %>%
+  tidytable::mutate(scenario = forcats::fct_inorder(scenario)) %>%
+  ggplot(aes(x = scenario, y = ISS.error*100)) +
+  geom_boxplot(aes(fill = type)) +
+  labs(x = "", y = "ISSB % Difference", tag = "A") +
+  theme_classic() +
+  theme(legend.position = c(0.74, 0.15),
+        legend.direction = "horizontal",
+        legend.box = "horizontal",
+        legend.background = element_rect(fill = "transparent"),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) +
+  guides(fill = guide_legend(title = "Trips",
+                             title.position = "top",
+                             title.hjust = 0.5,
+                             label.position = "bottom"))  +
+  geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "solid", color = "black") +
+  scale_y_continuous(breaks = seq(-100, 120, by = 10), limits = c(-94, 10)) +
+  scale_color_viridis_d() +
+  scale_fill_viridis_d()
+
+
+p2 = df4.1.b %>% 
+  tidytable::mutate(scenario = str_sub(scenario, start = 2, end = -1)) %>% 
+  tidytable::mutate(scenario = forcats::fct_inorder(scenario)) %>% 
+  ggplot(aes(x = scenario, y = ISS.error*100)) +
+  geom_boxplot(aes(fill = type)) +
+  labs(x = "", y = "ISSB % Difference", tag = "B") +
+  theme_classic() +
+  theme(legend.position = c(0.74, 0.15), 
+        legend.direction = "horizontal", 
+        legend.box = "horizontal",
+        legend.background = element_rect(fill = "transparent"),
+        plot.tag.position = c(0.1, 0.95),
+        plot.tag = element_text(size = 14, face = "bold")) + 
+  guides(fill = guide_legend(title = "Hauls",
+                             title.position = "top", 
+                             title.hjust = 0.5,
+                             label.position = "bottom"))  +
+  geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = 0, linetype = "solid", color = "black") +
+  scale_y_continuous(breaks = seq(-100, 120, by = 10), limits = c(-94, 10)) +
+  scale_color_viridis_d() +
+  scale_fill_viridis_d()
+
+# p3 = df4.3.b %>% 
+#   tidytable::mutate(scenario = factor(str_sub(scenario, start = 2, end = -1))) %>% 
+#   tidytable::filter(type %in% scenario_names.short[c(2,4,5,6,7)]) %>%
+#   tidytable::mutate(scenario = forcats::fct_inorder(scenario)) %>% 
+#   ggplot(aes(x = scenario, y = ISS.error*100)) +
+#   geom_boxplot(aes(fill = type)) +
+#   labs(x = "Samples per Haul", y = "ISSB % Difference", tag = "C") +
+#   theme_classic() +
+#   theme(legend.position = c(0.7, 0.15), 
+#         legend.direction = "horizontal", 
+#         legend.box = "horizontal",
+#         plot.tag.position = c(0.1, 0.95),
+#         plot.tag = element_text(size = 14, face = "bold")) + 
+#   guides(fill = guide_legend(title = "Hauls/Trips",
+#                              title.position = "top", 
+#                              title.hjust = 0.5,
+#                              label.position = "bottom"))  +
+#   geom_hline(yintercept = -10, linetype = "dashed", color = "black") +
+#   geom_hline(yintercept = 10, linetype = "dashed", color = "black") +
+#   scale_y_continuous(breaks = seq(-100, 120, by = 10), limits = c(-90, 30))
+
+
+
+p1 + plot_spacer() + p2 + plot_layout(ncol = 1,
+                           heights = c(6, -.5, 6))
+
+
+```
+
+
+
+
+
+
+
+# SCRATCH
+## PLOT BOOT.HAUL AND BOOT.TRIP ONLY SCENARIOS?
+
+
+```{r}
+
+
+
+par(mfrow = c(1,1))
+plot(out_37.2$length$iss$YEAR, out_37.2$length$iss$iss, col = "blue", type = "l")
+lines(out_1.5$length$iss$YEAR, out_1.5$length$iss$iss)
+lines(out_37.3$length$iss$YEAR, out_37.3$length$iss$iss, col = "purple")
+
+
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

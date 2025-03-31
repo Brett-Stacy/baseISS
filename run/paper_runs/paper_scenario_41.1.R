@@ -1,7 +1,7 @@
 
 
 rm(list = ls())
-run_name = "paper_scenario_37.2"
+run_name = "paper_scenario_41.1"
 iterations = 500
 
 lfreq_data = readRDS(file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS_data/inputs/y2_nosex_ebs_pcod_Steve_TRIP_STRATA.RDS")
@@ -27,11 +27,11 @@ fishery_iss(species_code = "202",
             new_length_N = NULL,
             max_length = 150,
             boot.trip = FALSE,
-            boot.haul = TRUE,
-            boot.length = FALSE,
+            boot.haul = FALSE,
+            boot.length = TRUE,
             boot.age = FALSE,
             expand.by.sampling.strata = FALSE,
-            expansion_factors = c("haul_numbers", "month_numbers"),
+            expansion_factors = NULL,
             save_data_frame = FALSE) -> .output
 tictoc::toc()
 .output
