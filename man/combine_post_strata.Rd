@@ -2,7 +2,7 @@
 % Please edit documentation in R/combine_post_strata.R
 \name{combine_post_strata}
 \alias{combine_post_strata}
-\title{Combine post-stratified ISS results}
+\title{Combine post-stratified ISS results. Under Development.}
 \usage{
 combine_post_strata(freq_data, out_stats)
 }

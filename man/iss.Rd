@@ -4,7 +4,7 @@
 \alias{iss}
 \title{Calculate length or age composition input sampled size (iss)}
 \usage{
-iss(rss, freq_data, boot.length)
+iss(rss, freq_data, boot.length, boot.age)
 }
 \arguments{
 \item{rss}{iterated length or age composition realized sample size}
@@ -12,6 +12,8 @@ iss(rss, freq_data, boot.length)
 \item{freq_data}{length or age frequency input dataframe}
 
 \item{boot.length}{Boolean. Resample lengths w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-length}
+
+\item{boot.age}{Boolean. Resample ages w/replacement? (default = FALSE). FALSE to all three boots will return og proportions-at-age}
 }
 \value{
 iss
