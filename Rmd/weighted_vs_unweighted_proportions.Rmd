@@ -113,6 +113,8 @@ df.temp$type[df.temp$type=="Exp"] = "Expanded"
 df.temp %>% 
   tidytable::rename("Composition" = type) -> df.temp
 
+saveRDS(df.temp, file = "C:/Users/bstacy2/OneDrive - UW/UW Postdoc/GitHub Repos/baseISS/Rmd/comp_bimodal_expansion.RDS")
+
 ggplot(data=df.temp, aes(x=bin, y=freq, colour=Composition)) + 
   geom_line() +
   geom_area(aes(fill=Composition, group=Composition), alpha = 0.5, position = "identity") +

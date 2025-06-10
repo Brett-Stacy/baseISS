@@ -869,9 +869,25 @@ p1 + plot_spacer() + p2 + plot_spacer() + p3 + plot_layout(ncol = 1,
 ```
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \newpage
 
 # M
+## ISSA to ISSB single plot
 
 ```{r, fig.height=8}
 profiles = read.csv("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Fishery ISS Paper/from Steve B/Likelihoods_by_fleet.csv")
@@ -902,6 +918,233 @@ profiles.2 %>%
 
 
 ```
+
+
+
+
+
+
+
+## ISSA to ISSB 2
+
+```{r, fig.height=8}
+profiles = read.csv("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Fishery ISS Paper/from Steve B/Likelihoods_by_fleet.csv")
+
+
+
+profiles %>%
+  tidytable::filter(Label=="Length_like", M>=0.300) %>% 
+  mutate(Model_Run = ifelse(MODEL=="Model_23.1.0.d_NEW_FISS_tuned", "ISSB", "ISSA")) -> profiles.2
+
+
+p1 = profiles.2 %>% 
+  tidytable::filter(Model_Run=="ISSA") %>% 
+  ggplot(aes(x = M, y = Diff, group = variable, color = variable)) +
+  geom_line() +
+  geom_point() +
+  geom_vline(xintercept = 0.3866, linetype = "dashed", color = "black") +
+  geom_text(aes(x = 0.38, label = "Fixed M=0.3866", y = 1.5), colour="blue", angle=90, vjust = 1.2) +
+  geom_hline(yintercept = 0) +
+  labs(x = "Natural Mortality", y = "Change in -LL for Fishery Length Comps") +
+  theme_classic() +
+  theme(legend.position = c(.8, .8)) +
+  scale_y_continuous(limits = c(-.2, 6), expand = c(0, 0))
+
+p2 = profiles.2 %>% 
+  tidytable::filter(Model_Run=="ISSB") %>% 
+  ggplot(aes(x = M, y = Diff, group = variable, color = variable)) +
+  geom_line() +
+  geom_point() +
+  geom_vline(xintercept = 0.3866, linetype = "dashed", color = "black") +
+  geom_text(aes(x = 0.38, label = "Fixed M=0.3866", y = 1.5), colour="blue", angle=90, vjust = 1.2) +
+  geom_hline(yintercept = 0) +
+  labs(x = "M", y = "Change in -LL for Fishery Length Comps") +
+  theme_classic() +
+  theme(legend.position = c(.8, .8)) +
+  scale_y_continuous(limits = c(-.2, 6), expand = c(0, 0))
+
+
+
+p1 + p2 + plot_layout(ncol = 1, nrow = 2)
+
+
+```
+
+
+
+
+#M ISSA to ISSB 3 for paper
+
+```{r, fig.height=6}
+profiles = read.csv("C:/Users/bstacy2/OneDrive - UW/UW Postdoc/Fishery ISS Paper/from Steve B/Likelihoods_by_fleet.csv")
+
+
+
+profiles %>%
+  tidytable::filter(Label=="Length_like", variable=="Fishery", M>=0.300) %>% 
+  mutate("Fishery Composition ISS" = ifelse(MODEL=="Model_23.1.0.d_NEW_FISS_tuned", "ISSB", "ISSA")) -> profiles.2
+
+
+profiles.2 %>% 
+  # ggplot(aes(x = M, y = Diff, color = Model_Run, shape = Model_Run)) +
+  ggplot(aes(x = M, y = Diff, color = `Fishery Composition ISS`, shape = `Fishery Composition ISS`)) +
+  geom_line() +
+  scale_shape_manual(values = c(2, 16)) +
+  geom_point(size = 3) +
+  geom_vline(xintercept = 0.3866, linetype = "dashed", color = "black") +
+  geom_text(aes(x = 0.383, label = "Fixed M=0.3866", y = 1.5), colour="black", angle=90, vjust = 1.2) +
+  geom_vline(xintercept = 0.34, linetype = "dotted", color = "black") +
+  geom_text(aes(x = 0.336, label = "Survey M=0.34", y = 1.5), colour="black", angle=90, vjust = 1.2) +
+  geom_hline(yintercept = 0) +
+  labs(x = "Natural Mortality (M)", y = "Change in -log likelihood") +
+  theme_classic() +
+  theme(legend.position = c(.8, .8)) +
+  scale_y_continuous(limits = c(-.1, 2), expand = c(0, 0)) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=14)) +
+  scale_color_brewer(palette = "Dark2")
+
+
+
+
+
+```
+notes:
+survey ISS at 0.34 for BOTH ISSA and ISSB. 
+Fixed M is the fixed value for natural mortality specified in the assessment model.
+This is after tuning.
+ISSA min at 0.415, ISSB min at 0.385
+
+caption: "Likelihood profiles of the fishery composition data over natural mortality using ISSA or ISSB in the cod assessment. The cod assessment has a fixed value of 0.3866 for natural mortality, and the likelihood profiles of the survey composition data are minimized at 0.34."
+
+say in paper:
+Using ISSB in the assessment suggests a lower value of natural mortality (M) compared to using ISSA. The value of M at the minimum negative log likelihood for the fishery composition data using ISSB was 0.385, whereas for ISSA it was 0.415. The value of M suggested by ISSB is very close to the fixed value of 0.3866 specified in the cod assessment, and closer to the value suggested by the survey length composition data (0.34 when either ISSA or ISSB is used in the assessment). Therefore, using ISSB in the assessment results in less of a data conflict between the fishery and survey length composition information used in the cod assessment. 
+
+
+
+
+
+
+\newpage
+
+
+
+
+# Bratio for paper
+
+```{r, fig.height=5}
+Bratio = a.out.2 %>% 
+  tidytable::filter(Model_Run == "ISSA tuned", Label%in%Bratio.names) %>% 
+  tidytable::bind_rows(a.out.2 %>% 
+                         tidytable::filter(Model_Run == "ISSB tuned", Label%in%Bratio.names)) %>% 
+  tidytable::mutate(Year = as.numeric(substr(Label, 8, 11))) %>% 
+  tidytable::mutate("Fishery Composition ISS" = ifelse(Model_Run=="ISSA tuned", "ISSA", "ISSB"))
+
+
+Bratio %>% 
+  ggplot(aes(x = Year, y = Value, ymin = LO, ymax = HI, fill = `Fishery Composition ISS`, linetype = `Fishery Composition ISS`)) +
+  geom_line() +
+  geom_ribbon(alpha = 0.5) +
+  xlab("") +
+  ylab("SSB/SSB unfished") +
+  theme_classic() +
+  theme(legend.position = c(0.5, 0.85), 
+        legend.direction = "vertical", 
+        legend.box = "vertical") +
+  geom_vline(xintercept = 2023, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = .35, linetype = "dashed", color = "black") +
+  geom_text(aes(x=2032, label="Management Target", y=.33), colour="black", angle=0) +
+  geom_text(aes(x = 2021.6, label = "Assessment Year 2023", y = 0.73), colour="black", angle=90, vjust = 1.2) +
+  scale_x_continuous(breaks = seq(1980, 2040, by = 5), expand = c(0, 0)) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=14)) +
+  scale_fill_brewer(palette = "Dark2")
+```
+
+caption: "Point estimates and standard deviations of estimated spawning stock biomass (SSB) relative to unfished SSB using ISSA or ISSB in the cod assessment. Values past the assessment year of 2023 are projected estimates. Horizontal dashed line is the management target of 0.35. 
+
+notes:
+After tuning. the point estimates are similar. the uncertainty is comparable prior to the assessment year for most years but is lower for using ISSB compared to ISSA. 
+
+say in paper:
+The point estimates of the biomass ratio were similar for most years when using either ISSA or ISSB in the cod assessment. However, using ISSB resulted in lower uncertainty for projected estimates (sd = 0.0079 at year 2038) compared to ISSA (sd = 0.0128 at year 2038).
+
+
+
+
+
+# Plots Together a,b
+
+```{r, fig.height=7}
+
+
+pa1 = Bratio %>% 
+  ggplot(aes(x = Year, y = Value, ymin = LO, ymax = HI, fill = `Fishery Composition ISS`, linetype = `Fishery Composition ISS`)) +
+  geom_line() +
+  geom_ribbon(alpha = 0.5) +
+  xlab("") +
+  ylab("SSB/SSB unfished") +
+  labs(tag = "a") +
+  theme_classic() +
+  theme(legend.position = c(0.5, 0.85), 
+        legend.direction = "vertical", 
+        legend.box = "vertical",
+        plot.tag.position = c(0.15, 0.97),
+        plot.tag = element_text(size = 14, face = "bold")) + 
+  geom_vline(xintercept = 2023, linetype = "dashed", color = "black") +
+  geom_hline(yintercept = .35, linetype = "dashed", color = "black") +
+  geom_text(aes(x=2032, label="Management Target", y=.32), colour="black", angle=0) +
+  geom_text(aes(x = 2021.6, label = "Assessment Year", y = 0.73), colour="black", angle=90, vjust = 1.2) +
+  scale_x_continuous(breaks = seq(1980, 2040, by = 5), expand = c(0, 0)) +
+  scale_y_continuous(breaks = seq(0, 1, by = 0.25), limits = c(0, 1), expand = c(0, 0)) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=14)) +
+  scale_fill_brewer(palette = "Dark2")
+
+pa2 = profiles.2 %>% 
+  # ggplot(aes(x = M, y = Diff, color = Model_Run, shape = Model_Run)) +
+  ggplot(aes(x = M, y = Diff, color = `Fishery Composition ISS`, shape = `Fishery Composition ISS`)) +
+  geom_line() +
+  scale_shape_manual(values = c(2, 16)) +
+  geom_point(size = 3) +
+  geom_vline(xintercept = 0.3866, linetype = "dashed", color = "black") +
+  geom_text(aes(x = 0.383, label = "Fixed M", y = 1.5), colour="black", angle=90, vjust = 1.2) +
+  geom_vline(xintercept = 0.34, linetype = "dotted", color = "black") +
+  geom_text(aes(x = 0.336, label = "Survey M", y = 1.5), colour="black", angle=90, vjust = 1.2) +
+  geom_hline(yintercept = 0) +
+  labs(x = "Natural Mortality (M)", y = "Change in -log likelihood", tag = "b") +
+  theme_classic() +
+  theme(legend.position = c(.8, .8),
+        plot.tag.position = c(0.15, 0.97),
+        plot.tag = element_text(size = 14, face = "bold")) + 
+  scale_y_continuous(limits = c(-.1, 2.1), expand = c(0, 0)) +
+  scale_x_continuous(breaks = seq(0.30, 0.44, by = 0.02)) +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=14)) +
+  scale_color_brewer(palette = "Dark2")
+
+
+pa1 + pa2 + plot_layout(ncol = 1, nrow = 2)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+CONISDER FULL PARAMETER TABLE IN SUPPLEMENTARY MATERIAL. 
 
 
 

@@ -85,14 +85,15 @@ paper_scenario_44.1 - Same as 30.1 except no SS. Expansion complexity
 paper_scenario_45.1 - Same as 33.1 except no SS. Trip & Haul decrease 0.1-0.9
 paper_scenario_46.1 - Same as 38.2 except no SS. Expansion complexity vs Samples. replace==FALSE, except for 999 case. may need to change this!
 paper_scenario_47.1 - Same as 31.1 except no SS. Reduce samples: min, w/o replacement, w/ w/o port samples. NEED TO RUN.
-paper_scenario_48.1 - Same as 45.1 except 1.0 only and replace=TRUE to get 45.1 plots to be right.
+paper_scenario_48.1 - Same as 45.1 except 1.0 only and replace=FALSE to get 45.1 plots to be right.
 
 
 paper_scenario_39.7 - Same as 39.6 except no SS weighting. Trips x samples. Replace=TRUE. Ran on MAC
 paper_scenario_39.8 - Same as 39.7 except replace=FALSE
 paper_scenario_40.3 - Same as 40.2 escept no SS weighting. Hauls x samples. Replace=TRUE. Ran on TAS
 paper_scenario_40.4 - Same as 40.3 except replace=FALSE. TAS
-
+paper_scenario_49.1 - Same as 25.3 except no SS weighting. Trips/Hauls x samples. Replace = TRUE.
+paper_scenario_50.1 - Same as 49.1 except replace=FALSE
 
 
 
